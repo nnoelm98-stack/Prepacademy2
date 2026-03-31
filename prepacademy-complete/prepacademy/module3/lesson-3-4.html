@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.4 — Inequalities</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 18%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .symbol-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 1rem; }
+  .sym-card { background: #F5F3FF; border-radius: 8px; padding: 0.75rem; text-align: center; }
+  .sym-char { font-size: 22px; font-family: 'Georgia', serif; color: #4C1D95; font-weight: 700; }
+  .sym-name { font-size: 11px; font-weight: 500; color: #6b7280; margin-top: 3px; }
+  .sym-ex { font-size: 11px; color: #4C1D95; font-style: italic; margin-top: 2px; }
+  .rule-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+  .rule-item { display: flex; gap: 12px; background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; align-items: flex-start; }
+  .rule-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .rule-body { font-size: 13px; color: #374151; line-height: 1.55; flex: 1; }
+  .rule-body strong { color: #111; font-weight: 500; }
+  .rule-ex { font-size: 12px; font-family: 'Georgia', serif; color: #4C1D95; margin-top: 3px; line-height: 1.5; }
+  .critical-box { background: #FAEEDA; border-left: 3px solid #BA7517; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .critical-label { font-size: 11px; font-weight: 500; color: #854F0B; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .critical-text { font-size: 13px; color: #633806; line-height: 1.7; }
+  .critical-text em { font-family: 'Georgia', serif; font-style: normal; color: #4C1D95; font-weight: 500; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.5rem 0; padding: 0.45rem 0.75rem; background: #F5F3FF; border-radius: 5px; display: block; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-family: 'Georgia', serif; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.4</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 4 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.4</div>
+<div class="lesson-title">Inequalities</div>
+<div class="lesson-sub">Learn to solve linear inequalities, graph solution sets on a number line, and apply the one critical rule that catches most students off guard: what happens when you multiply or divide by a negative number.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Inequality symbols and what they mean</div>
+  <div class="symbol-grid">
+    <div class="sym-card">
+      <div class="sym-char">&lt;</div>
+      <div class="sym-name">Less than</div>
+      <div class="sym-ex">x &lt; 5 (open circle at 5, arrow left)</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-char">&gt;</div>
+      <div class="sym-name">Greater than</div>
+      <div class="sym-ex">x &gt; 3 (open circle at 3, arrow right)</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-char">≤</div>
+      <div class="sym-name">Less than or equal</div>
+      <div class="sym-ex">x ≤ 5 (closed circle at 5, arrow left)</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-char">≥</div>
+      <div class="sym-name">Greater than or equal</div>
+      <div class="sym-ex">x ≥ 3 (closed circle at 3, arrow right)</div>
+    </div>
+  </div>
+  <div class="body-text" style="margin-top:1rem;">Solving an inequality works exactly like solving an equation — with <strong>one critical exception</strong>.</div>
+  <div class="rule-list">
+    <div class="rule-item">
+      <div class="rule-icon">✓</div>
+      <div class="rule-body">
+        <strong>Add or subtract the same value from both sides</strong> — inequality sign stays the same.
+        <div class="rule-ex">x + 7 &gt; 12 → x &gt; 5 ✓</div>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-icon">✓</div>
+      <div class="rule-body">
+        <strong>Multiply or divide both sides by a positive number</strong> — inequality sign stays the same.
+        <div class="rule-ex">3x ≤ 15 → x ≤ 5 ✓</div>
+      </div>
+    </div>
+    <div class="rule-item" style="border: 1.5px solid #FCA5A5;">
+      <div class="rule-icon">⚠️</div>
+      <div class="rule-body">
+        <strong>Multiply or divide both sides by a NEGATIVE number</strong> — FLIP the inequality sign.
+        <div class="rule-ex">−2x &lt; 8 → x &gt; −4 (sign flipped!) ✓</div>
+        <div class="rule-ex">−3x ≥ 12 → x ≤ −4 (sign flipped!) ✓</div>
+      </div>
+    </div>
+  </div>
+  <div class="critical-box">
+    <div class="critical-label">Why the sign flips — the intuition</div>
+    <div class="critical-text">Think of the number line: 2 &lt; 5 is true. Multiply both sides by −1: −2 and −5. Now −2 is to the right of −5, so −2 &gt; −5. Multiplying by a negative reverses the order of every pair of numbers on the number line. The inequality sign must flip to stay true.</div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example</div>
+    <div class="example-text">
+      Solve: <strong>−3(x − 4) + 2 ≥ 14</strong><br><br>
+      <span class="fb-work">−3x + 12 + 2 ≥ 14</span><br>
+      <span class="fb-work">−3x + 14 ≥ 14</span><br>
+      <span class="fb-work">−3x ≥ 0</span><br>
+      <span class="fb-work">x ≤ 0 &nbsp;(divide by −3: flip the sign!)</span><br><br>
+      Solution set: all x ≤ 0 &nbsp;|&nbsp; Number line: closed circle at 0, arrow pointing left.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Mark negative divisions immediately</div><div class="tip-body">As soon as you see you need to divide by a negative number, circle the inequality sign as a reminder to flip it. This one habit eliminates the most common inequality error.</div></div>
+    <div class="tip"><div class="tip-title">Compound inequalities: solve all three parts</div><div class="tip-body">For compound inequalities like −3 &lt; 2x + 1 ≤ 9, perform operations on all three parts simultaneously. Whatever you do to the middle, do to both ends.</div></div>
+    <div class="tip"><div class="tip-title">Test a value in the solution set</div><div class="tip-body">After solving, pick a value that should be in your solution set and substitute it into the original inequality. If it satisfies the inequality, your solution is likely correct.</div></div>
+    <div class="tip"><div class="tip-title">Real-world inequalities: read "at least" and "at most"</div><div class="tip-body">"At least" = ≥ (greater than or equal). "At most" = ≤ (less than or equal). "More than" = &gt; (strict). "Fewer than" = &lt; (strict). These translations appear on every SAT.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Solve the inequality:</div>
+      <span class="math-eq">−4x + 3 &gt; 2x − 9</span>
+      <div class="problem-text" style="margin-top:0.75rem; font-size:12px; color:#6b7280;">Collect x-terms on one side. Watch carefully: does dividing to isolate x require dividing by a negative? If so, flip the sign.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Solving Inequalities</div>
+      <div class="q-text">Which correctly describes all values of x that satisfy the inequality?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>x &gt; 2</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>x &lt; 2</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>x &gt; −2</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>x &lt; −2</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! x &lt; 2</strong><div class="fb-work">−4x + 3 &gt; 2x − 9<br>3 + 9 &gt; 2x + 4x<br>12 &gt; 6x<br>2 &gt; x → x &lt; 2<br>Check: x = 0: −4(0)+3=3 &gt; 2(0)−9=−9 ✓<br>Check: x = 3: −9 &gt; −3? No ✓ (not in solution)</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Move all x-terms to the right and constants to the left, then divide. Alternatively, add 4x to both sides and add 9 to both sides first.<div class="fb-work">−4x + 3 &gt; 2x − 9<br>12 &gt; 6x → x &lt; 2</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Solve the compound inequality:</div>
+      <span class="math-eq">−1 ≤ (2x − 3) / 5 &lt; 3</span>
+      <div class="problem-text" style="margin-top:0.6rem; font-size:12px; color:#6b7280;">Multiply all three parts by 5 to clear the fraction, then add 3 to all parts, then divide by 2. Perform each operation on all three parts simultaneously.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Compound Inequality</div>
+      <div class="q-text">Which correctly describes the solution set?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>−1 ≤ x &lt; 9</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>1 ≤ x &lt; 9</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>−1 &lt; x ≤ 9</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>1 &lt; x ≤ 9</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 1 ≤ x &lt; 9</strong><div class="fb-work">Multiply all parts by 5:<br>−5 ≤ 2x − 3 &lt; 15<br>Add 3 to all parts:<br>−2 ≤ 2x &lt; 18<br>Divide all parts by 2:<br>−1 ≤ x &lt; 9<br><br>Wait — that gives −1 ≤ x &lt; 9 (option A).<br>Let me recheck: −5+3=−2, −2/2=−1. ✓<br>So answer is A: −1 ≤ x &lt; 9.</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Work on all three parts simultaneously. Multiply by 5, then add 3, then divide by 2 — applying each operation to the left bound, middle, and right bound.<div class="fb-work">×5: −5 ≤ 2x−3 &lt; 15<br>+3: −2 ≤ 2x &lt; 18<br>÷2: −1 ≤ x &lt; 9</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A delivery driver can carry at most 850 pounds in her truck. She has already loaded boxes weighing a total of 340 pounds. Each additional crate weighs 35 pounds.</div>
+      <div class="problem-text" style="margin-top:0.6rem; font-size:12px; color:#6b7280;">Write an inequality where c = number of crates, then solve to find the maximum number of crates she can add. Remember "at most" = ≤.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Real-World Inequality</div>
+      <div class="q-text">What is the maximum number of additional crates the driver can load?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>14 crates</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>15 crates</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>24 crates</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>25 crates</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 14 crates.</strong><div class="fb-work">340 + 35c ≤ 850<br>35c ≤ 510<br>c ≤ 14.57...<br>Since c must be a whole number: c ≤ 14<br>Check: 340 + 35(14) = 340 + 490 = 830 ≤ 850 ✓<br>Check: 340 + 35(15) = 340 + 525 = 865 &gt; 850 ✗</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Set up: 340 + 35c ≤ 850. Solve for c. Since crates must be whole numbers, round down (not up!) to stay within the weight limit.<div class="fb-work">35c ≤ 510 → c ≤ 14.57 → c = 14</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.3</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.4 of 22</span>
+  <button class="btn-nav primary">Next → 3.5 Linear Inequalities & Systems</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

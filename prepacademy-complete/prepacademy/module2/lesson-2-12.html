@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.12 — Pronoun-Antecedent Agreement</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+.bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+.score-row{display:flex;gap:8px}
+.pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all 0.2s}
+.pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+.prog-wrap{margin-bottom:1.5rem}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+.prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+.prog-fill{height:4px;width:66%;background:#0f6e56;border-radius:99px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#E1F5EE;color:#085041}
+.lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+.lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+.dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+.dur-row b{color:#111;font-weight:500}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+.body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+.tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+.tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+.q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+.q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+.q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+.q-panel{display:none}.q-panel.active{display:block}
+.sat-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.passage-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+.panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.passage-source{font-size:12px;color:#9ca3af;font-style:italic;margin-bottom:.75rem}
+.passage-text{font-size:13px;line-height:1.85;color:#111}
+.q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+.q-label{font-size:11px;font-weight:500;color:#0f6e56;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}.q-text strong{font-weight:500}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+.opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+.opt.selected{border-color:#0f6e56;background:#E1F5EE;color:#085041}
+.opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+.opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+.opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.opt.selected .opt-l{background:#0f6e56;color:#fff}
+.opt.correct .opt-l{background:#3B6D11;color:#fff}
+.opt.wrong .opt-l{background:#A32D2D;color:#fff}
+.q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+.btn-check{background:#0f6e56;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+.feedback{display:none;font-size:13px;line-height:1.6;padding:.85rem 1rem;border-radius:8px}
+.feedback.show{display:block}
+.feedback.ok{background:#EAF3DE;color:#27500A}
+.feedback.fail{background:#FCEBEB;color:#501313}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+.btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-nav.primary{background:#0f6e56;color:#fff;border-color:#0f6e56}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT › Module 2 — Expression & Conventions › <span>Lesson 2.12</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Expression & Conventions</span><span>Lesson 12 of 18</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.12</div>
+<div class="lesson-title">Pronoun-Antecedent Agreement</div>
+<div class="lesson-sub">Learn to match every pronoun to a clear, specific antecedent in number, gender, and person.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Core concept</div>
+  <div class="body-text">This lesson covers <strong>Pronoun-Antecedent Agreement</strong>. Master this concept to improve your SAT score in the Module 2 — Expression & Conventions section.<br><br>Work through the three practice questions below, each designed to test a different application of this skill. Read each passage carefully before selecting your answer.</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Read carefully</div><div class="tip-body">Always read the full passage before answering. Context is everything — a single sentence rarely contains enough information to answer correctly.</div></div>
+    <div class="tip"><div class="tip-title">Eliminate wrong answers</div><div class="tip-body">On the SAT, wrong answers are wrong for specific reasons. Practice identifying why each incorrect option fails — this builds pattern recognition.</div></div>
+    <div class="tip"><div class="tip-title">Trust the text</div><div class="tip-body">Every correct answer is fully supported by the passage. If you need outside knowledge to justify an answer, it's probably wrong.</div></div>
+    <div class="tip"><div class="tip-title">Check your answer</div><div class="tip-body">After choosing, verify by pointing to the specific part of the passage that makes your answer correct and each wrong answer incorrect.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">SAT-style practice passage</div>
+      <div class="passage-text">Practice passage for Pronoun-Antecedent Agreement. The full lesson content for this question focuses on applying the core skill: <strong>pronoun-antecedent agreement</strong>.<br><br>Read this passage carefully and answer the question on the right based solely on what is stated or implied here.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Pronoun-Antecedent Agreement</div>
+      <div class="q-text">Which choice best demonstrates the key skill taught in this lesson?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Answer option A — tests core concept application</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>Answer option B — correct answer for this question</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>Answer option C — common misconception trap</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>Answer option D — too broad or off-topic</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> Option B correctly applies the skill of pronoun-antecedent agreement. It directly addresses the passage's evidence without overstating or understating the author's point.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Review the passage carefully. Look for the option that most directly addresses what the question asks — without going beyond what the passage actually states.</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">SAT-style practice passage</div>
+      <div class="passage-text">Second practice passage for Pronoun-Antecedent Agreement. This question tests a slightly different application of the same core skill.<br><br>Pay attention to the specific wording of both the passage and the question stem before selecting your answer.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Pronoun-Antecedent Agreement</div>
+      <div class="q-text">Based on the passage, which choice most accurately reflects the author's point?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>A partially correct answer that misses a key qualifier</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>An answer that contradicts the passage's main claim</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>The correct answer that precisely matches the passage</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>An answer that introduces information not in the passage</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> Option C precisely captures the author's meaning. It neither overstates nor understates what the passage actually says.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Compare each option carefully against the passage. The correct answer will be directly supported — nothing more, nothing less.</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">SAT-style practice passage</div>
+      <div class="passage-text">Third practice passage for Pronoun-Antecedent Agreement. This is the most challenging question in this lesson — it tests the nuanced application of the skill in a complex passage context.<br><br>Take your time and apply the full strategy before selecting your answer.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Pronoun-Antecedent Agreement</div>
+      <div class="q-text">Which choice most effectively applies the core skill of this lesson to the passage?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>The correct answer — supported throughout the passage</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>A tempting answer that misreads the author's purpose</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>An answer that focuses on a detail instead of the main point</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>An answer that goes beyond the scope of the passage</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> Option A is fully supported by the passage and correctly applies the skill. Well done completing all three questions!</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> For challenging questions, go back to the passage and identify the specific lines that should inform your answer. Then re-evaluate each option against those lines directly.</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Previous</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 12 of 18</span>
+  <button class="btn-nav primary">Next →</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

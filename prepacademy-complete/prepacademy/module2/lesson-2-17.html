@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.17 — Possessives & Apostrophes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 94%; background: #0f6e56; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #E1F5EE; color: #085041; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  th { background: #f9fafb; padding: 7px 12px; text-align: left; font-weight: 500; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  td { padding: 7px 12px; color: #6b7280; border-bottom: 1px solid #e5e7eb; vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 500; color: #111; }
+  td em { font-style: italic; color: #111; }
+  .confuse-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .confuse-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .confuse-title { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .confuse-rule { font-size: 12px; color: #6b7280; line-height: 1.5; margin-bottom: 5px; }
+  .confuse-ex { font-size: 12px; font-style: italic; color: #111; line-height: 1.5; }
+  .test-box { background: #E1F5EE; border-left: 3px solid #0f6e56; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .test-label { font-size: 11px; font-weight: 500; color: #0f6e56; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .test-text { font-size: 13px; color: #085041; line-height: 1.7; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .sat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .passage-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .passage-source { font-size: 12px; color: #9ca3af; font-style: italic; margin-bottom: 0.75rem; }
+  .passage-text { font-size: 13px; line-height: 1.85; color: #111; }
+  .ln { font-size: 10px; color: #9ca3af; margin-right: 5px; user-select: none; }
+  .ul { text-decoration: underline; text-decoration-color: #A32D2D; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #0f6e56; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-style: italic; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-style: normal; }
+  .opt.selected .opt-l { background: #1D9E75; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #0f6e56; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 2 › <span>Lesson 2.17</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Standard English Conventions</span><span>Lesson 17 of 18</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.17</div>
+<div class="lesson-title">Possessives & Apostrophes</div>
+<div class="lesson-sub">Master every apostrophe rule — possessives for singular and plural nouns, contractions, and the possessive pronouns that never take apostrophes.</div>
+<div class="dur-row"><span><b>10 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The complete apostrophe ruleset</div>
+  <table>
+    <tr><th>Case</th><th>Rule</th><th>Example</th></tr>
+    <tr><td>Singular noun possession</td><td>Add 's — always, even if the noun ends in s</td><td><em>the student's essay / the class's average / James's discovery</em></td></tr>
+    <tr><td>Plural noun ending in s</td><td>Add apostrophe only (after the s)</td><td><em>the students' essays / the scientists' findings</em></td></tr>
+    <tr><td>Plural noun NOT ending in s</td><td>Add 's</td><td><em>the children's books / the people's choice / the women's team</em></td></tr>
+    <tr><td>Contraction</td><td>Apostrophe replaces omitted letters</td><td><em>it's (it is/has) / they're (they are) / who's (who is/has) / don't (do not)</em></td></tr>
+    <tr><td>Possessive pronouns</td><td>NEVER take apostrophes</td><td><em>its / their / whose / your / our / hers / his / ours / theirs</em></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="sec-title">The four pairs the SAT always confuses</div>
+  <div class="confuse-grid">
+    <div class="confuse-card">
+      <div class="confuse-title">its vs. it's</div>
+      <div class="confuse-rule"><strong>its</strong> = possessive pronoun (belonging to it). <strong>it's</strong> = contraction of "it is" or "it has." Test: can you substitute "it is"? If yes → it's. If no → its.</div>
+      <div class="confuse-ex">✓ "The study and its findings were clear." (possessive)<br>✓ "It's been proven that sleep matters." (it has)</div>
+    </div>
+    <div class="confuse-card">
+      <div class="confuse-title">their vs. they're vs. there</div>
+      <div class="confuse-rule"><strong>their</strong> = possessive (belonging to them). <strong>they're</strong> = they are. <strong>there</strong> = location or existential ("there is"). All sound identical — context is the only guide.</div>
+      <div class="confuse-ex">✓ "Their results were published." (possessive)<br>✓ "They're ready to present." (they are)<br>✓ "There are three approaches." (existential)</div>
+    </div>
+    <div class="confuse-card">
+      <div class="confuse-title">whose vs. who's</div>
+      <div class="confuse-rule"><strong>whose</strong> = possessive relative pronoun. <strong>who's</strong> = contraction of "who is" or "who has." Test: substitute "who is." If it works → who's. If not → whose.</div>
+      <div class="confuse-ex">✓ "The researcher whose paper was cited…" (possessive)<br>✓ "The scientist who's leading the team…" (who is)</div>
+    </div>
+    <div class="confuse-card">
+      <div class="confuse-title">your vs. you're</div>
+      <div class="confuse-rule"><strong>your</strong> = possessive (belonging to you). <strong>you're</strong> = contraction of "you are." Test: substitute "you are." If it works → you're. If not → your.</div>
+      <div class="confuse-ex">✓ "Your analysis was thorough." (possessive)<br>✓ "You're the lead author." (you are)</div>
+    </div>
+  </div>
+  <div class="test-box">
+    <div class="test-label">The ownership test for apostrophes in nouns</div>
+    <div class="test-text">Before adding an apostrophe to a noun, ask: does this noun own something? Rephrase using "of": <em>"the findings of the study"</em> → <em>"the study's findings"</em> ✓. If the noun is just a simple plural with no ownership — <em>"three studies were published"</em> — no apostrophe. Plurals without possession never take apostrophes.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Expand every contraction to test</div><div class="tip-body">For any word with an apostrophe, try expanding it: "it's" → "it is/has," "who's" → "who is/has," "they're" → "they are." If the expansion sounds wrong in context, you need the possessive form without an apostrophe.</div></div>
+    <div class="tip"><div class="tip-title">Possessive pronouns never use apostrophes</div><div class="tip-body">Its, their, whose, your, our, hers, his, ours, theirs — none of these ever take an apostrophe. If you see "it's" used as a possessive, it's always wrong.</div></div>
+    <div class="tip"><div class="tip-title">Check: is the noun plural or possessive?</div><div class="tip-body">Many SAT errors involve adding apostrophes to simple plurals. "The results shows…" → "results" is a plural, not a possessive — no apostrophe needed. Only add apostrophes when something belongs to the noun.</div></div>
+    <div class="tip"><div class="tip-title">Plural possessive: find the plural first</div><div class="tip-body">For plural possessives, first form the plural, then add the apostrophe. Students → students' (apostrophe after the s). Children → children's (irregular plural, so add 's). Never add 's to an already-plural noun ending in s.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on migratory bird patterns</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Biologists studying long-distance bird migration have found that a <span class="ul">species'</span> ability to navigate thousands of miles with remarkable precision depends on multiple sensory systems working in concert. The birds use the position of the sun, the pattern of stars, and Earth's magnetic field — a redundancy that makes their navigation robust even when one system is disrupted.<br><br>
+        <span class="ln">6</span>Recent research suggests that some species can also detect polarized light at dawn and dusk, giving them additional calibration points that help maintain accuracy across entire hemispheres.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Possessives</div>
+      <div class="q-text">Is the apostrophe placement in <strong>"species'"</strong> correct, and why?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Yes — "species" is a plural noun ending in s, so the apostrophe correctly follows the s.</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>No — it should be "species's" because "species" is a singular noun.</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>No — it should be "specieses'" because a plural ending must be formed first.</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>No — possessive pronouns never take apostrophes, so "species'" is always wrong.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> "Species" is a singular noun (it refers to one species). The singular possessive is formed by adding 's: "species's ability." However, many style guides — and the SAT — accept "species'" for singular nouns already ending in s, particularly for words where the extra syllable would be awkward. In this context, Option B is the most technically precise answer: "species" here is singular, and the possessive of a singular noun ending in s is "species's." Option A would be correct only if "species" were plural. Option C invents a non-word. Option D confuses nouns with pronouns.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Is "species" singular or plural in this sentence? It refers to one type of bird — singular. For a singular noun, the possessive is formed with 's, not just an apostrophe after s. Which option identifies the correct form for a singular noun ending in s?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a student essay on urban food deserts</div>
+      <div class="passage-text">
+        <span class="ln">1</span>In many low-income urban neighborhoods, <span class="ul">residents' access</span> to fresh produce is severely limited by the absence of full-service grocery stores within walking distance. Corner stores and fast-food outlets fill the gap, but <span class="ul">their</span> offerings are typically high in sodium, sugar, and saturated fat — contributing to elevated rates of diet-related illness in the communities <span class="ul">they're</span> meant to serve.<br><br>
+        <span class="ln">6</span>Policy solutions range from zoning incentives for grocery stores to subsidized farmers' markets, but implementation has been slow and uneven across cities.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Possessives & Contractions</div>
+      <div class="q-text">The passage uses three underlined forms: <strong>"residents' access," "their," and "they're."</strong> Which assessment is correct?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>All three are correct as written.</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>"residents' access" should be "resident's access" because only one resident is implied.</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>"their" should be "they're" because it refers to the stores' actions.</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>"they're" should be "their" because it shows possession of the communities.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> All three forms are correctly used. "Residents' access" — plural possessive (many residents share limited access), apostrophe after s ✓. "Their offerings" — possessive pronoun referring to corner stores and fast-food outlets, no apostrophe ✓. "They're meant to serve" — contraction of "they are" (the stores are meant to serve the communities) ✓. Option B is wrong — the passage clearly refers to multiple residents. Option C confuses possessive "their" with contraction "they're" — the stores' offerings belong to them, not a verb action. Option D reverses the error — "they're" here is indeed "they are," which is correct.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Test each form: (1) "residents' access" — one resident or many? (2) "their offerings" — does this show possession or describe an action? Try expanding: "they are offerings" — does that work? (3) "they're meant to serve" — expand: "they are meant to serve" — does that work? Evaluate all three before choosing.</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history essay on the Apollo program</div>
+      <div class="passage-text">
+        <span class="ln">1</span>The engineers <span class="ul">who's</span> designs made the Moon landing possible came from extraordinarily diverse backgrounds — mathematicians, aeronautical engineers, former military pilots, and self-taught programmers among them. Many were women, particularly in the computing divisions, <span class="ul">whose</span> calculations provided the navigational precision the missions required.<br><br>
+        <span class="ln">6</span>Despite <span class="ul">their</span> essential contributions, many of these engineers received little public recognition during their lifetimes, overshadowed by the astronauts who carried out the missions they designed.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Possessives</div>
+      <div class="q-text">Which underlined word is used <strong>incorrectly</strong>, and what should it be?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>"who's" — should be "whose" (possessive, not contraction)</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>"whose" — should be "who's" (contraction of "who has")</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>"their" — should be "they're" (contraction of "they are")</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>All three are used correctly.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> "Who's designs" — expand "who's": "who is designs" or "who has designs" — neither makes sense. The sentence needs the possessive: "whose designs." "Whose" (second use) — the women's calculations provided navigational precision. Expand "whose": "who is calculations" — nonsense. Possessive "whose" is correct ✓. "Their essential contributions" — possessive pronoun referring to the engineers' contributions ✓. The only error is the first "who's," which must be "whose" — a possessive relative pronoun showing that the designs belong to the engineers.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Test each underlined word. For "who's" — expand it: "who is designs" or "who has designs." Does either make sense in the sentence? If not, you need the possessive "whose." Check the other two the same way.</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 2.16</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 2.17 of 18</span>
+  <button class="btn-nav primary">Next → 2.18 (Final)</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

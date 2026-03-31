@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.18 — Commonly Confused Words</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 100%; background: #3B6D11; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #E1F5EE; color: #085041; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .word-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .word-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .word-pair { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 5px; }
+  .word-defs { font-size: 12px; color: #6b7280; line-height: 1.55; margin-bottom: 5px; }
+  .word-ex { font-size: 12px; font-style: italic; color: #111; line-height: 1.4; }
+  .test-box { background: #E1F5EE; border-left: 3px solid #0f6e56; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .test-label { font-size: 11px; font-weight: 500; color: #0f6e56; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .test-text { font-size: 13px; color: #085041; line-height: 1.7; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .sat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .passage-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .passage-source { font-size: 12px; color: #9ca3af; font-style: italic; margin-bottom: 0.75rem; }
+  .passage-text { font-size: 13px; line-height: 1.85; color: #111; }
+  .ln { font-size: 10px; color: #9ca3af; margin-right: 5px; user-select: none; }
+  .ul { text-decoration: underline; text-decoration-color: #A32D2D; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #0f6e56; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-style: italic; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-style: normal; }
+  .opt.selected .opt-l { background: #1D9E75; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #0f6e56; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .complete-banner { background: #EAF3DE; border: 1px solid #3B6D11; border-radius: 12px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; display: flex; align-items: flex-start; gap: 14px; }
+  .complete-icon { width: 40px; height: 40px; border-radius: 50%; background: #3B6D11; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .complete-title { font-size: 16px; font-weight: 500; color: #27500A; margin-bottom: 4px; }
+  .complete-sub { font-size: 13px; color: #3B6D11; line-height: 1.5; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #3B6D11; color: #fff; border-color: #3B6D11; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 2 › <span>Lesson 2.18 — Final</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Standard English Conventions</span><span>Lesson 18 of 18 · Final lesson</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.18</div>
+<div class="lesson-title">Commonly Confused Words</div>
+<div class="lesson-sub">Master the word pairs that sound similar but mean different things — the last category of grammar errors the SAT tests, and one of the most reliable sources of points.</div>
+<div class="dur-row"><span><b>10 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The 12 most tested word pairs on the SAT</div>
+  <div class="word-grid">
+    <div class="word-card">
+      <div class="word-pair">affect vs. effect</div>
+      <div class="word-defs"><strong>affect</strong> = verb (to influence). <strong>effect</strong> = noun (a result). Exception: "to effect change" = to bring about (rare verb use).</div>
+      <div class="word-ex">✓ "Stress affects sleep quality." / "The effect was immediate."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">fewer vs. less</div>
+      <div class="word-defs"><strong>fewer</strong> = countable nouns (items you can count). <strong>less</strong> = uncountable nouns (amounts, qualities, abstractions).</div>
+      <div class="word-ex">✓ "Fewer studies / less research." / "Fewer hours / less time."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">among vs. between</div>
+      <div class="word-defs"><strong>between</strong> = two items (or a precise relationship). <strong>among</strong> = three or more items (a general group).</div>
+      <div class="word-ex">✓ "Between the two options." / "Among the four candidates."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">that vs. which</div>
+      <div class="word-defs"><strong>that</strong> = restrictive clauses (essential, no commas). <strong>which</strong> = nonrestrictive clauses (extra info, with commas).</div>
+      <div class="word-ex">✓ "The study that won the prize…" / "The study, which lasted five years,…"</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">imply vs. infer</div>
+      <div class="word-defs"><strong>imply</strong> = to suggest (the speaker/writer implies). <strong>infer</strong> = to conclude (the reader/listener infers).</div>
+      <div class="word-ex">✓ "The data implies a correlation." / "Readers can infer the cause."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">amount vs. number</div>
+      <div class="word-defs"><strong>amount</strong> = uncountable quantities. <strong>number</strong> = countable items. Parallel to less/fewer.</div>
+      <div class="word-ex">✓ "A large amount of funding." / "A large number of studies."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">comprise vs. compose</div>
+      <div class="word-defs">The whole <strong>comprises</strong> the parts. The parts <strong>compose</strong> the whole. Never "comprised of" — always "comprises."</div>
+      <div class="word-ex">✓ "The report comprises five sections." / "Five sections compose the report."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">principle vs. principal</div>
+      <div class="word-defs"><strong>principle</strong> = a fundamental rule or belief (noun). <strong>principal</strong> = main/primary (adjective) or head of a school (noun).</div>
+      <div class="word-ex">✓ "A core principle of ethics." / "The principal investigator."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">assure vs. ensure vs. insure</div>
+      <div class="word-defs"><strong>assure</strong> = reassure a person. <strong>ensure</strong> = guarantee an outcome. <strong>insure</strong> = financial insurance only.</div>
+      <div class="word-ex">✓ "She assured him it was safe." / "Steps to ensure accuracy."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">since vs. because</div>
+      <div class="word-defs"><strong>since</strong> = from a point in time (or weak causal). <strong>because</strong> = the direct cause. Use "because" when stating an explicit reason.</div>
+      <div class="word-ex">✓ "Since 2010, rates have risen." / "Rates rose because of policy changes."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">continual vs. continuous</div>
+      <div class="word-defs"><strong>continual</strong> = recurring with interruptions. <strong>continuous</strong> = uninterrupted, without pause.</div>
+      <div class="word-ex">✓ "Continual interruptions." / "A continuous data stream."</div>
+    </div>
+    <div class="word-card">
+      <div class="word-pair">precede vs. proceed</div>
+      <div class="word-defs"><strong>precede</strong> = to come before. <strong>proceed</strong> = to continue forward.</div>
+      <div class="word-ex">✓ "Discovery precedes application." / "The team proceeded to publish."</div>
+    </div>
+  </div>
+  <div class="test-box">
+    <div class="test-label">Context substitution test</div>
+    <div class="test-text">For any confused word pair, replace the underlined word with your candidate and read the full sentence. Ask: does the substitute carry the exact meaning the sentence requires? A word can "sound right" while meaning something subtly different. For affect/effect, ask: is this a verb describing an action (affect) or a noun describing a result (effect)?</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Affect/effect: default to noun "effect"</div><div class="tip-body">In the vast majority of SAT questions, "effect" is the noun and "affect" is the verb. If the word follows an article (the, an, a) or adjective — it's a noun → use "effect." If it follows a subject and means "to influence" — it's a verb → use "affect."</div></div>
+    <div class="tip"><div class="tip-title">Fewer/less — the checkout lane test</div><div class="tip-body">If you can count individual items ("10 items or fewer"), use "fewer." If you measure a bulk amount ("less flour," "less time"), use "less." When in doubt, ask: can I count them one by one?</div></div>
+    <div class="tip"><div class="tip-title">That vs. which — the comma test</div><div class="tip-body">If the clause has commas around it → use "which." If there are no commas and the clause is essential to identifying the noun → use "that." You can't use "that" after a comma — the SAT will test this.</div></div>
+    <div class="tip"><div class="tip-title">Imply vs. infer — sender vs. receiver</div><div class="tip-body">The writer/speaker implies; the reader/listener infers. If the subject of the verb is a text, study, or speaker — use "imply." If the subject is a person drawing a conclusion from evidence — use "infer."</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on antibiotic resistance</div>
+      <div class="passage-text">
+        <span class="ln">1</span>The overuse of antibiotics has a profound <span class="ul">affect</span> on the evolution of bacterial populations. When antibiotics eliminate susceptible bacteria, resistant strains survive and reproduce — a process <span class="ul">that</span> accelerates when treatment courses are interrupted or when antibiotics are prescribed unnecessarily.<br><br>
+        <span class="ln">5</span>Researchers emphasize that the <span class="ul">principal</span> challenge is not scientific but behavioral: persuading both physicians and patients to use antibiotics only when genuinely required.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Confused Words</div>
+      <div class="q-text">Which underlined word is used <strong>incorrectly</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>"affect" — should be "effect" (a noun, not a verb, is needed here)</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>"that" — should be "which" (the clause provides extra information)</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>"principal" — should be "principle" (a fundamental rule, not "main")</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>All three are used correctly.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> "A profound affect" — "affect" follows the indefinite article "a" and is used as a noun. But "affect" is almost always a verb. The noun form is "effect": "a profound effect on bacterial populations." ✓ "that accelerates" — the clause "that accelerates when…" is restrictive (it identifies which process), so "that" with no commas is correct ✓. "The principal challenge" — "principal" as an adjective means "main" or "primary," which is exactly the meaning needed here ✓. Only "affect" is wrong.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Test each: (1) "a profound affect" — is a noun or verb needed after "a profound"? What part of speech follows an article? (2) "that accelerates" — is this clause restrictive or nonrestrictive? Does it have commas? (3) "the principal challenge" — does this mean "main challenge" or "a fundamental rule"?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from an economics essay on income inequality</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Economic mobility in the United States has declined over the past fifty years, with <span class="ul">less</span> Americans now able to surpass the income level of their parents than at any point since records began. The gap between the wealthiest and poorest households has widened considerably, and researchers <span class="ul">infer</span> that this trend will continue unless structural changes are made to education funding and tax policy.<br><br>
+        <span class="ln">6</span>The data, <span class="ul">which</span> spans four decades of household income surveys, provides a comprehensive picture of how mobility has shifted across generations.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Confused Words</div>
+      <div class="q-text">Which underlined word is used <strong>incorrectly</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>"less" — should be "fewer" (Americans are countable individuals)</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>"infer" — should be "imply" (researchers are suggesting, not concluding)</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>"which" — should be "that" (the clause is essential to identifying the data)</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>All three are used correctly.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> "Less Americans" — Americans are countable individuals. The correct word for countable nouns is "fewer": "fewer Americans" ✓. "Researchers infer" — researchers are drawing a conclusion from the data they have analyzed, which is the definition of "infer" (to conclude from evidence). "Imply" would mean the researchers were merely suggesting without stating directly, but the sentence says they are concluding from the trend ✓ — actually "infer" is correct here. "Which spans" — the clause "which spans four decades" is set off by a comma and provides extra information about the data, making "which" correct ✓. Only "less" is wrong — it should be "fewer."</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Test each: (1) "less Americans" — can you count Americans individually? Countable → fewer or less? (2) "researchers infer" — are researchers drawing a conclusion from evidence, or are they suggesting something? (3) "which spans" — does this clause have a comma before it? Is it extra information or essential identification?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a biology article on ecosystem resilience</div>
+      <div class="passage-text">
+        <span class="ln">1</span>A healthy forest ecosystem <span class="ul">comprises</span> hundreds of interacting species, from the towering canopy trees to the microscopic fungi <span class="ul">that</span> form symbiotic networks in the soil. When one component is disrupted — by disease, invasive species, or human activity — the effects can cascade through the system in ways that are difficult to predict or <span class="ul">ensure</span>.<br><br>
+        <span class="ln">6</span>Ecologists argue that maintaining biodiversity is the most reliable way to preserve a forest's capacity to absorb and recover from disturbance.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Confused Words</div>
+      <div class="q-text">Which underlined word is used <strong>incorrectly</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>"comprises" — should be "is comprised of" (standard usage)</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>"that" — should be "which" (the clause adds non-essential detail)</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>"ensure" — should be "assure" (reassuring a person is intended)</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>"ensure" — should be "reverse" or "control" (the sentence needs a word meaning to stop or manage the effects)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> "Comprises" — the whole (a forest ecosystem) comprises the parts (hundreds of species). "Comprises" is correct; "comprised of" is considered an error in formal writing ✓. "That form symbiotic networks" — this clause is essential to identifying which specific fungi are meant (not just any fungi — the ones that form networks). No comma, restrictive → "that" is correct ✓. "Difficult to predict or ensure" — "ensure" means to guarantee an outcome. But the sentence says the effects are hard to predict or [stop/reverse/control]. "Ensure" doesn't mean to stop or manage something — it guarantees it. The correct word here would be something like "reverse" or "control." Option D correctly identifies this as the error and names an appropriate replacement.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Test each: (1) "comprises" — does the whole comprise the parts, or do the parts comprise the whole? (2) "that form networks" — is this an essential identifying clause with no commas? (3) "difficult to predict or ensure" — what does "ensure" mean? Does that meaning fit here — can you "ensure" cascading effects, or do you want to stop/control them?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'D')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Module Complete Banner -->
+<div class="complete-banner" id="complete-banner">
+  <div class="complete-icon">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l5 5 9-9"/></svg>
+  </div>
+  <div>
+    <div class="complete-title">🎉 Module 2 complete — all 18 lessons done!</div>
+    <div class="complete-sub">You've finished all Expression of Ideas and Standard English Conventions lessons. Modules 1 and 2 of SAT Reading & Writing are complete. Ready to start Module 3 — Math?</div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 2.17</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 2.18 of 18 ✓</span>
+  <button class="btn-nav primary">Start Module 3 — Math →</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

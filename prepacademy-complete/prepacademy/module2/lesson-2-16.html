@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.16 — Modifiers</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 89%; background: #0f6e56; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #E1F5EE; color: #085041; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; font-weight: 500; }
+  .error-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .error-card { border-radius: 10px; padding: 1rem 1.25rem; }
+  .error-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .error-def { font-size: 12px; line-height: 1.55; margin-bottom: 8px; }
+  .error-ex { font-size: 12px; font-style: italic; line-height: 1.6; }
+  .rule-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+  .rule-item { display: flex; gap: 12px; background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; }
+  .rule-num { width: 22px; height: 22px; border-radius: 50%; background: #0f6e56; color: #fff; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .rule-body { flex: 1; font-size: 13px; color: #6b7280; line-height: 1.55; }
+  .rule-body strong { color: #111; font-weight: 500; }
+  .rule-ex { font-size: 12px; font-style: italic; color: #111; margin-top: 3px; line-height: 1.4; }
+  .fix-box { background: #E1F5EE; border-left: 3px solid #0f6e56; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .fix-label { font-size: 11px; font-weight: 500; color: #0f6e56; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .fix-text { font-size: 13px; color: #085041; line-height: 1.7; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .sat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .passage-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .passage-source { font-size: 12px; color: #9ca3af; font-style: italic; margin-bottom: 0.75rem; }
+  .passage-text { font-size: 13px; line-height: 1.85; color: #111; }
+  .ln { font-size: 10px; color: #9ca3af; margin-right: 5px; user-select: none; }
+  .ul { text-decoration: underline; text-decoration-color: #A32D2D; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #0f6e56; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.55; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 2px; }
+  .opt.selected .opt-l { background: #1D9E75; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #0f6e56; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 2 › <span>Lesson 2.16</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Standard English Conventions</span><span>Lesson 16 of 18</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.16</div>
+<div class="lesson-title">Modifiers</div>
+<div class="lesson-sub">Learn to place modifying phrases next to the noun they describe — and to fix the two classic modifier errors the SAT tests: dangling modifiers and misplaced modifiers.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The two modifier errors</div>
+  <div class="body-text">A modifier is any word, phrase, or clause that describes or limits another element in a sentence. The rule is simple: a modifier must be placed as <strong>close as possible</strong> to what it modifies. When it isn't, two types of errors result.</div>
+  <div class="error-grid">
+    <div class="error-card" style="background:#FCEBEB;">
+      <div class="error-title" style="color:#A32D2D;">Dangling modifier</div>
+      <div class="error-def" style="color:#501313;">The noun being modified is absent from the sentence or is not the subject immediately following the modifier. The modifier "dangles" with nothing logical to attach to.</div>
+      <div class="error-ex" style="color:#712B13;">
+        ✗ "Having studied all night, the exam seemed easy."<br>
+        <span style="font-size:11px;">(Who studied all night? Not "the exam" — but "the exam" is the subject.)</span><br><br>
+        ✓ "Having studied all night, <strong>she</strong> found the exam easy."<br>
+        ✓ "Because <strong>she</strong> had studied all night, the exam seemed easy."
+      </div>
+    </div>
+    <div class="error-card" style="background:#FAEEDA;">
+      <div class="error-title" style="color:#854F0B;">Misplaced modifier</div>
+      <div class="error-def" style="color:#633806;">The noun being modified is present in the sentence, but the modifier is positioned too far away — or next to the wrong noun — creating an unintended meaning.</div>
+      <div class="error-ex" style="color:#633806;">
+        ✗ "The scientist observed the cells using a microscope that were dividing rapidly."<br>
+        <span style="font-size:11px;">("that were dividing rapidly" modifies "microscope," not "cells")</span><br><br>
+        ✓ "Using a microscope, the scientist observed the cells that were dividing rapidly."
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">The three most common modifier patterns on the SAT</div>
+  <div class="rule-list">
+    <div class="rule-item">
+      <div class="rule-num">1</div>
+      <div class="rule-body">
+        <strong>Introductory participial phrase</strong> — an -ing or -ed phrase at the start of a sentence must modify the subject of the main clause. The subject immediately following the comma must be the person or thing performing the action in the phrase.
+        <div class="rule-ex">✗ "Painted in vibrant colors, visitors admired the mural." (Visitors weren't painted.)<br>✓ "Painted in vibrant colors, the mural attracted admiring visitors."</div>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">2</div>
+      <div class="rule-body">
+        <strong>Introductory prepositional or appositive phrase</strong> — a phrase at the start that describes a person, place, or thing must be immediately followed by that noun as the subject.
+        <div class="rule-ex">✗ "As a leading expert in linguistics, her research has been widely cited." ("her research" is not an expert)<br>✓ "As a leading expert in linguistics, she has seen her research widely cited."</div>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">3</div>
+      <div class="rule-body">
+        <strong>Mid-sentence relative clause</strong> — a "which," "who," or "that" clause must be placed immediately after the noun it modifies, not separated by other clauses that make the reference ambiguous.
+        <div class="rule-ex">✗ "She gave the report to her manager, which described quarterly losses." ("which" seems to modify "manager")<br>✓ "She gave her manager the report, which described quarterly losses."</div>
+      </div>
+    </div>
+  </div>
+  <div class="fix-box">
+    <div class="fix-label">Two ways to fix a dangling modifier</div>
+    <div class="fix-text"><strong>Fix 1 — Change the subject:</strong> Make the subject of the main clause the same person/thing as the actor in the modifier.<br>"Having analyzed the data, <em>the researchers</em> drew their conclusions." ✓<br><br><strong>Fix 2 — Rewrite the modifier as a clause:</strong> Turn the introductory phrase into a full subordinate clause with its own subject.<br>"After <em>the researchers</em> analyzed the data, they drew their conclusions." ✓</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Check the subject after every opening phrase</div><div class="tip-body">Whenever a sentence opens with a phrase before the main clause, immediately ask: does the subject of the main clause logically perform the action described in the opening phrase? If not, it's a dangling modifier.</div></div>
+    <div class="tip"><div class="tip-title">Ask "who is doing this?" for -ing phrases</div><div class="tip-body">For any participial phrase (-ing or -ed), ask who is actually performing that action. The answer must be the subject of the sentence's main clause — if it isn't, the modifier dangles.</div></div>
+    <div class="tip"><div class="tip-title">Place "only," "almost," "just" carefully</div><div class="tip-body">Single-word modifiers like "only," "almost," "just," and "nearly" must be placed directly before the word they modify. "I only eat fish on Fridays" vs. "I eat only fish on Fridays" — very different meanings.</div></div>
+    <div class="tip"><div class="tip-title">Move relative clauses next to their noun</div><div class="tip-body">For misplaced "which/who/that" clauses, the fix is almost always to rearrange the sentence so the clause immediately follows its antecedent noun, not another noun that happens to be nearby.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history essay on Marie Curie</div>
+      <div class="passage-text">
+        <span class="ln">1</span><span class="ul">Having won the Nobel Prize in both Physics and Chemistry, no other scientist in history has achieved this distinction.</span> Curie's work on radioactivity transformed not only physics and chemistry but also medicine, where radioactive isotopes she identified became foundational tools for cancer treatment and medical imaging.<br><br>
+        <span class="ln">5</span>Despite facing significant gender discrimination throughout her career, she continued to conduct groundbreaking research and mentor the next generation of scientists until her death in 1934.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Modifiers</div>
+      <div class="q-text">Which choice most effectively corrects the <strong>dangling modifier</strong> in the underlined sentence?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Having won the Nobel Prize in both Physics and Chemistry, no other scientist in history has achieved this distinction.</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>Having won the Nobel Prize in both Physics and Chemistry, Marie Curie achieved a distinction no other scientist in history has matched.</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>The Nobel Prize having been won in both Physics and Chemistry, no other scientist in history has achieved this distinction.</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>Having won the Nobel Prize in both Physics and Chemistry is a distinction no other scientist in history has achieved.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> The opening phrase "Having won the Nobel Prize in both Physics and Chemistry" describes Marie Curie — she won the prizes. The subject immediately following must be Curie. Option B correctly places "Marie Curie" as the subject: "Having won…, Marie Curie achieved a distinction." Option A keeps "no other scientist" as the subject — but "no other scientist" didn't win the prizes, Curie did. Option C turns the phrase into an awkward passive construction that still doesn't name Curie as subject. Option D converts the phrase into a gerund subject, losing the sentence's intended meaning.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> The opening phrase says someone won two Nobel Prizes. Who did that? Marie Curie. The subject immediately after the comma must be Curie — not "no other scientist." Which option places "Marie Curie" as the subject right after the opening phrase?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on deep-sea exploration</div>
+      <div class="passage-text">
+        <span class="ln">1</span>The submersible descended slowly toward the ocean floor, carrying a team of three researchers. <span class="ul">Equipped with high-resolution cameras and sensitive pressure sensors, the scientific data collected during the dive would be analyzed for months afterward.</span><br><br>
+        <span class="ln">5</span>At a depth of 4,000 meters, the team encountered a previously undocumented species of bioluminescent jellyfish — a discovery that would later appear in three peer-reviewed journals and attract significant media coverage.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Modifiers</div>
+      <div class="q-text">Which choice most effectively corrects the <strong>dangling modifier</strong> in the underlined sentence?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>Equipped with high-resolution cameras and sensitive pressure sensors, the scientific data collected during the dive would be analyzed for months afterward.</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>Equipped with high-resolution cameras and sensitive pressure sensors, the submersible collected scientific data that would be analyzed for months afterward.</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>The scientific data, equipped with high-resolution cameras and sensitive pressure sensors, would be analyzed for months after the dive.</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>High-resolution cameras and sensitive pressure sensors equipped the submersible, and the scientific data would be analyzed for months afterward.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> "Equipped with high-resolution cameras and sensitive pressure sensors" describes the submersible — the submersible is the thing equipped with those instruments, not "the scientific data." Option B correctly places "the submersible" as the subject: "Equipped with…, the submersible collected data." Option A keeps "the scientific data" as subject — data can't be equipped with cameras. Option C absurdly implies data is equipped with cameras. Option D fixes the logic but loses the participial opening structure and the sentence flows awkwardly.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> What is "equipped with high-resolution cameras and sensitive pressure sensors"? The submersible — not the data. The subject after the comma must be the thing that is equipped. Which option places "the submersible" immediately after the opening phrase?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a student essay on behavioral economics</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Researchers presented participants with two retirement savings plans in the study <span class="ul">that demonstrated the power of default options</span>. Plan A automatically enrolled employees unless they opted out; Plan B required active enrollment. Enrollment rates were 85% under Plan A and only 40% under Plan B — a gap driven entirely by which option was set as the default, not by any difference in the plans' actual benefits.<br><br>
+        <span class="ln">7</span>The finding confirmed what behavioral economists had long argued: that people tend to accept whatever option requires the least effort, regardless of whether it serves their long-term interests.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Modifiers</div>
+      <div class="q-text">Which choice corrects the <strong>misplaced modifier</strong> in the underlined portion?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>Researchers presented participants with two retirement savings plans in the study that demonstrated the power of default options.</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>In the study that demonstrated the power of default options, researchers presented participants with two retirement savings plans.</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>Researchers, in the study that demonstrated the power of default options, presented participants with two retirement savings plans.</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>Researchers presented participants in the study that demonstrated the power of default options with two retirement savings plans.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> The clause "that demonstrated the power of default options" is meant to describe the study — but in the original, it's positioned right after "plans," implying the plans demonstrated the power of default options. Option B moves the entire phrase "in the study that demonstrated the power of default options" to the front of the sentence, where it clearly modifies the context of what the researchers did, and "the study" is properly connected to its relative clause. Option C places the modifier inside the main clause next to "researchers," which is awkward. Option D puts the clause after "participants in the study," implying the participants demonstrated default option power.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The clause "that demonstrated the power of default options" should describe the study, not the plans or the participants. Which option repositions the phrase so that "the study" is immediately followed by "that demonstrated…," making the reference unambiguous?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 2.15</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 2.16 of 18</span>
+  <button class="btn-nav primary">Next → 2.17</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

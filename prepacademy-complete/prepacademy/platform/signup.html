@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepAcademy — Get Started</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#0B1120; --navy2:#111827; --blue:#3B82F6; --border:rgba(255,255,255,0.08); --text:#F9FAFB; --text2:#9CA3AF; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 1rem; }
+  .logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:2rem; }
+  .logo span { color:var(--blue); }
+  .progress-bar { width:100%; max-width:480px; height:4px; background:rgba(255,255,255,0.08); border-radius:99px; margin-bottom:2.5rem; }
+  .progress-fill { height:4px; background:var(--blue); border-radius:99px; transition:width 0.4s; }
+  .step-label { font-size:12px; color:var(--text2); text-align:center; margin-bottom:2rem; letter-spacing:0.05em; }
+  .card { background:var(--navy2); border:1px solid var(--border); border-radius:20px; padding:2.5rem; width:100%; max-width:480px; }
+  .card-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:0.5rem; }
+  .card-sub { font-size:14px; color:var(--text2); margin-bottom:2rem; }
+  .form-group { margin-bottom:1.25rem; }
+  label { font-size:13px; color:var(--text2); display:block; margin-bottom:6px; }
+  input { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s; }
+  input:focus { border-color:var(--blue); }
+  .btn-main { width:100%; background:var(--blue); color:#fff; border:none; padding:13px; border-radius:10px; font-size:15px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; margin-top:0.5rem; }
+  .btn-main:hover { background:#2563EB; }
+  .divider { display:flex; align-items:center; gap:1rem; margin:1.5rem 0; color:var(--text2); font-size:13px; }
+  .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .btn-google { width:100%; background:transparent; border:1px solid var(--border); padding:12px; border-radius:10px; font-size:14px; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; }
+  .link-small { text-align:center; font-size:13px; color:var(--text2); margin-top:1.5rem; }
+  .link-small a { color:var(--blue); }
+  /* Exam cards */
+  .exam-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .exam-card { border:1.5px solid var(--border); border-radius:12px; padding:1rem; cursor:pointer; text-align:center; transition:all 0.2s; }
+  .exam-card.selected { border-color:var(--blue); background:rgba(59,130,246,0.08); }
+  .exam-card:hover { border-color:rgba(59,130,246,0.5); }
+  .exam-icon { font-size:28px; margin-bottom:6px; }
+  .exam-name { font-size:14px; font-weight:600; }
+  .exam-desc { font-size:11px; color:var(--text2); margin-top:3px; }
+  /* Score slider */
+  .score-display { font-family:'Syne',sans-serif; font-size:48px; font-weight:800; color:var(--blue); text-align:center; margin:1rem 0; }
+  input[type=range] { width:100%; margin:0.5rem 0; accent-color:var(--blue); }
+  .score-range { display:flex; justify-content:space-between; font-size:12px; color:var(--text2); }
+  /* Date input */
+  input[type=date] { color-scheme:dark; }
+  /* Diagnostic */
+  .diag-q { font-size:15px; font-weight:500; margin-bottom:1rem; line-height:1.5; }
+  .diag-opts { display:flex; flex-direction:column; gap:8px; }
+  .diag-opt { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 14px; cursor:pointer; font-size:14px; transition:all 0.15s; }
+  .diag-opt:hover { border-color:rgba(59,130,246,0.5); }
+  .diag-opt.correct { border-color:#3B6D11; background:rgba(59,109,17,0.15); }
+  .diag-opt.wrong { border-color:#A32D2D; background:rgba(163,45,45,0.15); }
+  .diag-progress { display:flex; gap:6px; margin-bottom:1.5rem; }
+  .diag-dot { flex:1; height:4px; border-radius:99px; background:rgba(255,255,255,0.1); }
+  .diag-dot.done { background:var(--blue); }
+  .diag-dot.current { background:rgba(59,130,246,0.5); }
+  /* Results */
+  .result-score { text-align:center; padding:1.5rem 0; }
+  .result-big { font-family:'Syne',sans-serif; font-size:64px; font-weight:800; color:var(--blue); line-height:1; }
+  .result-label { font-size:14px; color:var(--text2); margin-top:6px; }
+  .result-bars { margin-top:1.5rem; }
+  .r-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; }
+  .r-label { width:140px; color:var(--text2); }
+  .r-track { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:99px; }
+  .r-fill { height:6px; border-radius:99px; background:var(--blue); }
+  /* Steps hidden by default */
+  .step { display:none; }
+  .step.active { display:block; }
+</style>
+</head>
+<body>
+
+<div class="logo">Prep<span>Academy</span></div>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+<div class="step-label" id="step-label">STEP 1 OF 5 — CREATE YOUR ACCOUNT</div>
+
+<!-- Step 1: Register -->
+<div class="step active" id="s1">
+  <div class="card">
+    <div class="card-title">Create your account</div>
+    <div class="card-sub">Join thousands of students improving their scores.</div>
+    <div class="form-group"><label>Full name</label><input type="text" placeholder="Your name"></div>
+    <div class="form-group"><label>Email address</label><input type="email" placeholder="you@email.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="At least 8 characters"></div>
+    <button class="btn-main" onclick="goStep(2)">Create account →</button>
+    <div class="divider">or</div>
+    <button class="btn-google">Continue with Google</button>
+  </div>
+  <div class="link-small">Already have an account? <a href="login.html">Log in</a></div>
+</div>
+
+<!-- Step 2: Choose exam -->
+<div class="step" id="s2">
+  <div class="card">
+    <div class="card-title">Which exam are you preparing for?</div>
+    <div class="card-sub">We'll build a personalized plan based on your exam.</div>
+    <div class="exam-grid" id="exam-grid">
+      <div class="exam-card selected" onclick="selectExam(this)">
+        <div class="exam-icon">📚</div>
+        <div class="exam-name">SAT</div>
+        <div class="exam-desc">College admission</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">💼</div>
+        <div class="exam-name">GMAT</div>
+        <div class="exam-desc">Business school</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">🎓</div>
+        <div class="exam-name">GRE</div>
+        <div class="exam-desc">Graduate school</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">🌍</div>
+        <div class="exam-name">TOEFL</div>
+        <div class="exam-desc">English proficiency</div>
+      </div>
+    </div>
+    <button class="btn-main" style="margin-top:1.5rem" onclick="goStep(3)">Continue →</button>
+  </div>
+</div>
+
+<!-- Step 3: Target score + date -->
+<div class="step" id="s3">
+  <div class="card">
+    <div class="card-title">Set your target score</div>
+    <div class="card-sub">We'll build your study plan around this goal.</div>
+    <div class="score-display" id="score-val">1400</div>
+    <input type="range" min="800" max="1600" step="10" value="1400" oninput="document.getElementById('score-val').textContent=this.value">
+    <div class="score-range"><span>800</span><span>1600</span></div>
+    <div class="form-group" style="margin-top:1.5rem"><label>Exam date</label><input type="date"></div>
+    <button class="btn-main" onclick="goStep(4)">Continue →</button>
+  </div>
+</div>
+
+<!-- Step 4: Diagnostic -->
+<div class="step" id="s4">
+  <div class="card">
+    <div class="card-title">Quick diagnostic</div>
+    <div class="card-sub">5 questions to calibrate your study plan.</div>
+    <div class="diag-progress" id="diag-dots">
+      <div class="diag-dot current"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+    </div>
+    <div class="diag-q" id="diag-q">The central idea of a passage is best described as:</div>
+    <div class="diag-opts" id="diag-opts">
+      <div class="diag-opt" onclick="answerDiag(this,false)">The first sentence of the first paragraph</div>
+      <div class="diag-opt" onclick="answerDiag(this,true)">The main point the author makes throughout the passage</div>
+      <div class="diag-opt" onclick="answerDiag(this,false)">A supporting detail that appears multiple times</div>
+      <div class="diag-opt" onclick="answerDiag(this,false)">The conclusion of the final paragraph</div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 5: Results -->
+<div class="step" id="s5">
+  <div class="card">
+    <div class="card-title">Your personalized plan is ready!</div>
+    <div class="card-sub">Based on your diagnostic, here's where we'll focus.</div>
+    <div class="result-score">
+      <div class="result-big">3/5</div>
+      <div class="result-label">Diagnostic score · Starting point identified</div>
+    </div>
+    <div class="result-bars">
+      <div class="r-row"><span class="r-label">Information & Ideas</span><div class="r-track"><div class="r-fill" style="width:60%"></div></div><span style="font-size:12px;color:var(--text2);">60%</span></div>
+      <div class="r-row"><span class="r-label">Expression & Conventions</span><div class="r-track"><div class="r-fill" style="width:40%"></div></div><span style="font-size:12px;color:var(--text2);">40%</span></div>
+      <div class="r-row"><span class="r-label">Math — Algebra</span><div class="r-track"><div class="r-fill" style="width:80%"></div></div><span style="font-size:12px;color:var(--text2);">80%</span></div>
+    </div>
+    <button class="btn-main" style="margin-top:1.5rem" onclick="location.href='dashboard.html'">Start studying →</button>
+  </div>
+</div>
+
+<script>
+const steps = ['CREATE YOUR ACCOUNT','CHOOSE YOUR EXAM','SET YOUR TARGET','QUICK DIAGNOSTIC','YOUR PLAN IS READY'];
+const pcts = [20,40,60,80,100];
+let diagStep = 0;
+const diagQs = [
+  {q:'The central idea of a passage is best described as:', opts:['The first sentence of the first paragraph','The main point the author makes throughout the passage','A supporting detail that appears multiple times','The conclusion of the final paragraph'], ans:1},
+  {q:'Which word choice correctly completes this sentence? "The team _____ their strategy after the first half."', opts:['revised','revising','have revise','to revise'], ans:0},
+  {q:'Solve for x: 3x + 7 = 22', opts:['x = 3','x = 5','x = 7','x = 9'], ans:1},
+  {q:'If y = 2x − 3, what is y when x = 4?', opts:['y = 2','y = 5','y = 8','y = 11'], ans:1},
+  {q:'Which transition best connects these ideas: "The experiment failed. _____, the team learned valuable lessons."', opts:['Therefore','Nevertheless','Furthermore','In contrast'], ans:1}
+];
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('progress').style.width = pcts[n-1]+'%';
+  document.getElementById('step-label').textContent = 'STEP '+n+' OF 5 — '+steps[n-1];
+  if(n===4) loadDiag();
+}
+
+function selectExam(el) {
+  document.querySelectorAll('.exam-card').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function loadDiag() {
+  diagStep = 0;
+  updateDiag();
+}
+
+function updateDiag() {
+  const d = diagQs[diagStep];
+  document.getElementById('diag-q').textContent = d.q;
+  const optsEl = document.getElementById('diag-opts');
+  optsEl.innerHTML = d.opts.map((o,i)=>`<div class="diag-opt" onclick="answerDiag(this,${i===d.ans})">${o}</div>`).join('');
+  const dots = document.querySelectorAll('.diag-dot');
+  dots.forEach((d,i)=>{ d.className='diag-dot'; if(i<diagStep)d.classList.add('done'); if(i===diagStep)d.classList.add('current'); });
+}
+
+function answerDiag(el, correct) {
+  document.querySelectorAll('.diag-opt').forEach(o=>o.onclick=null);
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct) {
+    const d = diagQs[diagStep];
+    document.querySelectorAll('.diag-opt')[d.ans].classList.add('correct');
+  }
+  setTimeout(()=>{
+    diagStep++;
+    if(diagStep>=5) { goStep(5); return; }
+    updateDiag();
+  }, 900);
+}
+</script>
+</body>
+</html>

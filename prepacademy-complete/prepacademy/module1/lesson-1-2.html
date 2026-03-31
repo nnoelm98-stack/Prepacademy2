@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.2 — Command of Evidence — Textual</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+.bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+.score-row{display:flex;gap:8px}
+.pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all 0.2s}
+.pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+.prog-wrap{margin-bottom:1.5rem}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+.prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+.prog-fill{height:4px;width:20%;background:#3b82f6;border-radius:99px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#E6F1FB;color:#0C447C}
+.lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+.lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+.dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+.dur-row b{color:#111;font-weight:500}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+.body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+.mini-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+.mini-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.mini-body{font-size:12px;color:#6b7280;line-height:1.55}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+.tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+.q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+.q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+.q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+.q-panel{display:none}.q-panel.active{display:block}
+.sat-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.passage-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+.panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.passage-source{font-size:12px;color:#9ca3af;font-style:italic;margin-bottom:.75rem}
+.passage-text{font-size:13px;line-height:1.85;color:#111}
+.ln{font-size:10px;color:#9ca3af;margin-right:5px;user-select:none}
+.hl{background:#FEF9C3;border-radius:2px;padding:0 2px;font-weight:500}
+.q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+.q-label{font-size:11px;font-weight:500;color:#3b82f6;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}.q-text strong{font-weight:500}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+.opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+.opt.selected{border-color:#3b82f6;background:#E6F1FB;color:#0C447C}
+.opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+.opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+.opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.opt.selected .opt-l{background:#3b82f6;color:#fff}
+.opt.correct .opt-l{background:#3B6D11;color:#fff}
+.opt.wrong .opt-l{background:#A32D2D;color:#fff}
+.q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+.btn-check{background:#3b82f6;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+.feedback{display:none;font-size:13px;line-height:1.6;padding:.85rem 1rem;border-radius:8px}
+.feedback.show{display:block}
+.feedback.ok{background:#EAF3DE;color:#27500A}
+.feedback.fail{background:#FCEBEB;color:#501313}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+.btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-nav.primary{background:#3b82f6;color:#fff;border-color:#3b82f6}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 1 — Information & Ideas › <span>Lesson 1.2</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 1 — Information & Ideas</span><span>Lesson 2 of 10</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">Reading & Writing · Module 1 · Lesson 1.2</div>
+<div class="lesson-title">Command of Evidence — Textual</div>
+<div class="lesson-sub">Learn to find the specific quotation from a passage that best supports a given claim.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+<div class="card"><div class="sec-title">What textual evidence questions ask</div><div class="body-text">These questions give you a claim — sometimes stated in the question, sometimes as a student's argument — and ask you to find the specific part of the passage that most directly supports it. All four answer options are real quotes from the passage. Only one quote directly proves the claim.<br><br>The key distinction: <strong>relevant to the topic</strong> is not enough. The evidence must <strong>directly support the specific claim</strong>. A quote about the same subject can fail to prove the specific point being made.</div><div class="two-col"><div class="mini-card"><div class="mini-title">What makes evidence "direct"</div><div class="mini-body">Direct evidence explicitly states or clearly demonstrates what the claim says. It doesn't require inference — you can see the connection immediately.</div></div><div class="mini-card"><div class="mini-title">Common wrong answer trap</div><div class="mini-body">The passage mentions it — but about a different aspect. Always ask: does this quote prove this specific claim, or just something related to the same topic?</div></div></div></div>
+<div class="card"><div class="sec-title">SAT strategy tips</div><div class="tips-grid"><div class="tip"><div class="tip-title">Read the claim before looking at evidence</div><div class="tip-body">Understand exactly what the claim says before evaluating the quotes. The more precisely you understand the claim, the easier it is to eliminate off-topic evidence.</div></div><div class="tip"><div class="tip-title">Test each quote against the claim</div><div class="tip-body">Ask: if this quote is all you know, does the claim logically follow? If you need to add information or make an inference, the evidence is too indirect.</div></div><div class="tip"><div class="tip-title">Eliminate evidence about wrong aspects</div><div class="tip-body">The wrong answers often discuss the same subject as the claim but focus on a different aspect — the cause vs. the effect, the past vs. the present, the problem vs. the solution.</div></div><div class="tip"><div class="tip-title">The evidence must match the claim's scope</div><div class="tip-body">If the claim says "most scientists," the evidence must also talk about most scientists — not just a few, or scientists in one field. Scope mismatches are a frequent trap.</div></div></div></div>
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on sleep deprivation</div>
+      <div class="passage-text"><span class="ln">1</span>Sleep deprivation affects cognitive function in measurable ways. Even a single night of poor sleep reduces the brain's ability to form new memories, as the hippocampus — critical for memory consolidation — shows significantly reduced activity after sleep loss. Sustained sleep deprivation compounds these effects, impairing attention, decision-making, and emotional regulation.<br><br><span class="ln">6</span>The consequences extend beyond the individual. Studies show that sleepy drivers cause an estimated 100,000 car accidents annually in the United States, and workplace errors attributable to fatigue cost businesses billions of dollars each year.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Textual Evidence</div>
+      <div class="q-text">A student claims that <strong>sleep deprivation harms brain function even after just one night of poor sleep</strong>. Which quotation best supports this claim?</div>
+      <div class="opts" id="opts-0"><div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>"Sleep deprivation affects cognitive function in measurable ways."</div>
+<div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>"Even a single night of poor sleep reduces the brain's ability to form new memories, as the hippocampus shows significantly reduced activity after sleep loss."</div>
+<div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>"Sustained sleep deprivation compounds these effects, impairing attention, decision-making, and emotional regulation."</div>
+<div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>"Studies show that sleepy drivers cause an estimated 100,000 car accidents annually."</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> The claim specifically states that one night of poor sleep harms brain function. Option B directly proves this: it names the single-night condition, the specific harm (memory formation), and the mechanism (hippocampus activity). Option A is too vague — it doesn't specify one night. Option C discusses sustained deprivation, not a single night. Option D is about driving accidents, not brain function.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> The claim has two specific elements: (1) only one night of poor sleep, and (2) harm to brain function. Which quote directly addresses both elements — not just the general topic of sleep deprivation?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="q-panel " id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history of jazz music in America</div>
+      <div class="passage-text"><span class="ln">1</span>Jazz emerged in New Orleans at the turn of the twentieth century, blending African rhythmic traditions, European harmonic structures, and the improvisational spirit of the blues. Its development was inseparable from the social conditions of the city — the mix of cultures, the dance halls and clubs of Storyville, and the freedom that musical improvisation offered in an era of rigid racial segregation.<br><br><span class="ln">6</span>By the 1920s, jazz had spread far beyond New Orleans. The Great Migration carried jazz northward with hundreds of thousands of Black Americans relocating to cities like Chicago and New York, where the music found new audiences and evolved into distinct regional styles. Recording technology amplified this spread, bringing jazz to listeners who had never set foot in a nightclub.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Textual Evidence</div>
+      <div class="q-text">A student argues that <strong>the spread of jazz beyond New Orleans was accelerated by factors beyond just cultural migration</strong>. Which quotation best supports this argument?</div>
+      <div class="opts" id="opts-1"><div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>"Jazz emerged in New Orleans at the turn of the twentieth century, blending African rhythmic traditions and European harmonic structures."</div>
+<div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>"Its development was inseparable from the social conditions of the city — the mix of cultures and the dance halls of Storyville."</div>
+<div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>"The Great Migration carried jazz northward with hundreds of thousands of Black Americans relocating to Chicago and New York."</div>
+<div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>"Recording technology amplified this spread, bringing jazz to listeners who had never set foot in a nightclub."</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> The claim says spread was accelerated by "factors beyond just cultural migration." Option D provides exactly that: recording technology as an additional factor — one that went beyond migration by reaching people who never physically moved. Option C describes migration itself, not a factor beyond it. Options A and B describe jazz's origins, not its spread.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> The claim says something spread jazz BEYOND the Great Migration alone. Migration is already covered — the evidence must show a different factor. Which quote describes a non-migration mechanism that expanded jazz's reach?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'D')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="q-panel " id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from an economics article on remote work</div>
+      <div class="passage-text"><span class="ln">1</span>The rapid adoption of remote work during and after the pandemic has produced measurable changes in urban real estate markets. Many workers, freed from the requirement of daily commuting, relocated from high-cost urban centers to smaller cities and suburban areas, reducing demand for downtown housing while increasing it in outlying regions.<br><br><span class="ln">6</span>Employers, meanwhile, have reported mixed results. Some companies found that productivity increased when employees worked from home, citing fewer interruptions and more flexible scheduling. Others reported declines in collaboration and company culture, particularly among employees who joined the organization remotely and never established relationships in person.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Textual Evidence</div>
+      <div class="q-text">A student claims that <strong>not all employers reported benefits from remote work</strong>. Which quotation best supports this claim?</div>
+      <div class="opts" id="opts-2"><div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>"The rapid adoption of remote work during and after the pandemic has produced measurable changes in urban real estate markets."</div>
+<div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>"Many workers relocated from high-cost urban centers to smaller cities, reducing demand for downtown housing."</div>
+<div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>"Some companies found that productivity increased when employees worked from home, citing fewer interruptions."</div>
+<div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>"Others reported declines in collaboration and company culture, particularly among employees who joined remotely."</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> The claim says not all employers reported benefits — meaning some reported problems. Option D directly proves this: it describes employers reporting declines in collaboration and culture. Option C describes the opposite (benefits), which contradicts the claim. Options A and B discuss real estate and workers, not employer outcomes.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The claim says some employers did NOT benefit. Which quote explicitly describes employers reporting something negative — not positive results, not worker behavior, but actual employer-reported problems with remote work?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'D')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-row">
+  <button class="btn-nav">← Previous</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 2 of 10</span>
+  <button class="btn-nav primary">Next →</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

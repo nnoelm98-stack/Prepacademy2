@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1.1 — Central Ideas & Details</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+.bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+.score-row{display:flex;gap:8px}
+.pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all 0.2s}
+.pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+.prog-wrap{margin-bottom:1.5rem}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+.prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+.prog-fill{height:4px;width:10%;background:#3b82f6;border-radius:99px}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#E6F1FB;color:#0C447C}
+.lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+.lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+.dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+.dur-row b{color:#111;font-weight:500}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+.sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+.body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+.mini-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+.mini-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.mini-body{font-size:12px;color:#6b7280;line-height:1.55}
+.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+.tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+.q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+.q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+.q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+.q-panel{display:none}.q-panel.active{display:block}
+.sat-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.passage-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+.panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+.passage-source{font-size:12px;color:#9ca3af;font-style:italic;margin-bottom:.75rem}
+.passage-text{font-size:13px;line-height:1.85;color:#111}
+.ln{font-size:10px;color:#9ca3af;margin-right:5px;user-select:none}
+.hl{background:#FEF9C3;border-radius:2px;padding:0 2px;font-weight:500}
+.q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+.q-label{font-size:11px;font-weight:500;color:#3b82f6;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}.q-text strong{font-weight:500}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+.opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+.opt.selected{border-color:#3b82f6;background:#E6F1FB;color:#0C447C}
+.opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+.opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+.opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.opt.selected .opt-l{background:#3b82f6;color:#fff}
+.opt.correct .opt-l{background:#3B6D11;color:#fff}
+.opt.wrong .opt-l{background:#A32D2D;color:#fff}
+.q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+.btn-check{background:#3b82f6;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+.feedback{display:none;font-size:13px;line-height:1.6;padding:.85rem 1rem;border-radius:8px}
+.feedback.show{display:block}
+.feedback.ok{background:#EAF3DE;color:#27500A}
+.feedback.fail{background:#FCEBEB;color:#501313}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+.btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-nav.primary{background:#3b82f6;color:#fff;border-color:#3b82f6}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 1 — Information & Ideas › <span>Lesson 1.1</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 1 — Information & Ideas</span><span>Lesson 1 of 10</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">Reading & Writing · Module 1 · Lesson 1.1</div>
+<div class="lesson-title">Central Ideas & Details</div>
+<div class="lesson-sub">Learn to identify what a passage is mainly about and distinguish the central idea from supporting details.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+<div class="card"><div class="sec-title">What is the central idea?</div><div class="body-text">The <strong>central idea</strong> is the main point the author makes throughout the entire passage — not just one sentence or paragraph. It answers: <em>what is this passage mostly about?</em> Supporting details are facts, examples, or evidence the author uses to develop that central idea.<br><br>To find the central idea: read the entire passage, then ask yourself what one sentence could summarize what the author is arguing or explaining. The central idea is usually broader than any single detail.</div><div class="two-col"><div class="mini-card"><div class="mini-title">Central idea — what it is</div><div class="mini-body">The overarching point the author makes. Usually appears in the opening or closing of the passage, but must be supported throughout.</div></div><div class="mini-card"><div class="mini-title">Supporting details — what they are</div><div class="mini-body">Specific facts, examples, statistics, or anecdotes the author uses to develop and prove the central idea. They support — not replace — the main point.</div></div></div></div>
+<div class="card"><div class="sec-title">SAT strategy tips</div><div class="tips-grid"><div class="tip"><div class="tip-title">Read the whole passage first</div><div class="tip-body">Never answer a central idea question after reading only the first paragraph. The main point must hold for the entire passage.</div></div><div class="tip"><div class="tip-title">Eliminate too-narrow answers</div><div class="tip-body">Wrong answers often pick a detail that's true but only covers part of the passage. The correct central idea applies to everything the author says.</div></div><div class="tip"><div class="tip-title">Eliminate too-broad answers</div><div class="tip-body">Some wrong answers make a claim bigger than what the passage actually argues. The central idea must match the passage's actual scope.</div></div><div class="tip"><div class="tip-title">Summarize in your own words first</div><div class="tip-body">Before reading the options, mentally summarize the passage in one sentence. Then find the answer that matches your summary most closely.</div></div></div></div>
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on bioluminescence</div>
+      <div class="passage-text"><span class="ln">1</span>Bioluminescence — the ability of living organisms to produce light through chemical reactions — is far more common in the natural world than most people realize. While fireflies are the most familiar example in everyday life, the majority of bioluminescent organisms live in the deep ocean, where sunlight never penetrates. There, creatures ranging from bacteria to fish to squid use light for communication, predation, and camouflage.<br><br><span class="ln">6</span>Scientists studying bioluminescence have found that despite its widespread occurrence across species, the ability evolved independently dozens of times throughout evolutionary history — suggesting that light production confers significant survival advantages in diverse environments.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Central Idea</div>
+      <div class="q-text">Which choice best states the <strong>central idea</strong> of the passage?</div>
+      <div class="opts" id="opts-0"><div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Fireflies are the most well-known bioluminescent organisms on Earth.</div>
+<div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>Bioluminescence is a widespread and evolutionarily significant adaptation found across many different species and environments.</div>
+<div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>Deep-sea creatures use bioluminescence primarily for camouflage rather than communication.</div>
+<div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>Scientists have recently discovered that bioluminescence evolved independently in dozens of species.</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> The passage covers bioluminescence broadly — its commonness in nature, its many uses, and its independent evolution across species. Option B captures all of those ideas. Option A is too narrow (fireflies are one example, not the focus). Option C misrepresents the passage (camouflage is listed alongside other uses). Option D picks a supporting detail, not the main point.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Look for the idea that holds across the entire passage — not just one detail. The passage discusses bioluminescence in many species, in many environments, for many purposes. Which answer captures that full scope?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="q-panel " id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history of public libraries in the United States</div>
+      <div class="passage-text"><span class="ln">1</span>Andrew Carnegie's decision to fund the construction of public libraries across the United States in the late nineteenth and early twentieth centuries transformed American civic life. By the time his library philanthropy concluded, Carnegie had funded over 2,500 libraries in the United States alone. His model was straightforward: he would provide the building if the local community agreed to fund staffing and operations.<br><br><span class="ln">6</span>Critics noted that Carnegie's motives were not entirely altruistic — the libraries served to burnish his reputation and deflect criticism of his labor practices. Yet whatever his intentions, the libraries themselves became genuine centers of self-improvement and democratic access to knowledge for millions of Americans who lacked the means to purchase books.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Central Idea</div>
+      <div class="q-text">Which choice best states the <strong>central idea</strong> of the passage?</div>
+      <div class="opts" id="opts-1"><div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>Carnegie funded libraries primarily to improve his public reputation after criticism of his business practices.</div>
+<div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>Carnegie's library philanthropy, despite mixed motives, created lasting institutions that expanded access to knowledge for millions of Americans.</div>
+<div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>Carnegie funded over 2,500 libraries by requiring communities to pay for ongoing operations.</div>
+<div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>American civic life in the nineteenth century was transformed primarily by wealthy industrialists.</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> The passage presents both sides — Carnegie's model and his mixed motives — but ultimately lands on the lasting positive impact of the libraries. Option B captures that nuanced conclusion. Option A focuses only on reputation, ignoring the positive impact. Option C is a supporting detail. Option D overgeneralizes beyond what the passage claims.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> The passage gives information about Carnegie's motives AND the actual impact of the libraries. The central idea must account for both. Which answer captures the passage's overall conclusion about Carnegie's legacy?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="q-panel " id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a psychology article on habit formation</div>
+      <div class="passage-text"><span class="ln">1</span>Habits are not simply behaviors we repeat — they are neurological patterns encoded in a region of the brain called the basal ganglia. When a behavior is performed repeatedly in the same context, the brain begins to automate it, reducing the cognitive effort required. This is why experienced drivers can navigate familiar routes while simultaneously holding a conversation.<br><br><span class="ln">6</span>Understanding the neuroscience of habits has practical implications. Researchers have found that habits are most effectively changed by targeting the cue that triggers the routine rather than willpower alone. Replacing a habitual response to a cue — rather than eliminating the cue or relying on motivation — produces more durable behavior change.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Central Idea</div>
+      <div class="q-text">Which choice best states the <strong>central idea</strong> of the passage?</div>
+      <div class="opts" id="opts-2"><div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>The basal ganglia is responsible for storing habit-related memories in the brain.</div>
+<div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>Habits are difficult to break because they are encoded in the brain's automatic processing systems.</div>
+<div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>Understanding the neuroscience of habits reveals that effective behavior change targets the cue rather than the routine itself.</div>
+<div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>Experienced drivers can navigate routes automatically because of years of practice.</div>
+</div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> The passage begins with the neuroscience of how habits form, then pivots to what that understanding means for changing habits — specifically, targeting the cue. Option C captures both the neuroscience foundation and its practical implication. Option A and B are supporting details. Option D is a single example used to illustrate automation, not the main point.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Notice the passage has two parts: how habits form in the brain, and what that means for changing them. The central idea must cover both halves. Which answer captures the practical conclusion the author builds toward?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="nav-row">
+  <button class="btn-nav">← Previous</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 1 of 10</span>
+  <button class="btn-nav primary">Next →</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>
