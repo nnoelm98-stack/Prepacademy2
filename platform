@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepAcademy — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#0B1120; --navy2:#111827; --navy3:#1F2937; --blue:#3B82F6; --teal:#0f6e56; --border:rgba(255,255,255,0.08); --text:#F9FAFB; --text2:#9CA3AF; --text3:#6B7280; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--text); display:flex; min-height:100vh; }
+  /* SIDEBAR */
+  .sidebar { width:220px; flex-shrink:0; background:var(--navy2); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:1.5rem 1rem; }
+  .s-logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; padding:0 0.5rem; margin-bottom:2rem; }
+  .s-logo span { color:var(--blue); }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; font-size:14px; color:var(--text2); cursor:pointer; margin-bottom:2px; transition:all 0.15s; }
+  .nav-item:hover { background:rgba(255,255,255,0.04); color:var(--text); }
+  .nav-item.active { background:rgba(59,130,246,0.12); color:var(--blue); }
+  .nav-icon { font-size:16px; width:20px; text-align:center; }
+  .sidebar-bottom { margin-top:auto; }
+  .user-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; }
+  .user-avatar { width:32px; height:32px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; }
+  .user-name { font-size:13px; font-weight:500; }
+  .user-plan { font-size:11px; color:var(--text2); }
+  /* MAIN */
+  .main { flex:1; padding:2rem; overflow-y:auto; }
+  .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; }
+  .greeting { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; }
+  .streak-badge { background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#F59E0B; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:500; }
+  /* STAT CARDS */
+  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:2rem; }
+  .stat-card { background:var(--navy2); border:1px solid var(--border); border-radius:14px; padding:1.25rem; }
+  .stat-card-label { font-size:12px; color:var(--text2); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.05em; }
+  .stat-card-val { font-family:'Syne',sans-serif; font-size:28px; font-weight:700; }
+  .stat-card-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+  /* WEEK STRIP */
+  .week-strip { background:var(--navy2); border:1px solid var(--border); border-radius:14px; padding:1.25rem; margin-bottom:2rem; }
+  .week-label { font-size:13px; font-weight:500; margin-bottom:1rem; }
+  .days-row { display:flex; gap:6px; }
+  .day { flex:1; text-align:center; }
+  .day-name { font-size:10px; color:var(--text2); margin-bottom:6px; text-transform:uppercase; }
+  .day-dot { width:32px; height:32px; border-radius:50%; margin:0 auto; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .day-dot.done { background:var(--blue); color:#fff; }
+  .day-dot.today { background:rgba(59,130,246,0.2); border:2px solid var(--blue); color:var(--blue); }
+  .day-dot.empty { background:rgba(255,255,255,0.04); color:var(--text3); }
+  /* GRID */
+  .content-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:16px; }
+  /* TODAY'S LESSONS */
+  .today-card { background:var(--navy2); border:1px solid var(--border); border-radius:14px; padding:1.25rem; }
+  .section-head { font-size:14px; font-weight:500; margin-bottom:1rem; display:flex; justify-content:space-between; }
+  .lesson-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .lesson-item:last-child { border-bottom:none; }
+  .lesson-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .lesson-info { flex:1; }
+  .lesson-title { font-size:13px; font-weight:500; }
+  .lesson-meta { font-size:11px; color:var(--text2); margin-top:2px; }
+  .lesson-badge { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:500; }
+  /* CALENDAR */
+  .cal-card { background:var(--navy2); border:1px solid var(--border); border-radius:14px; padding:1.25rem; }
+  .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+  .cal-month { font-size:14px; font-weight:500; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+  .cal-day-name { font-size:10px; color:var(--text2); text-align:center; padding:4px 0; text-transform:uppercase; }
+  .cal-day { font-size:12px; text-align:center; padding:6px 2px; border-radius:6px; color:var(--text2); cursor:pointer; }
+  .cal-day.done { background:rgba(59,109,17,0.2); color:#4ADE80; }
+  .cal-day.scheduled { background:rgba(59,130,246,0.12); color:var(--blue); }
+  .cal-day.exam { background:rgba(163,45,45,0.2); color:#F87171; font-weight:600; }
+  .cal-day.today { border:1px solid var(--blue); color:var(--text); }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="s-logo">Prep<span>Academy</span></div>
+  <div class="nav-item active"><span class="nav-icon">🏠</span> Home</div>
+  <div class="nav-item" onclick="location.href='lessons.html'"><span class="nav-icon">📚</span> Lessons</div>
+  <div class="nav-item" onclick="location.href='tests.html'"><span class="nav-icon">📝</span> Tests</div>
+  <div class="nav-item" onclick="location.href='progress.html'"><span class="nav-icon">📊</span> Progress</div>
+  <div class="nav-item"><span class="nav-icon">👤</span> Profile</div>
+  <div class="nav-item"><span class="nav-icon">⚙️</span> Settings</div>
+  <div class="sidebar-bottom">
+    <div class="user-row">
+      <div class="user-avatar">N</div>
+      <div><div class="user-name">Nicola</div><div class="user-plan">Pro plan</div></div>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="top-row">
+    <div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:4px;">Wednesday, March 27</div>
+      <div class="greeting">Good morning, Nicola 👋</div>
+    </div>
+    <div class="streak-badge">🔥 7-day streak</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Current score</div>
+      <div class="stat-card-val" style="color:var(--blue)">1380</div>
+      <div class="stat-card-sub">+70 pts this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Lessons complete</div>
+      <div class="stat-card-val">33</div>
+      <div class="stat-card-sub">of 74 total lessons</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Exam in</div>
+      <div class="stat-card-val" style="color:#F59E0B">47</div>
+      <div class="stat-card-sub">days · May 13, 2025</div>
+    </div>
+  </div>
+
+  <div class="week-strip">
+    <div class="week-label">This week</div>
+    <div class="days-row">
+      <div class="day"><div class="day-name">Mon</div><div class="day-dot done">✓</div></div>
+      <div class="day"><div class="day-name">Tue</div><div class="day-dot done">✓</div></div>
+      <div class="day"><div class="day-name">Wed</div><div class="day-dot today">3</div></div>
+      <div class="day"><div class="day-name">Thu</div><div class="day-dot empty">4</div></div>
+      <div class="day"><div class="day-name">Fri</div><div class="day-dot empty">5</div></div>
+      <div class="day"><div class="day-name">Sat</div><div class="day-dot empty">6</div></div>
+      <div class="day"><div class="day-name">Sun</div><div class="day-dot empty">7</div></div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="today-card">
+      <div class="section-head"><span>Today's lessons</span><span style="font-size:12px;color:var(--blue);cursor:pointer">View all</span></div>
+      <div class="lesson-item">
+        <div class="lesson-icon" style="background:#EAF3DE">✅</div>
+        <div class="lesson-info"><div class="lesson-title">3.3 Systems of Linear Equations</div><div class="lesson-meta">Module 3 · 14 min · Completed</div></div>
+        <span class="lesson-badge" style="background:#EAF3DE;color:#27500A">Done</span>
+      </div>
+      <div class="lesson-item">
+        <div class="lesson-icon" style="background:#EDE9FE">🔢</div>
+        <div class="lesson-info"><div class="lesson-title">3.4 Inequalities</div><div class="lesson-meta">Module 3 · 12 min · Up next</div></div>
+        <span class="lesson-badge" style="background:var(--blue);color:#fff;cursor:pointer" onclick="location.href='../module3/lesson-3-4.html'">Start</span>
+      </div>
+      <div class="lesson-item">
+        <div class="lesson-icon" style="background:rgba(255,255,255,0.04)">🔒</div>
+        <div class="lesson-info"><div class="lesson-title">3.5 Linear Inequalities & Systems</div><div class="lesson-meta">Module 3 · 13 min · Locked</div></div>
+        <span class="lesson-badge" style="background:rgba(255,255,255,0.06);color:var(--text2)">Locked</span>
+      </div>
+    </div>
+
+    <div class="cal-card">
+      <div class="cal-header">
+        <div class="cal-month">March 2025</div>
+        <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)">
+          <span style="cursor:pointer">‹</span>
+          <span style="cursor:pointer">›</span>
+        </div>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-day-name">S</div><div class="cal-day-name">M</div><div class="cal-day-name">T</div><div class="cal-day-name">W</div><div class="cal-day-name">T</div><div class="cal-day-name">F</div><div class="cal-day-name">S</div>
+        <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div><div class="cal-day"></div>
+        <div class="cal-day done">1</div><div class="cal-day done">2</div>
+        <div class="cal-day done">3</div><div class="cal-day done">4</div><div class="cal-day done">5</div><div class="cal-day done">6</div><div class="cal-day done">7</div><div class="cal-day done">8</div><div class="cal-day done">9</div>
+        <div class="cal-day done">10</div><div class="cal-day done">11</div><div class="cal-day done">12</div><div class="cal-day done">13</div><div class="cal-day done">14</div><div class="cal-day done">15</div><div class="cal-day">16</div>
+        <div class="cal-day done">17</div><div class="cal-day done">18</div><div class="cal-day done">19</div><div class="cal-day done">20</div><div class="cal-day done">21</div><div class="cal-day done">22</div><div class="cal-day done">23</div>
+        <div class="cal-day done">24</div><div class="cal-day done">25</div><div class="cal-day done">26</div><div class="cal-day today">27</div><div class="cal-day scheduled">28</div><div class="cal-day scheduled">29</div><div class="cal-day scheduled">30</div>
+        <div class="cal-day scheduled">31</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:1rem;font-size:11px;flex-wrap:wrap;">
+        <span>🟢 Completed</span><span>🔵 Scheduled</span><span>🔴 Exam</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepAcademy — SAT Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0C1321;
+    --surface: #131E2E;
+    --surface2: #1A2640;
+    --blue: #4B8EF5;
+    --blue-dim: rgba(75,142,245,0.12);
+    --blue-border: rgba(75,142,245,0.25);
+    --text: #EEF2F8;
+    --text2: #8896AA;
+    --text3: #5A6A7E;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.1);
+    --radius: 14px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { text-decoration: none; color: inherit; }
+  img { display: block; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+    background: rgba(12,19,33,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px; font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .logo em { color: var(--blue); font-style: normal; }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .btn-ghost {
+    padding: 8px 18px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text2);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: color .15s, border-color .15s;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+  .btn-cta {
+    padding: 8px 20px;
+    background: var(--blue);
+    color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s;
+  }
+  .btn-cta:hover { opacity: .88; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 5% 72px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute;
+    top: -120px; left: 50%;
+    transform: translateX(-50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse at center, rgba(75,142,245,.13) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--blue-dim);
+    border: 1px solid var(--blue-border);
+    border-radius: 99px;
+    padding: 5px 14px;
+    font-size: 13px; font-weight: 500; color: var(--blue);
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(38px, 5.5vw, 68px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -2px;
+    margin-bottom: 22px;
+    max-width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 .accent { color: var(--blue); }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text2);
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.72;
+  }
+  .hero-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .btn-hero-primary {
+    padding: 14px 30px;
+    background: var(--blue);
+    color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s;
+  }
+  .btn-hero-primary:hover { opacity: .88; }
+  .btn-hero-secondary {
+    padding: 14px 30px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: color .15s, border-color .15s;
+  }
+  .btn-hero-secondary:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+
+  /* ── SECTION WRAPPER ── */
+  .section { padding: 72px 5%; }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(24px, 3.5vw, 38px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+  }
+  .section-sub {
+    font-size: 16px; color: var(--text2);
+    max-width: 520px; margin-bottom: 40px;
+    line-height: 1.7;
+  }
+
+  /* ── MODULES ── */
+  .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; }
+  .mod-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    transition: border-color .2s, transform .2s;
+  }
+  .mod-card:hover { border-color: var(--blue-border); transform: translateY(-2px); }
+  .mod-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 14px;
+  }
+  .mod-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .mod-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .mod-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
+  .mod-count { font-size: 12px; color: var(--text3); margin-top: 10px; }
+
+  /* ── HOW IT WORKS ── */
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; }
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+  }
+  .step-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--blue); opacity: .35;
+    margin-bottom: 10px;
+  }
+  .step-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .step-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* ── LESSON PREVIEW ── */
+  .preview-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .preview-topbar {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .preview-dots { display: flex; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .preview-title-bar { font-size: 12px; color: var(--text3); flex: 1; text-align: center; }
+  .preview-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .preview-passage {
+    padding: 1.25rem 1.25rem;
+    border-right: 1px solid var(--border);
+    font-size: 13px; line-height: 1.85; color: var(--text2);
+  }
+  .preview-source { font-size: 11px; color: var(--text3); font-style: italic; margin-bottom: 10px; }
+  .preview-hl { background: rgba(75,142,245,.18); border-radius: 3px; padding: 0 3px; color: var(--text); }
+  .preview-q { padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; }
+  .preview-q-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); }
+  .preview-q-text { font-size: 13px; line-height: 1.55; }
+  .preview-opt {
+    font-size: 12px; padding: 8px 11px; border-radius: 7px;
+    border: 1px solid var(--border); color: var(--text2);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .preview-opt.sel { border-color: var(--blue); background: var(--blue-dim); color: var(--blue); }
+  .preview-opt.sel .ol { background: var(--blue); color: #fff; }
+  .ol {
+    width: 18px; height: 18px; border-radius: 50%; background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; flex-shrink: 0;
+  }
+
+  /* ── PRICING ── */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 14px; max-width: 820px; }
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    position: relative;
+  }
+  .price-card.featured { border-color: var(--blue); }
+  .popular-badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: var(--blue); color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 12px; border-radius: 99px;
+    white-space: nowrap;
+  }
+  .price-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .price-amount { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+  .price-amount sub { font-size: 16px; font-weight: 400; color: var(--text2); vertical-align: baseline; }
+  .price-period { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .price-feats { display: flex; flex-direction: column; gap: 9px; margin-bottom: 20px; }
+  .pf { font-size: 13px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; }
+  .pf::before { content: '✓'; color: var(--blue); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .btn-price {
+    width: 100%; padding: 11px;
+    border-radius: 8px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--border2); background: transparent; color: var(--text);
+    transition: background .15s;
+  }
+  .btn-price:hover { background: var(--surface2); }
+  .btn-price.featured { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn-price.featured:hover { opacity: .88; background: var(--blue); }
+
+  /* ── FAQ ── */
+  .faq-list { max-width: 680px; display: flex; flex-direction: column; gap: 2px; }
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .faq-q {
+    padding: 15px 18px;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    user-select: none;
+    background: var(--surface);
+    transition: background .15s;
+  }
+  .faq-q:hover { background: var(--surface2); }
+  .faq-icon { color: var(--text3); font-size: 18px; transition: transform .2s; }
+  .faq-a {
+    display: none;
+    padding: 0 18px 15px;
+    font-size: 13px; color: var(--text2); line-height: 1.7;
+    background: var(--surface);
+  }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 5%;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+  .footer-logo em { color: var(--blue); font-style: normal; }
+  .footer-text { font-size: 13px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Prep<em>Academy</em></div>
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="location.href='signup.html'">Log in</button>
+    <button class="btn-cta" onclick="location.href='signup.html'">Get started free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">SAT Prep — Digital Exam Ready</div>
+  <h1>Master the SAT.<br>One lesson <span class="accent">at a time.</span></h1>
+  <p class="hero-sub">Clear concept explanations, real SAT-style practice questions, and step-by-step feedback — everything you need to build a higher score.</p>
+  <div class="hero-actions">
+    <button class="btn-hero-primary" onclick="location.href='signup.html'">Start studying free →</button>
+    <button class="btn-hero-secondary" onclick="document.getElementById('curriculum').scrollIntoView()">See the curriculum</button>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="section" id="curriculum">
+  <div class="section-eyebrow">Curriculum</div>
+  <h2 class="section-title">74 lessons covering every SAT question type</h2>
+  <p class="section-sub">Structured across four modules — from reading comprehension to advanced algebra. Each lesson includes a concept card, SAT strategy tips, and three interactive practice questions.</p>
+  <div class="modules-grid">
+    <div class="mod-card">
+      <div class="mod-icon" style="background:rgba(75,142,245,.12);">📖</div>
+      <div class="mod-label" style="color:#4B8EF5;">Module 1</div>
+      <div class="mod-name">Information & Ideas</div>
+      <div class="mod-desc">Central ideas, evidence, inferences, cross-text connections, vocabulary in context, text structure, author's purpose, and transitions.</div>
+      <div class="mod-count">10 lessons · Reading & Writing</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-icon" style="background:rgba(15,110,86,.15);">✍️</div>
+      <div class="mod-label" style="color:#0f6e56;">Module 2</div>
+      <div class="mod-name">Expression & Conventions</div>
+      <div class="mod-desc">Introductions, conclusions, transitions, adding and deleting information, sentence boundaries, punctuation, and grammar.</div>
+      <div class="mod-count">18 lessons · Reading & Writing</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-icon" style="background:rgba(124,58,237,.15);">🔢</div>
+      <div class="mod-label" style="color:#7C3AED;">Module 3</div>
+      <div class="mod-name">Math — No Calculator</div>
+      <div class="mod-desc">Linear equations, systems of equations, inequalities, functions, quadratics, polynomials, ratios, percentages, and probability.</div>
+      <div class="mod-count">22 lessons · Math</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-icon" style="background:rgba(245,158,11,.12);">📐</div>
+      <div class="mod-label" style="color:#D97706;">Module 4</div>
+      <div class="mod-name">Math — Calculator</div>
+      <div class="mod-desc">Geometry, trigonometry, statistics, data analysis, scatterplots, two-variable data, complex numbers, and modeling.</div>
+      <div class="mod-count">24 lessons · Math · Coming soon</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="padding-top:0">
+  <div class="section-eyebrow">How it works</div>
+  <h2 class="section-title">Built around the way the SAT actually works</h2>
+  <p class="section-sub">Every lesson follows the same format so you always know what to expect — and can focus on learning, not figuring out how to navigate.</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-number">01</div>
+      <div class="step-title">Learn the concept</div>
+      <div class="step-body">Each lesson opens with a clear explanation of the skill, a reference table or example, and the specific patterns the SAT tests.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">02</div>
+      <div class="step-title">Study SAT strategy</div>
+      <div class="step-body">Four targeted tips per lesson explain how to approach the question type on test day — including the most common traps and how to avoid them.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">03</div>
+      <div class="step-title">Practice with real-format questions</div>
+      <div class="step-body">Three SAT-style questions per lesson — formatted exactly like the digital exam, with passages on the left and questions on the right.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">04</div>
+      <div class="step-title">Get detailed feedback</div>
+      <div class="step-body">Every question explains why the correct answer is right and why each wrong answer is wrong — not just which letter to pick.</div>
+    </div>
+  </div>
+</section>
+
+<!-- LESSON PREVIEW -->
+<section class="section" style="padding-top:0">
+  <div class="section-eyebrow">Lesson format</div>
+  <h2 class="section-title">Exactly like the real digital SAT</h2>
+  <p class="section-sub">Split-screen layout, real passage types, and the same question styles you'll see on exam day.</p>
+  <div class="preview-wrap">
+    <div class="preview-topbar">
+      <div class="preview-dots">
+        <div class="dot" style="background:#FF5F57"></div>
+        <div class="dot" style="background:#FFBD2E"></div>
+        <div class="dot" style="background:#28CA42"></div>
+      </div>
+      <div class="preview-title-bar">PrepAcademy · Lesson 1.1 · Central Ideas & Details</div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-passage">
+        <div class="preview-source">Adapted from a scientific article on bioluminescence</div>
+        Bioluminescence — the ability of living organisms to produce light through chemical reactions — is <span class="preview-hl">far more common in the natural world than most people realize</span>. While fireflies are the most familiar example, the majority of bioluminescent organisms live in the deep ocean, where sunlight never penetrates. Scientists studying bioluminescence have found that despite its widespread occurrence, the ability evolved independently dozens of times — suggesting that light production confers significant survival advantages across diverse environments.
+      </div>
+      <div class="preview-q">
+        <div class="preview-q-label">Central Idea</div>
+        <div class="preview-q-text">Which choice best states the <strong>main idea</strong> of the passage?</div>
+        <div class="preview-opt"><span class="ol">A</span>Fireflies are the best-known bioluminescent organisms.</div>
+        <div class="preview-opt sel"><span class="ol">B</span>Bioluminescence is widespread and evolutionarily significant across many species.</div>
+        <div class="preview-opt"><span class="ol">C</span>Deep-sea creatures primarily use light for camouflage.</div>
+        <div class="preview-opt"><span class="ol">D</span>Bioluminescence evolved independently in dozens of species.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-eyebrow">Pricing</div>
+  <h2 class="section-title">Start free. Upgrade when you're ready.</h2>
+  <p class="section-sub">No credit card required to get started.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-name">Free</div>
+      <div class="price-amount">$0</div>
+      <div class="price-period">No card required</div>
+      <div class="price-feats">
+        <div class="pf">Full Module 1 — all 10 lessons</div>
+        <div class="pf">3 practice questions per lesson</div>
+        <div class="pf">Instant answer feedback</div>
+      </div>
+      <button class="btn-price" onclick="location.href='signup.html'">Get started free</button>
+    </div>
+    <div class="price-card featured">
+      <div class="popular-badge">Most popular</div>
+      <div class="price-name">Pro</div>
+      <div class="price-amount">$29<sub>/mo</sub></div>
+      <div class="price-period">All modules, all lessons</div>
+      <div class="price-feats">
+        <div class="pf">All 4 modules — 74 lessons total</div>
+        <div class="pf">Full-length SAT practice exams</div>
+        <div class="pf">Progress tracking by skill area</div>
+        <div class="pf">Personalized study plan</div>
+      </div>
+      <button class="btn-price featured" onclick="location.href='signup.html'">Get Pro</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">Intensive</div>
+      <div class="price-amount">$79<sub>/mo</sub></div>
+      <div class="price-period">For tight exam timelines</div>
+      <div class="price-feats">
+        <div class="pf">Everything in Pro</div>
+        <div class="pf">Unlimited timed practice sets</div>
+        <div class="pf">Weak area targeting</div>
+        <div class="pf">Priority support</div>
+      </div>
+      <button class="btn-price" onclick="location.href='signup.html'">Get Intensive</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="padding-top:0">
+  <div class="section-eyebrow">FAQ</div>
+  <h2 class="section-title">Common questions</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What's included in the free plan? <span class="faq-icon">+</span></div>
+      <div class="faq-a">The free plan includes all 10 lessons in Module 1 — Information & Ideas. That's the full reading comprehension section covering central ideas, evidence, inferences, cross-text connections, vocabulary, and more. No credit card required.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is PrepAcademy aligned with the current digital SAT format? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes. All lessons and practice questions are designed for the current digital SAT (2024 onwards). The split-screen layout, question types, and scoring breakdown all reflect the College Board's current format.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">How long does each lesson take? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Each lesson is designed to take approximately 12–15 minutes — about 5 minutes to read the concept card and strategy tips, and 7–10 minutes to work through the three practice questions. You can pause and return at any time.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">When will Module 4 be available? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Module 4 (Math — Calculator) is currently in development. Pro and Intensive subscribers will get access as soon as it launches. We'll notify you by email when it's ready.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I cancel my subscription at any time? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes — you can cancel at any time from your account settings. You'll retain access through the end of your billing period. No cancellation fees.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Prep<em>Academy</em></div>
+  <div class="footer-text">© 2025 PrepAcademy · SAT Preparation</div>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrepAcademy — Get Started</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#0B1120; --navy2:#111827; --blue:#3B82F6; --border:rgba(255,255,255,0.08); --text:#F9FAFB; --text2:#9CA3AF; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 1rem; }
+  .logo { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:2rem; }
+  .logo span { color:var(--blue); }
+  .progress-bar { width:100%; max-width:480px; height:4px; background:rgba(255,255,255,0.08); border-radius:99px; margin-bottom:2.5rem; }
+  .progress-fill { height:4px; background:var(--blue); border-radius:99px; transition:width 0.4s; }
+  .step-label { font-size:12px; color:var(--text2); text-align:center; margin-bottom:2rem; letter-spacing:0.05em; }
+  .card { background:var(--navy2); border:1px solid var(--border); border-radius:20px; padding:2.5rem; width:100%; max-width:480px; }
+  .card-title { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:0.5rem; }
+  .card-sub { font-size:14px; color:var(--text2); margin-bottom:2rem; }
+  .form-group { margin-bottom:1.25rem; }
+  label { font-size:13px; color:var(--text2); display:block; margin-bottom:6px; }
+  input { width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:10px; padding:12px 14px; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s; }
+  input:focus { border-color:var(--blue); }
+  .btn-main { width:100%; background:var(--blue); color:#fff; border:none; padding:13px; border-radius:10px; font-size:15px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; margin-top:0.5rem; }
+  .btn-main:hover { background:#2563EB; }
+  .divider { display:flex; align-items:center; gap:1rem; margin:1.5rem 0; color:var(--text2); font-size:13px; }
+  .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .btn-google { width:100%; background:transparent; border:1px solid var(--border); padding:12px; border-radius:10px; font-size:14px; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; }
+  .link-small { text-align:center; font-size:13px; color:var(--text2); margin-top:1.5rem; }
+  .link-small a { color:var(--blue); }
+  /* Exam cards */
+  .exam-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .exam-card { border:1.5px solid var(--border); border-radius:12px; padding:1rem; cursor:pointer; text-align:center; transition:all 0.2s; }
+  .exam-card.selected { border-color:var(--blue); background:rgba(59,130,246,0.08); }
+  .exam-card:hover { border-color:rgba(59,130,246,0.5); }
+  .exam-icon { font-size:28px; margin-bottom:6px; }
+  .exam-name { font-size:14px; font-weight:600; }
+  .exam-desc { font-size:11px; color:var(--text2); margin-top:3px; }
+  /* Score slider */
+  .score-display { font-family:'Syne',sans-serif; font-size:48px; font-weight:800; color:var(--blue); text-align:center; margin:1rem 0; }
+  input[type=range] { width:100%; margin:0.5rem 0; accent-color:var(--blue); }
+  .score-range { display:flex; justify-content:space-between; font-size:12px; color:var(--text2); }
+  /* Date input */
+  input[type=date] { color-scheme:dark; }
+  /* Diagnostic */
+  .diag-q { font-size:15px; font-weight:500; margin-bottom:1rem; line-height:1.5; }
+  .diag-opts { display:flex; flex-direction:column; gap:8px; }
+  .diag-opt { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:10px 14px; cursor:pointer; font-size:14px; transition:all 0.15s; }
+  .diag-opt:hover { border-color:rgba(59,130,246,0.5); }
+  .diag-opt.correct { border-color:#3B6D11; background:rgba(59,109,17,0.15); }
+  .diag-opt.wrong { border-color:#A32D2D; background:rgba(163,45,45,0.15); }
+  .diag-progress { display:flex; gap:6px; margin-bottom:1.5rem; }
+  .diag-dot { flex:1; height:4px; border-radius:99px; background:rgba(255,255,255,0.1); }
+  .diag-dot.done { background:var(--blue); }
+  .diag-dot.current { background:rgba(59,130,246,0.5); }
+  /* Results */
+  .result-score { text-align:center; padding:1.5rem 0; }
+  .result-big { font-family:'Syne',sans-serif; font-size:64px; font-weight:800; color:var(--blue); line-height:1; }
+  .result-label { font-size:14px; color:var(--text2); margin-top:6px; }
+  .result-bars { margin-top:1.5rem; }
+  .r-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; }
+  .r-label { width:140px; color:var(--text2); }
+  .r-track { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:99px; }
+  .r-fill { height:6px; border-radius:99px; background:var(--blue); }
+  /* Steps hidden by default */
+  .step { display:none; }
+  .step.active { display:block; }
+</style>
+</head>
+<body>
+
+<div class="logo">Prep<span>Academy</span></div>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+<div class="step-label" id="step-label">STEP 1 OF 5 — CREATE YOUR ACCOUNT</div>
+
+<!-- Step 1: Register -->
+<div class="step active" id="s1">
+  <div class="card">
+    <div class="card-title">Create your account</div>
+    <div class="card-sub">Join thousands of students improving their scores.</div>
+    <div class="form-group"><label>Full name</label><input type="text" placeholder="Your name"></div>
+    <div class="form-group"><label>Email address</label><input type="email" placeholder="you@email.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" placeholder="At least 8 characters"></div>
+    <button class="btn-main" onclick="goStep(2)">Create account →</button>
+    <div class="divider">or</div>
+    <button class="btn-google">Continue with Google</button>
+  </div>
+  <div class="link-small">Already have an account? <a href="login.html">Log in</a></div>
+</div>
+
+<!-- Step 2: Choose exam -->
+<div class="step" id="s2">
+  <div class="card">
+    <div class="card-title">Which exam are you preparing for?</div>
+    <div class="card-sub">We'll build a personalized plan based on your exam.</div>
+    <div class="exam-grid" id="exam-grid">
+      <div class="exam-card selected" onclick="selectExam(this)">
+        <div class="exam-icon">📚</div>
+        <div class="exam-name">SAT</div>
+        <div class="exam-desc">College admission</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">💼</div>
+        <div class="exam-name">GMAT</div>
+        <div class="exam-desc">Business school</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">🎓</div>
+        <div class="exam-name">GRE</div>
+        <div class="exam-desc">Graduate school</div>
+      </div>
+      <div class="exam-card" onclick="selectExam(this)">
+        <div class="exam-icon">🌍</div>
+        <div class="exam-name">TOEFL</div>
+        <div class="exam-desc">English proficiency</div>
+      </div>
+    </div>
+    <button class="btn-main" style="margin-top:1.5rem" onclick="goStep(3)">Continue →</button>
+  </div>
+</div>
+
+<!-- Step 3: Target score + date -->
+<div class="step" id="s3">
+  <div class="card">
+    <div class="card-title">Set your target score</div>
+    <div class="card-sub">We'll build your study plan around this goal.</div>
+    <div class="score-display" id="score-val">1400</div>
+    <input type="range" min="800" max="1600" step="10" value="1400" oninput="document.getElementById('score-val').textContent=this.value">
+    <div class="score-range"><span>800</span><span>1600</span></div>
+    <div class="form-group" style="margin-top:1.5rem"><label>Exam date</label><input type="date"></div>
+    <button class="btn-main" onclick="goStep(4)">Continue →</button>
+  </div>
+</div>
+
+<!-- Step 4: Diagnostic -->
+<div class="step" id="s4">
+  <div class="card">
+    <div class="card-title">Quick diagnostic</div>
+    <div class="card-sub">5 questions to calibrate your study plan.</div>
+    <div class="diag-progress" id="diag-dots">
+      <div class="diag-dot current"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+      <div class="diag-dot"></div>
+    </div>
+    <div class="diag-q" id="diag-q">The central idea of a passage is best described as:</div>
+    <div class="diag-opts" id="diag-opts">
+      <div class="diag-opt" onclick="answerDiag(this,false)">The first sentence of the first paragraph</div>
+      <div class="diag-opt" onclick="answerDiag(this,true)">The main point the author makes throughout the passage</div>
+      <div class="diag-opt" onclick="answerDiag(this,false)">A supporting detail that appears multiple times</div>
+      <div class="diag-opt" onclick="answerDiag(this,false)">The conclusion of the final paragraph</div>
+    </div>
+  </div>
+</div>
+
+<!-- Step 5: Results -->
+<div class="step" id="s5">
+  <div class="card">
+    <div class="card-title">Your personalized plan is ready!</div>
+    <div class="card-sub">Based on your diagnostic, here's where we'll focus.</div>
+    <div class="result-score">
+      <div class="result-big">3/5</div>
+      <div class="result-label">Diagnostic score · Starting point identified</div>
+    </div>
+    <div class="result-bars">
+      <div class="r-row"><span class="r-label">Information & Ideas</span><div class="r-track"><div class="r-fill" style="width:60%"></div></div><span style="font-size:12px;color:var(--text2);">60%</span></div>
+      <div class="r-row"><span class="r-label">Expression & Conventions</span><div class="r-track"><div class="r-fill" style="width:40%"></div></div><span style="font-size:12px;color:var(--text2);">40%</span></div>
+      <div class="r-row"><span class="r-label">Math — Algebra</span><div class="r-track"><div class="r-fill" style="width:80%"></div></div><span style="font-size:12px;color:var(--text2);">80%</span></div>
+    </div>
+    <button class="btn-main" style="margin-top:1.5rem" onclick="location.href='dashboard.html'">Start studying →</button>
+  </div>
+</div>
+
+<script>
+const steps = ['CREATE YOUR ACCOUNT','CHOOSE YOUR EXAM','SET YOUR TARGET','QUICK DIAGNOSTIC','YOUR PLAN IS READY'];
+const pcts = [20,40,60,80,100];
+let diagStep = 0;
+const diagQs = [
+  {q:'The central idea of a passage is best described as:', opts:['The first sentence of the first paragraph','The main point the author makes throughout the passage','A supporting detail that appears multiple times','The conclusion of the final paragraph'], ans:1},
+  {q:'Which word choice correctly completes this sentence? "The team _____ their strategy after the first half."', opts:['revised','revising','have revise','to revise'], ans:0},
+  {q:'Solve for x: 3x + 7 = 22', opts:['x = 3','x = 5','x = 7','x = 9'], ans:1},
+  {q:'If y = 2x − 3, what is y when x = 4?', opts:['y = 2','y = 5','y = 8','y = 11'], ans:1},
+  {q:'Which transition best connects these ideas: "The experiment failed. _____, the team learned valuable lessons."', opts:['Therefore','Nevertheless','Furthermore','In contrast'], ans:1}
+];
+
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('progress').style.width = pcts[n-1]+'%';
+  document.getElementById('step-label').textContent = 'STEP '+n+' OF 5 — '+steps[n-1];
+  if(n===4) loadDiag();
+}
+
+function selectExam(el) {
+  document.querySelectorAll('.exam-card').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function loadDiag() {
+  diagStep = 0;
+  updateDiag();
+}
+
+function updateDiag() {
+  const d = diagQs[diagStep];
+  document.getElementById('diag-q').textContent = d.q;
+  const optsEl = document.getElementById('diag-opts');
+  optsEl.innerHTML = d.opts.map((o,i)=>`<div class="diag-opt" onclick="answerDiag(this,${i===d.ans})">${o}</div>`).join('');
+  const dots = document.querySelectorAll('.diag-dot');
+  dots.forEach((d,i)=>{ d.className='diag-dot'; if(i<diagStep)d.classList.add('done'); if(i===diagStep)d.classList.add('current'); });
+}
+
+function answerDiag(el, correct) {
+  document.querySelectorAll('.diag-opt').forEach(o=>o.onclick=null);
+  el.classList.add(correct?'correct':'wrong');
+  if(!correct) {
+    const d = diagQs[diagStep];
+    document.querySelectorAll('.diag-opt')[d.ans].classList.add('correct');
+  }
+  setTimeout(()=>{
+    diagStep++;
+    if(diagStep>=5) { goStep(5); return; }
+    updateDiag();
+  }, 900);
+}
+</script>
+</body>
+</html>
