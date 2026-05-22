@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.19 — Percentages & Interest</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:79%;background:#D97706;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .formula-box{background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;text-align:center}
+  .formula{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;line-height:2.2}
+  .types-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .t-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .t-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .t-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .t-ex{font-family:Georgia,serif;font-size:12px;color:#92400E;margin-top:4px;line-height:1.7}
+  .example-box{background:#FEF3C7;border-left:3px solid #D97706;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-top:1rem}
+  .example-label{font-size:11px;font-weight:500;color:#D97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+  .example-text{font-size:13px;color:#111;line-height:1.9}
+  .fb-work{font-family:Georgia,serif;font-size:13px;color:#92400E;line-height:2.1;margin-top:5px}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .math-eq{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;margin:.6rem 0;padding:.5rem .75rem;background:#FEF3C7;border-radius:6px;display:block;text-align:center}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#D97706;color:#fff;border-color:#D97706}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.19</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 19 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.19</div>
+<div class="lesson-title">Percentages & Interest</div>
+<div class="lesson-sub">Apply percentage skills to multi-step financial contexts — simple and compound interest, tax and tip problems, markups and discounts in sequence, and percent change across multiple periods.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Interest formulas and financial applications</div>
+  <div class="formula-box">
+    <div class="formula">
+      Simple interest: I = Prt &nbsp;·&nbsp; A = P(1 + rt)<br>
+      Compound interest: A = P(1 + r/n)ⁿᵗ<br>
+      Total cost with tax: C = price × (1 + tax rate)<br>
+      Final price after markup then discount: P × (1+m) × (1−d)
+    </div>
+  </div>
+  <div class="types-grid">
+    <div class="t-card">
+      <div class="t-title">Simple vs. compound interest</div>
+      <div class="t-body">Simple: interest calculated only on principal. Compound: interest calculated on principal plus accumulated interest. Compound always yields more over time.</div>
+      <div class="t-ex">$1,000 at 5% for 3 yr:<br>Simple: I = 1000×0.05×3 = $150<br>Compound annually: 1000×(1.05)³ = $1,157.63</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Sequential discounts and markups</div>
+      <div class="t-body">Apply each multiplier in sequence — never add percentages. A 20% markup followed by a 20% discount is NOT 0% change: 1.20 × 0.80 = 0.96 → net −4%.</div>
+      <div class="t-ex">Item: $100 · +30% markup: $130<br>−15% discount: $130 × 0.85 = $110.50<br>Net change: +10.5%, not +15%</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Tax, tip, and total cost</div>
+      <div class="t-body">Add tax/tip percentage as a multiplier to the pre-tax price. To find original price given total including tax: divide total by (1 + tax rate).</div>
+      <div class="t-ex">Meal $45, 18% tip, 8% tax:<br>$45 × 1.18 = $53.10 (with tip)<br>$53.10 × 1.08 = $57.35 (with tax on tip+meal)</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Finding original before percentage</div>
+      <div class="t-body">After applying a percentage change, reverse it by dividing. After a 35% markup the price is $270: original = 270 ÷ 1.35 = $200. Never subtract the percent from the result.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Compound interest: identify all 4 variables</div><div class="tip-body">Before computing A = P(1 + r/n)ⁿᵗ, explicitly label P (principal), r (annual rate as decimal), n (compoundings per year), and t (years). Misidentifying n is the most common error — monthly means n=12, quarterly means n=4.</div></div>
+    <div class="tip"><div class="tip-title">Sequential changes: multiply, never add</div><div class="tip-body">For any sequence of percent changes, multiply the multipliers in order. Never add or subtract percentages. A 15% increase then a 10% decrease: 1.15 × 0.90 = 1.035 → net +3.5%.</div></div>
+    <div class="tip"><div class="tip-title">Tax/tip order matters</div><div class="tip-body">If tip is calculated on the pre-tax amount and tax on the post-tip amount (or vice versa), the calculation differs. Read the problem carefully to identify what percentage applies to what base.</div></div>
+    <div class="tip"><div class="tip-title">Simple interest: linear; compound: exponential</div><div class="tip-body">Simple interest grows linearly (straight line on a graph). Compound interest grows exponentially (curved). A = P(1+rt) is linear in t. A = P(1+r)ᵗ is exponential in t. The SAT tests which model applies.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Two friends invest $4,000 each. Friend A earns 5% simple interest per year. Friend B earns 5% interest compounded annually.</div>
+      <div class="hint">After 10 years: A's amount = 4000(1 + 0.05×10) = 4000(1.5) = $6,000. B's amount = 4000(1.05)¹⁰. Use calculator for B.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Simple vs. Compound</div>
+      <div class="q-text">After <strong>10 years</strong>, how much more does Friend B have than Friend A?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>$0 — they earn the same total interest</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>approximately $512</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>approximately $1,200</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>approximately $257</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! ≈ $512</strong><div class="fb-work">Friend A (simple): 4000(1 + 0.05×10) = 4000 × 1.5 = $6,000<br>Friend B (compound): 4000(1.05)¹⁰ = 4000 × 1.6289 ≈ $6,516<br>Difference: $6,516 − $6,000 = $516 ≈ $512 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Calculate each separately. A: 4000×(1+0.05×10)=$6,000. B: 4000×(1.05)¹⁰ (use calculator). The difference shows the power of compounding over time.<div class="fb-work">B≈$6,516 · A=$6,000 · Difference≈$516</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A store marks up all items by 40% above wholesale cost. During a sale, all marked-up prices are then discounted by 25%.</div>
+      <div class="hint">Apply multipliers in sequence: markup → ×1.40, then discount → ×0.75. Net multiplier = 1.40 × 0.75. Compare to original wholesale cost (1.00).</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Sequential Percentages</div>
+      <div class="q-text">What is the <strong>net percent change</strong> from wholesale cost to the final sale price?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>+15%</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>+5%</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>−5%</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>0% — the changes cancel out</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! +5%</strong><div class="fb-work">Markup: × 1.40<br>Discount: × 0.75<br>Net: 1.40 × 0.75 = 1.05<br>= 5% above wholesale ✓<br><br>Example: Wholesale $100 → marked up $140 → sale price $105.<br>Option D is wrong because 40% and 25% don't cancel — 25% of $140 ≠ 40% of $100.</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Don't subtract the percentages — multiply the multipliers: 1.40 × 0.75. Compare the result to 1.00 (original cost).<div class="fb-work">1.40 × 0.75 = 1.05 → +5% net</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A restaurant bill totals $86.40, which already includes an 8% sales tax.</div>
+      <div class="hint">The $86.40 is the post-tax amount. Pre-tax = post-tax ÷ (1 + tax rate) = 86.40 ÷ 1.08. Don't subtract 8% of 86.40 — that gives the wrong answer.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Reverse Percentage</div>
+      <div class="q-text">What was the <strong>pre-tax total</strong> of the meal?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>$79.49</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>$80.00</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>$78.62</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>$93.31</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! $80.00</strong><div class="fb-work">Post-tax = pre-tax × 1.08<br>Pre-tax = 86.40 ÷ 1.08 = $80.00 ✓<br><br>Check: $80 × 1.08 = $86.40 ✓<br>Option A ($79.49) = 86.40 − 8% of 86.40 = 86.40 − 6.91 — this is wrong because you'd be taking 8% of the wrong base.</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> To reverse an 8% tax, divide by 1.08 — don't subtract 8% of the bill. 86.40 ÷ 1.08 = ?<div class="fb-work">86.40 ÷ 1.08 = $80.00</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.18</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.19 of 24</span>
+  <button class="btn-nav primary">Next → 4.20 Functions & Transformations</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

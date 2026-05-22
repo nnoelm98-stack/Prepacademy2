@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.8 — Circles</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 33%; background: #D97706; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: .5rem; background: #FEF3C7; color: #92400E; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: .25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: .5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: .75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .f-card { background: #f9fafb; border-radius: 8px; padding: .9rem 1rem; }
+  .f-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .f-eq { font-family: Georgia, serif; font-size: 14px; color: #92400E; font-weight: 500; margin-bottom: 4px; }
+  .f-note { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .example-box { background: #FEF3C7; border-left: 3px solid #D97706; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #D97706; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #92400E; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: .9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .calc-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #92400E; font-weight: 500; margin-bottom: 1rem; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all .15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #92400E; font-family: Georgia, serif; margin: .6rem 0; padding: .5rem .75rem; background: #FEF3C7; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: .6rem .9rem; margin-top: .75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #D97706; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all .15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #D97706; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #D97706; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: .85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #D97706; color: #fff; border-color: #D97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.8</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 8 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.8</div>
+<div class="lesson-title">Circles</div>
+<div class="lesson-sub">Master the standard equation of a circle, arc length, sector area, inscribed angles, and the key circle theorems the SAT tests — all in the coordinate plane.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Circle equations and properties</div>
+  <div class="formula-grid">
+    <div class="f-card">
+      <div class="f-title">Standard equation of a circle</div>
+      <div class="f-eq">(x − h)² + (y − k)² = r²</div>
+      <div class="f-note">Center = (h, k) · Radius = r. Watch signs: (x − 3)² has center x = 3, not −3.</div>
+    </div>
+    <div class="f-card">
+      <div class="f-title">Arc length & sector area</div>
+      <div class="f-eq">Arc = (θ/360) · 2πr<br>Sector = (θ/360) · πr²</div>
+      <div class="f-note">θ = central angle in degrees. Both are fractions of the full circle.</div>
+    </div>
+    <div class="f-card">
+      <div class="f-title">Inscribed angle theorem</div>
+      <div class="f-eq">Inscribed angle = ½ · central angle</div>
+      <div class="f-note">An inscribed angle is half the central angle that subtends the same arc.</div>
+    </div>
+    <div class="f-card">
+      <div class="f-title">Tangent line to circle</div>
+      <div class="f-eq">Tangent ⊥ radius at point of tangency</div>
+      <div class="f-note">A tangent line is perpendicular to the radius drawn to the point of contact. Use Pythagorean theorem for tangent length problems.</div>
+    </div>
+    <div class="f-card">
+      <div class="f-title">Completing the square</div>
+      <div class="f-eq">x² + y² + Dx + Ey + F = 0</div>
+      <div class="f-note">Group x and y terms, complete the square on each group to find center and radius.</div>
+    </div>
+    <div class="f-card">
+      <div class="f-title">Semicircle inscribed angle</div>
+      <div class="f-eq">Angle in semicircle = 90°</div>
+      <div class="f-note">Any angle inscribed in a semicircle (with the diameter as its side) is always a right angle.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — completing the square</div>
+    <div class="example-text">
+      Find the center and radius of: x² + y² − 6x + 4y − 3 = 0<br><br>
+      <span class="fb-work">Group: (x² − 6x) + (y² + 4y) = 3</span><br>
+      <span class="fb-work">Complete: (x² − 6x + 9) + (y² + 4y + 4) = 3 + 9 + 4</span><br>
+      <span class="fb-work">(x − 3)² + (y + 2)² = 16</span><br>
+      Center: (3, −2) · Radius: 4
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Center sign trap — always check</div><div class="tip-body">(x − 3)² + (y + 5)² = 49 has center (3, −5) — NOT (−3, 5). The signs in the equation are opposite to the center coordinates. Rewrite (y + 5)² as (y − (−5))² to see it clearly.</div></div>
+    <div class="tip"><div class="tip-title">Completing the square for general form</div><div class="tip-body">When the circle equation is expanded (x² + y² + Dx + Ey = F), complete the square. Add (D/2)² and (E/2)² to both sides. The right side becomes the radius squared.</div></div>
+    <div class="tip"><div class="tip-title">Inscribed angle = half the arc it intercepts</div><div class="tip-body">An inscribed angle equals half the central angle subtending the same arc. If the arc is 80°, the inscribed angle is 40°. A diameter subtends a 180° arc — so any inscribed angle on a diameter = 90°.</div></div>
+    <div class="tip"><div class="tip-title">Tangent + radius = right angle</div><div class="tip-body">When a tangent meets a radius, they form a 90° angle. Draw this right angle and use the Pythagorean theorem to find tangent length, if given the radius and distance from center to external point.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A circle in the xy-plane has the equation:</div>
+      <span class="math-eq">(x + 4)² + (y − 7)² = 25</span>
+      <div class="hint">Rewrite (x + 4)² as (x − (−4))² to identify h = −4. The center is (h, k) = (−4, 7) and radius² = 25 so r = 5.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Circle Equation</div>
+      <div class="q-text">What are the <strong>center</strong> and <strong>radius</strong> of this circle?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Center (4, −7), radius 5</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>Center (−4, 7), radius 5</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>Center (−4, 7), radius 25</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>Center (4, −7), radius 25</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! Center (−4, 7), radius 5</strong><div class="fb-work">(x + 4)² = (x − (−4))² → h = −4<br>(y − 7)² → k = 7<br>r² = 25 → r = 5<br>Center: (−4, 7) · Radius: 5 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> In (x − h)² + (y − k)² = r², the center is (h, k). Watch signs: (x + 4) = (x − (−4)) → h = −4. And r² = 25 → r = 5, not 25.<div class="fb-work">Center (−4, 7), radius 5</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A circle has center O and radius 9. Points A and B are on the circle. The central angle AOB measures 140°.</div>
+      <div class="hint">Arc length = (central angle/360) × 2πr = (140/360) × 2π(9). The inscribed angle that subtends the same arc = half the central angle = 70°.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Arc Length & Inscribed Angle</div>
+      <div class="q-text">What is the arc length of arc AB? (Leave in terms of π.)</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>7π</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>9π</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>14π</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>63π/5</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 7π</strong><div class="fb-work">Arc length = (140/360) × 2π(9)<br>= (7/18) × 18π<br>= 7π ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Arc = (θ/360) × 2πr = (140/360) × 2π(9). Simplify 140/360 = 7/18, and 2(9) = 18.<div class="fb-work">(7/18) × 18π = 7π</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Find the center and radius of the circle:</div>
+      <span class="math-eq">x² + y² − 10x + 6y + 18 = 0</span>
+      <div class="hint">Group and complete the square: (x²−10x___) + (y²+6y___) = −18. Add (5)²=25 and (3)²=9 to both sides. Then write in standard form.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Completing the Square</div>
+      <div class="q-text">What is the <strong>radius</strong> of this circle?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>4</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>√16</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>√34</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>√18</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! radius = 4 (= √16)</strong><div class="fb-work">(x²−10x) + (y²+6y) = −18<br>Add 25 and 9 to both sides:<br>(x−5)² + (y+3)² = −18+25+9 = 16<br>r² = 16 → r = 4 ✓<br>Center: (5, −3)</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Complete the square: add (10/2)²=25 and (6/2)²=9 to both sides. The right side becomes −18+25+9=16. So r²=16, r=4.<div class="fb-work">(x−5)²+(y+3)²=16 → r=4</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.7</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.8 of 24</span>
+  <button class="btn-nav primary">Next → 4.9 Volume & 3D Geometry</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

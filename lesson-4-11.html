@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.11 — Statistics & Data Analysis</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 46%; background: #D97706; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: .5rem; background: #FEF3C7; color: #92400E; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: .25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: .5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: .75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .concept-card { background: #f9fafb; border-radius: 8px; padding: .9rem 1rem; }
+  .concept-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .concept-body { font-size: 12px; color: #6b7280; line-height: 1.55; }
+  .concept-ex { font-family: Georgia, serif; font-size: 12px; color: #92400E; margin-top: 4px; line-height: 1.7; }
+  .two-way { border-collapse: collapse; font-size: 13px; width: 100%; margin-top: 1rem; }
+  .two-way th { background: #FEF3C7; padding: 8px 14px; color: #92400E; font-weight: 500; border: 1px solid #FDE68A; text-align: center; }
+  .two-way td { padding: 8px 14px; border: 1px solid #e5e7eb; text-align: center; color: #374151; }
+  .two-way td.total { background: #f9fafb; font-weight: 500; }
+  .example-box { background: #FEF3C7; border-left: 3px solid #D97706; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #D97706; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #92400E; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: .9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .calc-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #92400E; font-weight: 500; margin-bottom: 1rem; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all .15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: .6rem .9rem; margin-top: .75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #D97706; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all .15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; font-family: system-ui; }
+  .opt.selected .opt-l { background: #D97706; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #D97706; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: .85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #D97706; color: #fff; border-color: #D97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.11</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 11 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.11</div>
+<div class="lesson-title">Statistics & Data Analysis</div>
+<div class="lesson-sub">Go deeper on statistics — sampling methods, margin of error, study design, and drawing valid conclusions from data — the critical reasoning layer the SAT adds on top of basic statistics.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Beyond the numbers — study design and inference</div>
+  <div class="body-text">The SAT doesn't just ask you to calculate statistics. It asks whether conclusions drawn from a study are valid. This requires understanding how data was collected and what it can and cannot tell us.</div>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-title">Random sampling</div>
+      <div class="concept-body">A random sample allows generalizations to the population it was drawn from. Non-random samples (convenience, voluntary) may be biased — results may not generalize.</div>
+      <div class="concept-ex">Random survey of 500 voters → can generalize to all voters. Survey only online → biased toward internet users.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-title">Observational study vs. experiment</div>
+      <div class="concept-body">Observational studies can show association but NOT causation. Only randomized controlled experiments can establish causation.</div>
+      <div class="concept-ex">Observational: people who eat breakfast earn more. Cannot say breakfast causes higher earnings — confounding variables exist.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-title">Margin of error</div>
+      <div class="concept-body">Survey results come with uncertainty: reported value ± margin of error. If two groups' intervals overlap, you cannot conclude they are different.</div>
+      <div class="concept-ex">Group A: 52% ± 4% → (48%, 56%)<br>Group B: 49% ± 4% → (45%, 53%)<br>Intervals overlap → can't say A > B.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-title">Sample size and confidence</div>
+      <div class="concept-body">Larger samples reduce margin of error and produce more reliable estimates. A study with n=50 is less reliable than n=5,000, all else being equal.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-title">Confounding variables</div>
+      <div class="concept-body">A lurking variable that affects both the explanatory and response variables, creating a spurious association. The SAT asks you to identify confounding variables when evaluating study conclusions.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-title">Generalizing to population</div>
+      <div class="concept-body">Only random samples allow generalization. The conclusion must match the scope of the sample — you can only generalize to the population from which the sample was drawn.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Association ≠ causation (again)</div><div class="tip-body">Even in this lesson — any conclusion saying "X causes Y" from an observational study is wrong. The SAT will always have this as a trap answer. Only a randomized experiment can establish causation.</div></div>
+    <div class="tip"><div class="tip-title">Scope of conclusion must match sample</div><div class="tip-body">If a study surveys students at one high school, conclusions can only apply to students at that school — not all students nationwide. "Overgeneralizing" is always a wrong answer.</div></div>
+    <div class="tip"><div class="tip-title">Overlapping margin of error intervals</div><div class="tip-body">If two confidence intervals overlap, you cannot conclude one group is higher than the other. The SAT frequently tests this — look for "the data support the conclusion that Group A scored higher" when intervals overlap.</div></div>
+    <div class="tip"><div class="tip-title">Random assignment eliminates confounding</div><div class="tip-body">In a randomized experiment, participants are randomly assigned to treatment or control. This balances confounding variables and allows causal conclusions — it's the key distinction between experiments and observational studies.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Researchers randomly selected 800 adults from a city and found that 68% reported exercising at least three times per week. The margin of error was ±3.5%.</div>
+      <div class="hint">Margin of error creates a confidence interval: 68% ± 3.5% = (64.5%, 71.5%). Conclusions that fall within this range are supported; conclusions outside are not supported.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Margin of Error</div>
+      <div class="q-text">Which conclusion is <strong>best supported</strong> by this data?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Exactly 68% of all adults in the city exercise at least three times per week.</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>It is plausible that between 64.5% and 71.5% of adults in the city exercise at least three times per week.</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>More than 75% of adults in the city exercise at least three times per week.</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>These results apply to all adults in the country.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> Option B correctly states the confidence interval: 68% ± 3.5% = 64.5% to 71.5%. This is the appropriate conclusion from a survey with a margin of error. Option A claims exactness — surveys never give exact values. Option C (75%) is outside the confidence interval. Option D overgeneralizes — the sample was from one city, not the country.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> The margin of error means the true value is likely 68% ± 3.5% = between 64.5% and 71.5%. Which conclusion stays within this range and uses appropriately uncertain language?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A school randomly assigned 150 students to either a new study skills program or a control group. After 6 weeks, students in the program scored an average of 12 points higher on tests than the control group.</div>
+      <div class="hint">Key question: was this an observational study or a randomized experiment? Random assignment is the key phrase. Does random assignment allow causal conclusions?</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Study Design</div>
+      <div class="q-text">Which conclusion is <strong>most justified</strong> by this study?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>Students who study more naturally score higher, which explains the difference.</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>The study skills program caused an improvement in test scores among the students in this study.</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>All students in the country would improve by 12 points if given this program.</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>There is an association between the program and test scores, but causation cannot be determined.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> Because students were randomly assigned (not self-selected), this is a randomized controlled experiment — the gold standard for causal inference. Option B correctly identifies a causal conclusion limited to the study participants. Option C overgeneralizes. Option D is wrong — random assignment DOES allow causal conclusions. Option A invents an explanation not in the study.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> The key detail is "randomly assigned." Random assignment creates comparable groups and eliminates confounding — it's what makes causal conclusions possible in experiments. What scope is appropriate for this conclusion?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A survey of 200 randomly selected customers at a coffee shop found that 74% preferred oat milk over regular milk. The margin of error was ±6%.</div>
+      <div class="problem-text" style="margin-top:.5rem;">A separate survey of 200 randomly selected customers at the same coffee shop the following week found that 68% preferred oat milk. The margin of error was also ±6%.</div>
+      <div class="hint">Week 1 interval: 74% ± 6% = (68%, 80%). Week 2 interval: 68% ± 6% = (62%, 74%). Do these intervals overlap?</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Overlapping Intervals</div>
+      <div class="q-text">Which statement is <strong>best supported</strong> by the two surveys?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>Oat milk preference significantly declined between the two weeks.</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>The difference in results between the two weeks is statistically meaningful.</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>The two surveys are consistent — the observed difference is within the range of sampling variability.</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>Week 1 preference was definitely higher than Week 2.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong><div class="fb-work">Week 1 interval: 68% to 80%<br>Week 2 interval: 62% to 74%<br>Overlap region: 68% to 74%<br><br>The intervals overlap significantly → the difference (74% vs 68%) is within sampling variability. We cannot conclude there was a real change. Options A, B, and D all claim the difference is meaningful — but with overlapping intervals, this cannot be concluded.</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Calculate each confidence interval: Week 1 = 68%–80%, Week 2 = 62%–74%. Do they overlap? If yes, the difference is within sampling variability — we cannot conclude a real change occurred.<div class="fb-work">Overlap: 68%–74% → consistent, not a significant change</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.10</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.11 of 24</span>
+  <button class="btn-nav primary">Next → 4.12 Probability & Expected Value</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

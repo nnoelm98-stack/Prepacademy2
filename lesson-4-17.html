@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.17 — Inference & Sampling</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:71%;background:#D97706;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .c-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .c-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .c-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .c-ex{font-family:Georgia,serif;font-size:12px;color:#92400E;margin-top:4px;line-height:1.7}
+  .warn-box{background:#FAEEDA;border-left:3px solid #BA7517;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-top:1rem}
+  .warn-label{font-size:11px;font-weight:500;color:#854F0B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+  .warn-text{font-size:13px;color:#633806;line-height:1.65}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#D97706;color:#fff;border-color:#D97706}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.17</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 17 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.17</div>
+<div class="lesson-title">Inference & Sampling</div>
+<div class="lesson-sub">Master the logic of statistical inference — making population estimates from samples — and learn to evaluate the validity and scope of conclusions drawn from survey and experimental data.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">From sample to population — the inference chain</div>
+  <div class="body-text">Statistical inference lets us draw conclusions about a <strong>population</strong> based on a <strong>sample</strong>. The validity of these conclusions depends entirely on how the sample was selected.</div>
+  <div class="concept-grid">
+    <div class="c-card">
+      <div class="c-title">Simple random sample (SRS)</div>
+      <div class="c-body">Every member of the population has an equal chance of being selected. Results can be generalized to the population. The gold standard for surveys.</div>
+    </div>
+    <div class="c-card">
+      <div class="c-title">Voluntary response bias</div>
+      <div class="c-body">When people self-select into a survey (calling a hotline, clicking an online poll), strong opinions are over-represented. Results cannot be generalized.</div>
+      <div class="c-ex">Online polls, call-in surveys → voluntary response bias</div>
+    </div>
+    <div class="c-card">
+      <div class="c-title">Convenience sample</div>
+      <div class="c-body">Selecting whoever is easiest to reach (students in one class, people at a mall). Not representative — can't generalize to the broader population.</div>
+    </div>
+    <div class="c-card">
+      <div class="c-title">Undercoverage bias</div>
+      <div class="c-body">When some groups in the population are less likely to be included in the sample than others. The sample systematically misses certain subgroups.</div>
+    </div>
+    <div class="c-card">
+      <div class="c-title">Scope of inference — generalizability</div>
+      <div class="c-body">You can only generalize results to the population from which the sample was randomly drawn. Broader claims beyond that population are not supported.</div>
+      <div class="c-ex">Random sample of one school → can generalize to that school only, not all schools.</div>
+    </div>
+    <div class="c-card">
+      <div class="c-title">Estimation from sample to population</div>
+      <div class="c-body">If p% of a random sample has a property, we estimate p% of the population has it. This estimate applies only to the population the sample came from.</div>
+      <div class="c-ex">40% of a random sample of 500 city residents → estimate 40% of all city residents.</div>
+    </div>
+  </div>
+  <div class="warn-box">
+    <div class="warn-label">The most common SAT inference traps</div>
+    <div class="warn-text"><strong>Trap 1:</strong> Claiming the sample result is exactly equal to the population parameter (ignoring sampling variability). <strong>Trap 2:</strong> Generalizing beyond the population sampled (e.g., from one city to the whole country). <strong>Trap 3:</strong> Drawing causal conclusions from an observational study. <strong>Trap 4:</strong> Concluding causation from a biased sample.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Estimate counts from proportions</div><div class="tip-body">If 35% of a random sample of 200 prefer option A, and the city population is 50,000, estimate: 0.35 × 50,000 = 17,500 city residents prefer option A. This proportional extrapolation is valid only for random samples.</div></div>
+    <div class="tip"><div class="tip-title">Always check how the sample was selected</div><div class="tip-body">Before evaluating any conclusion, identify the sampling method. Was it random? Who had a chance to respond? Non-random or voluntary samples cannot support population-wide conclusions — the SAT will test this every time.</div></div>
+    <div class="tip"><div class="tip-title">Generalize only to the sampled population</div><div class="tip-body">If a study samples customers of one store, conclusions apply to customers of that store — not to all shoppers nationwide. The scope of conclusion must match the scope of sampling. Over-generalizing is always a wrong answer.</div></div>
+    <div class="tip"><div class="tip-title">Larger sample → smaller margin of error</div><div class="tip-body">All else equal, larger samples produce more reliable estimates with narrower confidence intervals. The SAT may ask which of two study designs produces more reliable estimates — choose the one with the larger random sample.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A random sample of 400 residents from a city of 120,000 was surveyed. 28% said they use public transportation daily.</div>
+      <div class="hint">For a random sample, you can estimate the population proportion. Apply 28% to the city's total population of 120,000: 0.28 × 120,000 = 33,600.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Population Estimate</div>
+      <div class="q-text">Which is the best estimate of the number of city residents who use public transportation daily?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>112 residents</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>28,000 residents</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>33,600 residents</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>400 residents</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 33,600 residents</strong><div class="fb-work">Random sample → can estimate population proportion<br>Estimated count = 28% × 120,000 = 0.28 × 120,000 = 33,600 ✓<br><br>Option A (112) = 28% of the sample (400). Option B is a round number not derived correctly.</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Since the sample was random, apply the sample proportion to the full population: 28% of 120,000.<div class="fb-work">0.28 × 120,000 = 33,600</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A researcher posts an online survey asking people whether they support a new local park. Of the 250 respondents, 82% said yes.</div>
+      <div class="hint">This is a voluntary response sample — only people who chose to respond participated. Online surveys are subject to voluntary response bias. Who is most likely to click and respond?</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Sampling Bias</div>
+      <div class="q-text">Which limitation most affects this survey's conclusions?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>The sample size of 250 is too small to draw any conclusions.</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>Voluntary response bias — people with strong opinions (especially supporters) are more likely to respond, over-representing support for the park.</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>The 82% result is too high to be credible.</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>The survey should have asked more questions to get accurate results.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> An online opt-in survey has voluntary response bias — the 250 people who chose to respond are not representative of all residents. People who strongly support the park are more likely to click and complete the survey, inflating the "yes" percentage. Option A is incorrect — 250 can be adequate for a random sample; the issue is how they were selected, not how many.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> The problem isn't sample size — it's how the sample was collected. What happens to an online survey where people self-select to participate?<div class="fb-work">Voluntary response → strong opinions over-represented → biased</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Two schools each conducted a survey about students' sleep habits. School A used a random sample of 300 students; School B surveyed every student who attended a health class (120 students).</div>
+      <div class="hint">Compare the two sampling methods: School A is random (can generalize to all students at that school). School B is a convenience sample (health class students may have different sleep habits than average).</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Comparing Survey Designs</div>
+      <div class="q-text">Whose results can be more reliably generalized to their school's entire student population?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>School B, because 100% of health class students were surveyed.</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>School A, because a random sample better represents the full student population.</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>School A, because 300 is a larger sample than 120.</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>Neither — neither study used a national random sample.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! School A</strong> The reason is the random sampling method, not merely the larger size (B is also true but not the primary reason). School B's health class students are a convenience sample — health-conscious students may sleep differently from the average student, making the results unrepresentative. School A's random sample gives all students an equal chance of inclusion, so it best represents the full school. Option D is wrong — generalization to the school doesn't require a national sample.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The key isn't sample size — it's how the sample was selected. School B surveyed health class students, who may not be representative of all students. Which sampling method gives all students an equal chance of inclusion?<div class="fb-work">Random sample → representative → can generalize to the school</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.16</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.17 of 24</span>
+  <button class="btn-nav primary">Next → 4.18 Ratios, Rates & Proportions</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

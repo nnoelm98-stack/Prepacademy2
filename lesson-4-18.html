@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.18 — Ratios, Rates & Proportions</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:75%;background:#D97706;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .types-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .t-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .t-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .t-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .t-ex{font-family:Georgia,serif;font-size:12px;color:#92400E;margin-top:4px;line-height:1.7}
+  .example-box{background:#FEF3C7;border-left:3px solid #D97706;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-top:1rem}
+  .example-label{font-size:11px;font-weight:500;color:#D97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+  .example-text{font-size:13px;color:#111;line-height:1.9}
+  .fb-work{font-family:Georgia,serif;font-size:13px;color:#92400E;line-height:2.1;margin-top:5px}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .math-eq{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;margin:.6rem 0;padding:.5rem .75rem;background:#FEF3C7;border-radius:6px;display:block;text-align:center}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;font-family:Georgia,serif;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#D97706;color:#fff;border-color:#D97706}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.18</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 18 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.18</div>
+<div class="lesson-title">Ratios, Rates & Proportions</div>
+<div class="lesson-sub">Apply ratios and proportions to complex multi-step problems — mixture problems, work rates, speed-distance-time, and scaling — the applied contexts the calculator section emphasizes.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Advanced ratio and rate applications</div>
+  <div class="types-grid">
+    <div class="t-card">
+      <div class="t-title">Mixture problems</div>
+      <div class="t-body">Combine two substances with different concentrations/values. The total amount and total value must both be conserved. Set up two equations: quantity and value.</div>
+      <div class="t-ex">Mix 30% and 70% solution to get 50%:<br>0.30x + 0.70(100−x) = 0.50(100)<br>Solve for x.</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Combined work rates</div>
+      <div class="t-body">If A does a job in a hours and B does it in b hours, together they complete 1/a + 1/b of the job per hour. Time together = 1/(1/a + 1/b) = ab/(a+b).</div>
+      <div class="t-ex">A: 6 hr, B: 4 hr<br>Together: ab/(a+b) = 24/10 = 2.4 hours</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Speed-distance-time</div>
+      <div class="t-body">d = rt. Average speed = total distance / total time. For round trips where speeds differ, calculate each leg's time separately, then find total d and total t.</div>
+      <div class="t-ex">60 mph out, 40 mph back, 120 mi each way:<br>Time out = 2 hr, time back = 3 hr<br>Avg speed = 240/5 = 48 mph</div>
+    </div>
+    <div class="t-card">
+      <div class="t-title">Scaling with proportions</div>
+      <div class="t-body">When all dimensions scale by factor k: perimeter/length scales by k, area scales by k², volume scales by k³. State which dimension changed and use the correct power.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — mixture problem</div>
+    <div class="example-text">
+      A chemist has a 20% acid solution and an 80% acid solution. How many liters of each should be mixed to make 60 liters of a 50% acid solution?<br><br>
+      <span class="fb-work">Let x = liters of 20% solution · (60 − x) = liters of 80% solution</span><br>
+      <span class="fb-work">0.20x + 0.80(60 − x) = 0.50(60)</span><br>
+      <span class="fb-work">0.20x + 48 − 0.80x = 30</span><br>
+      <span class="fb-work">−0.60x = −18 → x = 30 liters of 20% solution</span><br>
+      30 liters of 20% + 30 liters of 80% → 60 liters of 50%
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Mixture: two equations — quantity and value</div><div class="tip-body">For every mixture problem, write one equation for total quantity (x + y = total) and one for total value (value₁·x + value₂·y = total value). Solving this system gives both amounts. Never try to guess — always set up both equations.</div></div>
+    <div class="tip"><div class="tip-title">Work rates: add rates, not times</div><div class="tip-body">If two workers work simultaneously, add their rates (jobs/hour), not their times. Rate A + Rate B = Combined rate. Then time = 1/combined rate. Adding times together is a classic error.</div></div>
+    <div class="tip"><div class="tip-title">Average speed ≠ average of two speeds</div><div class="tip-body">For a round trip or two-segment journey at different speeds, average speed = total distance / total time. Calculate each segment's time using d=rt, sum the times, then divide total distance by total time.</div></div>
+    <div class="tip"><div class="tip-title">Multi-step rate chains: use unit cancellation</div><div class="tip-body">Chain rates as fractions so units cancel: (miles/hour) × (hours/day) = miles/day. Writing units explicitly prevents setting up the multiplication or division the wrong way.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Pipe A fills a tank in 4 hours. Pipe B fills the same tank in 6 hours. Both pipes are opened simultaneously.</div>
+      <div class="hint">Rate A = 1/4 tank/hr. Rate B = 1/6 tank/hr. Combined rate = 1/4 + 1/6. Find common denominator: 3/12 + 2/12 = 5/12 tank/hr. Time = 1 ÷ (5/12) = 12/5 hours.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Combined Work Rate</div>
+      <div class="q-text">How long will it take to fill the tank with <strong>both pipes open</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>5 hours</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>2 hours 24 minutes</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>2 hours</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>3 hours</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 2 hours 24 minutes</strong><div class="fb-work">Rate A + Rate B = 1/4 + 1/6 = 3/12 + 2/12 = 5/12 tank/hr<br>Time = 1/(5/12) = 12/5 = 2.4 hours<br>= 2 hours 24 minutes ✓<br><br>Note: 12/5 = 2.4 hr = 2 hr + 0.4×60 min = 2 hr 24 min</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Add the rates (not the times): 1/4 + 1/6 = 5/12 tanks per hour. Time to fill = 1 ÷ (5/12) = 12/5 hours.<div class="fb-work">12/5 = 2.4 hours = 2 hr 24 min</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A car travels 120 miles to a destination at 60 mph, then returns the same 120 miles at 40 mph.</div>
+      <div class="hint">Calculate each leg's time separately: Time out = 120/60 = 2 hr. Time back = 120/40 = 3 hr. Total distance = 240 mi. Total time = 5 hr. Average speed = 240/5.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Average Speed</div>
+      <div class="q-text">What is the <strong>average speed</strong> for the entire round trip?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>50 mph</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>48 mph</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>52 mph</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>45 mph</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 48 mph</strong><div class="fb-work">Time out: 120/60 = 2 hours<br>Time back: 120/40 = 3 hours<br>Total time: 5 hours · Total distance: 240 miles<br>Average speed = 240/5 = 48 mph ✓<br><br>The average of 60 and 40 is 50 — but that's wrong here because you spend more TIME at the slower speed.</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Average speed = total distance ÷ total time. Find each leg's time separately: 120/60 and 120/40. Add times, divide total distance.<div class="fb-work">240 ÷ (2+3) = 240/5 = 48 mph</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A coffee shop blends two types of coffee: Blend A costs $12/lb and Blend B costs $20/lb. The shop wants to create 50 lbs of a blend that costs $15/lb.</div>
+      <div class="hint">Let x = pounds of Blend A. Then (50−x) = pounds of Blend B. Value equation: 12x + 20(50−x) = 15(50). Solve for x.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Mixture Problem</div>
+      <div class="q-text">How many pounds of <strong>Blend A</strong> should be used?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>25 pounds</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>31.25 pounds</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>18.75 pounds</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>37.5 pounds</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 31.25 pounds</strong><div class="fb-work">12x + 20(50−x) = 15(50)<br>12x + 1000 − 20x = 750<br>−8x = −250<br>x = 31.25 lbs of Blend A ✓<br>Blend B: 50 − 31.25 = 18.75 lbs<br>Check: 12(31.25)+20(18.75) = 375+375 = 750 = 15×50 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Set up: 12x + 20(50−x) = 15(50). Expand 20(50−x) = 1000−20x. Combine like terms and solve for x.<div class="fb-work">−8x = −250 → x = 31.25 lbs</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.17</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.18 of 24</span>
+  <button class="btn-nav primary">Next → 4.19 Percentages & Interest</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

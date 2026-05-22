@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.23 — Geometry Applications</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:96%;background:#D97706;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .app-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .app-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .app-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .app-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .app-ex{font-family:Georgia,serif;font-size:12px;color:#92400E;margin-top:4px;line-height:1.7}
+  .example-box{background:#FEF3C7;border-left:3px solid #D97706;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-top:1rem}
+  .example-label{font-size:11px;font-weight:500;color:#D97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+  .example-text{font-size:13px;color:#111;line-height:1.9}
+  .fb-work{font-family:Georgia,serif;font-size:13px;color:#92400E;line-height:2.1;margin-top:5px}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .math-eq{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;margin:.6rem 0;padding:.5rem .75rem;background:#FEF3C7;border-radius:6px;display:block;text-align:center}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;font-family:Georgia,serif;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#D97706;color:#fff;border-color:#D97706}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.23</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 23 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.23</div>
+<div class="lesson-title">Geometry Applications</div>
+<div class="lesson-sub">Apply all geometry skills to complex multi-step real-world problems — architectural design, surveying, packaging, and navigation — where multiple geometry concepts combine in a single question.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Combining geometry concepts</div>
+  <div class="body-text">The most challenging SAT geometry questions require combining multiple concepts — for example, using trigonometry inside a volume calculation, or applying similar triangles within a coordinate geometry problem. The key is identifying which tools are needed before starting any calculation.</div>
+  <div class="app-grid">
+    <div class="app-card">
+      <div class="app-title">Trig in 3D problems</div>
+      <div class="app-body">Use trig ratios to find missing lengths in cross-sections of 3D figures. Find the height of a cone from a slant height and angle, or the diagonal of a box.</div>
+      <div class="app-ex">Box 8×6×h. Space diagonal d:<br>d = √(8²+6²+h²) = √(100+h²)</div>
+    </div>
+    <div class="app-card">
+      <div class="app-title">Scale and proportion in geometry</div>
+      <div class="app-body">When dimensions scale by k: lengths scale by k, areas by k², volumes by k³. Common SAT question: a shape is scaled by factor k — how does the perimeter, area, or volume change?</div>
+    </div>
+    <div class="app-card">
+      <div class="app-title">Circles and triangles combined</div>
+      <div class="app-body">Many problems combine a circle with an inscribed or circumscribed polygon. The radius connects to the polygon's vertices or sides. Draw the radius to a key point and look for right angles.</div>
+      <div class="app-ex">Equilateral triangle inscribed in circle of r=6:<br>Side = r√3 = 6√3</div>
+    </div>
+    <div class="app-card">
+      <div class="app-title">Coordinate geometry + distance</div>
+      <div class="app-body">Find the distance between a point and a line, the area of a polygon from coordinates, or whether a point lies inside a circle. These combine formulas from different geometry topics.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — multi-step geometry</div>
+    <div class="example-text">
+      A right circular cone has a slant height of 13 cm and a base radius of 5 cm. Find the volume.<br><br>
+      <span class="fb-work">Step 1: Find height using Pythagorean theorem.</span><br>
+      <span class="fb-work">h² + r² = l² → h² + 25 = 169 → h² = 144 → h = 12 cm</span><br>
+      <span class="fb-work">Step 2: V = ⅓πr²h = ⅓π(25)(12) = 100π cm³</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Identify required concepts before calculating</div><div class="tip-body">Read the entire problem and list which geometry concepts are needed. Multi-step problems often require: (1) a trig ratio or Pythagorean theorem to find a length, then (2) that length in a volume or area formula. Doing step 2 before step 1 is the most common error.</div></div>
+    <div class="tip"><div class="tip-title">Label every measurement on your diagram</div><div class="tip-body">Even in calculator section geometry, drawing and labeling a diagram is faster than holding dimensions in your head. Write all given measurements and intermediary results on the figure as you find them.</div></div>
+    <div class="tip"><div class="tip-title">Slant height ≠ height in cones</div><div class="tip-body">The slant height l is the distance along the cone's surface from apex to base edge. The height h is the perpendicular distance from apex to base. They're related by h² + r² = l². Volume and surface area formulas use height h, not slant height l.</div></div>
+    <div class="tip"><div class="tip-title">The space diagonal of a box uses all three dimensions</div><div class="tip-body">The longest diagonal through a rectangular box (from one corner to the opposite corner) equals √(l² + w² + h²). This is the Pythagorean theorem applied twice — first to find the face diagonal, then using that as a leg.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A storage box has dimensions 9 cm × 12 cm × 8 cm. A diagonal rod is placed inside the box, connecting opposite corners.</div>
+      <div class="hint">Space diagonal = √(l²+w²+h²) = √(9²+12²+8²) = √(81+144+64) = √289. Recognize: 289 = 17².</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Space Diagonal</div>
+      <div class="q-text">What is the length of the diagonal rod?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>√225 = 15 cm</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>√289 = 17 cm</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>√253 cm</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>29 cm</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 17 cm</strong><div class="fb-work">d = √(9²+12²+8²)<br>= √(81+144+64)<br>= √289 = 17 cm ✓<br><br>Note: 9-12-15 is a 3-4-5 triple (×3). But then √(15²+8²) = √(225+64) = √289 = 17. This is a 8-15-17 right triangle!</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Space diagonal = √(l²+w²+h²). Square each dimension, add them, take the square root.<div class="fb-work">√(81+144+64) = √289 = 17 cm</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A point P is located at (3, 7) in the xy-plane. A circle has center (−1, 4) and radius 6.</div>
+      <div class="hint">Find the distance from P to the center using the distance formula. Then compare to the radius: if distance &lt; r, P is inside; if distance = r, P is on; if distance &gt; r, P is outside.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Point and Circle</div>
+      <div class="q-text">Is point P inside, on, or outside the circle?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>Inside the circle (distance &lt; 6)</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>On the circle (distance = 6)</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>Outside the circle (distance &gt; 6)</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>Cannot be determined without the equation</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! Inside the circle</strong><div class="fb-work">Distance from P(3,7) to center (−1,4):<br>d = √[(3−(−1))² + (7−4)²]<br>= √[4² + 3²]<br>= √[16 + 9] = √25 = 5<br>Since 5 &lt; 6 (radius), P is INSIDE the circle ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Use the distance formula between P(3,7) and center(−1,4). Compare to r=6: less than → inside, equal → on, greater → outside.<div class="fb-work">d = √(16+9) = 5 &lt; 6 → inside</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A surveyor needs to find the width of a river. She stands at point A on one bank, directly across from point B on the other bank. She walks 80 m along the bank to point C. From C, the angle between line CB and line CA is 35°.</div>
+      <div class="hint">Triangle ABC: AB is the width (opposite the 35° angle at C), AC = 80 m (adjacent to the 35° angle). Use tan(35°) = AB/AC → AB = 80 × tan(35°). (tan 35° ≈ 0.700)</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Trig Application</div>
+      <div class="q-text">What is the approximate width of the river?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>approximately 46 m</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>approximately 56 m</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>approximately 65 m</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>approximately 98 m</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! ≈ 56 m</strong><div class="fb-work">Angle at C = 35°<br>AB (width) = opposite · AC = 80 m = adjacent<br>tan(35°) = AB/80<br>AB = 80 × tan(35°) = 80 × 0.700 = 56 m ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The width AB is opposite the 35° angle. The 80m walk AC is adjacent. Use tangent: tan(35°) = opposite/adjacent = AB/80.<div class="fb-work">AB = 80 × tan(35°) ≈ 80 × 0.700 ≈ 56 m</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.22</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.23 of 24</span>
+  <button class="btn-nav primary">Next → 4.24 Mixed Problem Solving (Final)</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

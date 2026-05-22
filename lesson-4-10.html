@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.10 — Coordinate Geometry</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 42%; background: #D97706; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: .5rem; background: #FEF3C7; color: #92400E; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: .25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: .5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: .75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; }
+  .formula { font-size: 15px; font-weight: 500; color: #92400E; font-family: Georgia, serif; line-height: 2.2; text-align: center; }
+  .concept-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  .concept-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-weight: 500; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .concept-table td { padding: 8px 12px; color: #6b7280; border-bottom: 1px solid #e5e7eb; line-height: 1.55; }
+  .concept-table tr:last-child td { border-bottom: none; }
+  .concept-table td:first-child { font-weight: 500; color: #111; }
+  .concept-table td em { font-family: Georgia, serif; font-style: normal; color: #92400E; }
+  .example-box { background: #FEF3C7; border-left: 3px solid #D97706; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #D97706; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #92400E; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: .9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .calc-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #92400E; font-weight: 500; margin-bottom: 1rem; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all .15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #92400E; font-family: Georgia, serif; margin: .6rem 0; padding: .5rem .75rem; background: #FEF3C7; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: .6rem .9rem; margin-top: .75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #D97706; letter-spacing: .06em; text-transform: uppercase; margin-bottom: .5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all .15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #D97706; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #D97706; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: .85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #D97706; color: #fff; border-color: #D97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.10</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 10 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.10</div>
+<div class="lesson-title">Coordinate Geometry</div>
+<div class="lesson-sub">Master distance, midpoint, and partition formulas — and apply coordinate geometry to find areas, perimeters, and properties of shapes plotted in the xy-plane.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The core coordinate formulas</div>
+  <div class="formula-box">
+    <div class="formula">
+      Distance: d = √[(x₂−x₁)² + (y₂−y₁)²]<br>
+      Midpoint: M = ((x₁+x₂)/2, (y₁+y₂)/2)<br>
+      Partition: P = (x₁ + m/(m+n)·(x₂−x₁), y₁ + m/(m+n)·(y₂−y₁))
+    </div>
+  </div>
+  <table class="concept-table">
+    <tr><th>Situation</th><th>Formula to use</th><th>Notes</th></tr>
+    <tr><td>Length of a segment</td><td><em>distance formula</em></td><td>Same as Pythagorean theorem — the segment is the hypotenuse of a right triangle</td></tr>
+    <tr><td>Center of a segment</td><td><em>midpoint formula</em></td><td>Average the x-coordinates and y-coordinates separately</td></tr>
+    <tr><td>Point dividing segment in ratio m:n</td><td><em>partition formula</em></td><td>Moves m/(m+n) of the way from point 1 to point 2</td></tr>
+    <tr><td>Area of polygon in coordinate plane</td><td><em>shoelace formula or decompose</em></td><td>Break into triangles or use ½|Σ(xᵢyᵢ₊₁ − xᵢ₊₁yᵢ)|</td></tr>
+    <tr><td>Slope of a segment</td><td><em>m = (y₂−y₁)/(x₂−x₁)</em></td><td>Used to check parallel, perpendicular, or collinear points</td></tr>
+  </table>
+  <div class="example-box">
+    <div class="example-label">Worked example — partition point</div>
+    <div class="example-text">
+      Point P divides segment AB in ratio 2:3, where A = (1, 2) and B = (6, 12).<br><br>
+      <span class="fb-work">P_x = 1 + 2/(2+3) × (6−1) = 1 + (2/5)(5) = 1 + 2 = 3</span><br>
+      <span class="fb-work">P_y = 2 + 2/(2+3) × (12−2) = 2 + (2/5)(10) = 2 + 4 = 6</span><br>
+      P = (3, 6)
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Distance = Pythagorean theorem</div><div class="tip-body">The distance formula is just a² + b² = c² in disguise: Δx and Δy are the two legs, the distance is the hypotenuse. If the numbers are clean, check if they're a Pythagorean triple before computing the square root.</div></div>
+    <div class="tip"><div class="tip-title">Midpoint: average both coordinates</div><div class="tip-body">Average the x-values and average the y-values separately. If you know the midpoint and one endpoint, set up equations: midpoint = (x₁+x₂)/2 and solve for the unknown endpoint.</div></div>
+    <div class="tip"><div class="tip-title">Partition: identify which endpoint you start from</div><div class="tip-body">In ratio m:n, you move m/(m+n) of the way from the first point to the second. Always identify which point is "first" from the problem statement — getting this wrong flips the answer.</div></div>
+    <div class="tip"><div class="tip-title">Check collinearity with slope</div><div class="tip-body">Three points are collinear if any two pairs give the same slope. If slopes AB and BC are equal, then A, B, C are on the same line. Use this to verify answers in coordinate geometry problems.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Points A = (2, −1) and B = (8, 7) are endpoints of a segment.</div>
+      <div class="hint">Distance: √[(8−2)² + (7−(−1))²] = √[36+64] = √100. Midpoint: ((2+8)/2, (−1+7)/2).</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Distance & Midpoint</div>
+      <div class="q-text">What is the <strong>midpoint</strong> of segment AB?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>(5, 3)</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>(6, 8)</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>(3, 4)</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>(5, 4)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! (5, 3)</strong><div class="fb-work">M_x = (2+8)/2 = 10/2 = 5<br>M_y = (−1+7)/2 = 6/2 = 3<br>Midpoint = (5, 3) ✓<br><br>Bonus: distance AB = √[(6)²+(8)²] = √100 = 10 (6-8-10 triple)</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Midpoint: average the x-coordinates and average the y-coordinates. (2+8)/2 = 5 and (−1+7)/2 = 3.<div class="fb-work">Midpoint = (5, 3)</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Point P divides segment from C = (0, 0) to D = (10, 15) in the ratio 2:3 (measured from C).</div>
+      <div class="hint">Use partition formula: P_x = 0 + 2/(2+3) × (10−0) = 2/5 × 10 = 4. P_y = 0 + 2/5 × 15 = 6.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Partition Point</div>
+      <div class="q-text">What are the coordinates of point <strong>P</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>(4, 6)</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>(6, 9)</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>(5, 7.5)</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>(2, 3)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! (4, 6)</strong><div class="fb-work">Fraction from C: 2/(2+3) = 2/5<br>P_x = 0 + (2/5)(10−0) = 4<br>P_y = 0 + (2/5)(15−0) = 6<br>P = (4, 6) ✓<br><br>Check: C to P distance = √(16+36)=√52, P to D = √(36+81)=√117. Ratio: √52:√117 ≈ 2:3 ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Move 2/(2+3) = 2/5 of the way from C to D. x: 0 + (2/5)(10) = 4. y: 0 + (2/5)(15) = 6.<div class="fb-work">P = (4, 6)</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Triangle ABC has vertices at A = (0, 0), B = (6, 0), and C = (4, 5).</div>
+      <div class="hint">Area of triangle with one side on x-axis: base AB = 6 (horizontal distance). Height = y-coordinate of C = 5. Area = ½ × base × height.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Area in Coordinate Plane</div>
+      <div class="q-text">What is the <strong>area</strong> of triangle ABC?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>12</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>15</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>20</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>30</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 15</strong><div class="fb-work">Base AB lies on x-axis: length = 6−0 = 6<br>Height = perpendicular distance from C to x-axis = y-coordinate of C = 5<br>Area = ½ × 6 × 5 = 15 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Since A and B both have y = 0, AB is the base along the x-axis. Its length is 6. The height is C's y-coordinate (5). Area = ½bh.<div class="fb-work">½ × 6 × 5 = 15</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.9</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.10 of 24</span>
+  <button class="btn-nav primary">Next → 4.11 Statistics & Data Analysis</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

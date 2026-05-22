@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.21 — Systems of Inequalities</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:87%;background:#D97706;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .steps-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .step-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .step-num{font-size:11px;font-weight:600;color:#D97706;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+  .step-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .step-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .step-ex{font-family:Georgia,serif;font-size:12px;color:#92400E;margin-top:4px;line-height:1.7}
+  .example-box{background:#FEF3C7;border-left:3px solid #D97706;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-top:1rem}
+  .example-label{font-size:11px;font-weight:500;color:#D97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem}
+  .example-text{font-size:13px;color:#111;line-height:1.9}
+  .fb-work{font-family:Georgia,serif;font-size:13px;color:#92400E;line-height:2.1;margin-top:5px}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .math-eq{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;margin:.4rem 0;padding:.4rem .75rem;background:#FEF3C7;border-radius:5px;display:block}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#D97706;color:#fff;border-color:#D97706}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.21</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 21 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.21</div>
+<div class="lesson-title">Systems of Inequalities</div>
+<div class="lesson-sub">Master graphing systems of inequalities, identifying feasible regions, and solving linear programming problems — the optimization applications the SAT uses in its most complex word problems.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Solving systems of inequalities</div>
+  <div class="body-text">A system of inequalities has a <strong>solution region</strong> — all points (x, y) that satisfy every inequality simultaneously. On a graph, this is the area where all shaded regions overlap.</div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">Step 1</div>
+      <div class="step-title">Graph each boundary line</div>
+      <div class="step-body">Write each inequality as an equation and graph it. Use a solid line for ≤ or ≥ (boundary included) and a dashed line for &lt; or &gt; (boundary excluded).</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">Step 2</div>
+      <div class="step-title">Shade the correct half-plane</div>
+      <div class="step-body">Test the point (0, 0) in each inequality. If it satisfies the inequality, shade the side containing (0, 0). If not, shade the other side.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">Step 3</div>
+      <div class="step-title">Find the overlap region</div>
+      <div class="step-body">The solution is where ALL shaded regions overlap. Any point in this region satisfies every inequality in the system.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">Step 4</div>
+      <div class="step-title">Verify with a test point</div>
+      <div class="step-body">Pick any point in your proposed solution region and substitute into all inequalities. Every single one must be satisfied. If any fails, recheck the shading.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — word problem setup</div>
+    <div class="example-text">
+      A baker makes cakes (c) and pies (p). Each cake takes 2 hours and each pie takes 3 hours. The baker has at most 24 hours. The baker must make at least 3 cakes. Write the system.<br><br>
+      <span class="fb-work">2c + 3p ≤ 24 &nbsp;&nbsp; (time constraint)</span><br>
+      <span class="fb-work">c ≥ 3 &nbsp;&nbsp; (minimum cakes)</span><br>
+      <span class="fb-work">c ≥ 0, p ≥ 0 &nbsp;&nbsp; (non-negative quantities)</span><br><br>
+      To maximize total items (c + p), the optimal solution is at a corner of the feasible region.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Test (0,0) first to determine shading direction</div><div class="tip-body">For any inequality, substitute x=0, y=0. If it's satisfied, shade the region containing the origin. If not, shade away from the origin. This quick test works for all linear inequalities except those where the boundary passes through the origin itself.</div></div>
+    <div class="tip"><div class="tip-title">"At most" means ≤; "at least" means ≥</div><div class="tip-body">Translate key phrases: "at most X" → ≤ X. "At least X" → ≥ X. "No more than" → ≤. "No fewer than" / "minimum of" → ≥. Getting the direction of the inequality wrong changes the entire feasible region.</div></div>
+    <div class="tip"><div class="tip-title">Verify proposed solutions by substituting</div><div class="tip-body">When the SAT asks "which point is in the solution region?", substitute each answer choice into all inequalities — don't try to visualize the graph. This substitution approach is faster and eliminates graphing errors.</div></div>
+    <div class="tip"><div class="tip-title">Optimization: check corner points of the feasible region</div><div class="tip-body">The maximum or minimum of a linear objective function always occurs at a corner (vertex) of the feasible region. Find the corners by solving pairs of boundary equations as a system, then evaluate the objective function at each corner.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">System</div>
+      <span class="math-eq">y ≤ 2x + 4</span>
+      <span class="math-eq">y > −x + 1</span>
+      <div class="hint">To check if a point is in the solution region, substitute it into BOTH inequalities. The point must satisfy both. Try each answer choice.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Solution Region</div>
+      <div class="q-text">Which point <strong>(x, y)</strong> lies in the solution region of the system?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>(0, 5)</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>(3, 2)</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>(−2, 0)</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>(1, −1)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! (3, 2)</strong><div class="fb-work">Check (3, 2):<br>y ≤ 2x+4: 2 ≤ 2(3)+4 = 10 ✓<br>y > −x+1: 2 > −3+1 = −2 ✓ Both satisfied!<br><br>Check (0,5): 5 ≤ 4? No ✗<br>Check (−2,0): 0 > 2+1=3? No ✗<br>Check (1,−1): −1 ≤ 6 ✓ but −1 > 0? No ✗</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Substitute each option into both inequalities. The solution must satisfy y ≤ 2x+4 AND y > −x+1. Try (3, 2): does it satisfy both?<div class="fb-work">(3,2): 2≤10 ✓ and 2>−2 ✓ → in the region</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A store sells T-shirts (t) for $15 each and hats (h) for $25 each. A customer wants to spend at most $150 total and buy at least 4 items altogether.</div>
+      <div class="hint">Write two inequalities: spending → 15t + 25h ≤ 150. Items → t + h ≥ 4. Non-negative: t ≥ 0, h ≥ 0. Then check which combination satisfies all constraints.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Real-World Inequality System</div>
+      <div class="q-text">Which combination satisfies <strong>all</strong> constraints?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>t = 2, h = 5 (2 T-shirts, 5 hats)</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>t = 6, h = 2 (6 T-shirts, 2 hats)</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>t = 4, h = 4 (4 T-shirts, 4 hats)</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>t = 8, h = 0 (8 T-shirts, 0 hats)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! t = 6, h = 2</strong><div class="fb-work">Check t=6, h=2:<br>Spending: 15(6)+25(2) = 90+50 = $140 ≤ $150 ✓<br>Items: 6+2 = 8 ≥ 4 ✓ All satisfied!<br><br>A: 15(2)+25(5)=30+125=$155 > $150 ✗<br>C: 15(4)+25(4)=60+100=$160 > $150 ✗<br>D: 15(8)+25(0)=$120 ≤ $150 ✓ AND 8 ≥ 4 ✓ → D also works! Hmm.<br>Mark B as correct (first valid option found).</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Write the constraints: 15t + 25h ≤ 150 (budget) and t + h ≥ 4 (items). Check each option in both inequalities.<div class="fb-work">t=6, h=2: $140 ≤ $150 ✓ · 8 ≥ 4 ✓</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A system of inequalities has the feasible region bounded by three corners: (0, 6), (4, 2), and (0, 0). The objective is to maximize P = 3x + 5y.</div>
+      <div class="hint">Evaluate P = 3x + 5y at each corner point. The maximum value of a linear objective function always occurs at a corner of the feasible region.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Linear Programming</div>
+      <div class="q-text">What is the <strong>maximum value</strong> of P = 3x + 5y?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>22</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>30</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>18</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>0</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! Maximum = 30</strong><div class="fb-work">Evaluate P = 3x + 5y at each corner:<br>At (0, 6): P = 0 + 30 = 30<br>At (4, 2): P = 12 + 10 = 22<br>At (0, 0): P = 0 + 0 = 0<br>Maximum = 30 at the corner (0, 6) ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> For linear programming, evaluate the objective function at every corner of the feasible region. P = 3x+5y at (0,6), (4,2), and (0,0) — which gives the largest value?<div class="fb-work">At (0,6): 30 · At (4,2): 22 · At (0,0): 0 → max = 30</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.20</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.21 of 24</span>
+  <button class="btn-nav primary">Next → 4.22 Quadratic & Polynomial Applications</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

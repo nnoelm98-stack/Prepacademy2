@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.5 — Geometry Fundamentals</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 21%; background: #D97706; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #FEF3C7; color: #92400E; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formulas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .formula-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .formula-shape { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .formula-eq { font-family: Georgia, serif; font-size: 13px; color: #92400E; font-weight: 500; margin-bottom: 3px; }
+  .formula-note { font-size: 11px; color: #6b7280; line-height: 1.5; }
+  .angle-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+  .angle-card { background: #FEF3C7; border-radius: 8px; padding: 0.75rem; text-align: center; }
+  .angle-title { font-size: 12px; font-weight: 500; color: #92400E; margin-bottom: 3px; }
+  .angle-rule { font-size: 11px; color: #633806; line-height: 1.4; }
+  .example-box { background: #FEF3C7; border-left: 3px solid #D97706; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #D97706; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #92400E; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .calc-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #92400E; font-weight: 500; margin-bottom: 1rem; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #92400E; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #FEF3C7; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #D97706; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #D97706; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #D97706; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #D97706; color: #fff; border-color: #D97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.5</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 5 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.5</div>
+<div class="lesson-title">Geometry Fundamentals</div>
+<div class="lesson-sub">Master the area and perimeter formulas for all shapes on the SAT, angle relationships, and the coordinate geometry connection — all applied to real-world and multi-step problems.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Essential area & perimeter formulas</div>
+  <div class="formulas-grid">
+    <div class="formula-card">
+      <div class="formula-shape">Rectangle</div>
+      <div class="formula-eq">A = lw · P = 2l + 2w</div>
+      <div class="formula-note">l = length, w = width</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-shape">Triangle</div>
+      <div class="formula-eq">A = ½bh</div>
+      <div class="formula-note">b = base, h = perpendicular height (not slant side)</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-shape">Circle</div>
+      <div class="formula-eq">A = πr² · C = 2πr</div>
+      <div class="formula-note">r = radius. Diameter d = 2r.</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-shape">Trapezoid</div>
+      <div class="formula-eq">A = ½(b₁ + b₂)h</div>
+      <div class="formula-note">b₁ and b₂ = parallel bases, h = perpendicular height</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-shape">Sector of a circle</div>
+      <div class="formula-eq">A = (θ/360)πr²</div>
+      <div class="formula-note">θ = central angle in degrees. Arc length = (θ/360)·2πr</div>
+    </div>
+    <div class="formula-card">
+      <div class="formula-shape">Composite shapes</div>
+      <div class="formula-eq">A_total = sum of parts</div>
+      <div class="formula-note">Break complex shapes into rectangles, triangles, and semicircles. Add or subtract areas.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Angle relationships</div>
+  <div class="angle-grid">
+    <div class="angle-card">
+      <div class="angle-title">Supplementary angles</div>
+      <div class="angle-rule">Two angles on a straight line. Sum = 180°.</div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-title">Vertical angles</div>
+      <div class="angle-rule">Opposite angles at an intersection. Always equal.</div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-title">Triangle angle sum</div>
+      <div class="angle-rule">Three interior angles of any triangle sum to 180°.</div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-title">Parallel lines cut by transversal</div>
+      <div class="angle-rule">Alternate interior angles are equal. Co-interior angles sum to 180°.</div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-title">Exterior angle of triangle</div>
+      <div class="angle-rule">Equals the sum of the two non-adjacent interior angles.</div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-title">Polygon interior angles</div>
+      <div class="angle-rule">Sum = (n − 2) × 180° where n = number of sides.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — composite area</div>
+    <div class="example-text">
+      A window consists of a rectangle (6 ft wide, 4 ft tall) topped by a semicircle. Find the total area.<br><br>
+      <span class="fb-work">Rectangle area = 6 × 4 = 24 sq ft</span><br>
+      <span class="fb-work">Semicircle radius = 6/2 = 3 ft</span><br>
+      <span class="fb-work">Semicircle area = ½π(3)² = 4.5π ≈ 14.14 sq ft</span><br>
+      <span class="fb-work">Total = 24 + 4.5π ≈ 38.14 sq ft</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Label every measurement on the figure</div><div class="tip-body">Before computing, write all known measurements on the diagram. Mark right angles, equal sides, and parallel lines. This visual organization prevents missing a given value or using the wrong dimension.</div></div>
+    <div class="tip"><div class="tip-title">Height ≠ slant side in triangles</div><div class="tip-body">In A = ½bh, h is the perpendicular height from base to opposite vertex — not the length of a slanted side. If only the slant side is given, use the Pythagorean theorem to find the height first.</div></div>
+    <div class="tip"><div class="tip-title">Composite shapes: add or subtract</div><div class="tip-body">For complex shapes, identify which simpler shapes to combine. Sometimes it's easier to find the area of a large shape and subtract the "missing" pieces rather than adding small pieces.</div></div>
+    <div class="tip"><div class="tip-title">Sector problems: always use the fraction θ/360</div><div class="tip-body">A sector is a "pizza slice" of a circle. Its area and arc length are both fractions of the full circle — multiply the full-circle formula by θ/360. This works for any angle, not just 90° or 180°.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A circular pizza has a diameter of 16 inches. It is cut into 8 equal slices.</div>
+      <div class="hint">Each slice is a sector with central angle 360°/8 = 45°. Radius = 8 inches. Use sector area formula: A = (45/360)πr².</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Sector Area</div>
+      <div class="q-text">What is the area of <strong>one slice</strong>? (Leave in terms of π.)</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>4π square inches</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>8π square inches</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>2π square inches</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>16π square inches</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 8π square inches</strong><div class="fb-work">Radius = 16/2 = 8 inches<br>Each slice: 360°/8 = 45°<br>Sector area = (45/360) × π × 8²<br>= (1/8) × 64π<br>= 8π square inches ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Each of 8 equal slices has angle 45°. Sector area = (45/360) × π × r². With r = 8: (1/8) × 64π.<div class="fb-work">(1/8) × 64π = 8π sq in</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">In the figure, two parallel lines are cut by a transversal. One angle measures (3x + 15)° and the co-interior angle (same-side interior) measures (2x + 25)°.</div>
+      <div class="hint">Co-interior (same-side interior) angles between parallel lines are supplementary — they add up to 180°. Set up: (3x+15) + (2x+25) = 180.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Parallel Lines & Angles</div>
+      <div class="q-text">What is the value of <strong>x</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>x = 24</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>x = 28</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>x = 32</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>x = 36</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! x = 28</strong><div class="fb-work">Co-interior angles sum to 180°:<br>(3x+15) + (2x+25) = 180<br>5x + 40 = 180<br>5x = 140<br>x = 28 ✓<br>Check: 3(28)+15=99° and 2(28)+25=81° · 99+81=180 ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Co-interior (same-side interior) angles between parallel lines sum to 180°. Set up: (3x+15)+(2x+25)=180.<div class="fb-work">5x+40=180 → 5x=140 → x=28</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A garden is shaped like a trapezoid with parallel sides of 12 m and 20 m, and a height of 8 m. A circular fountain with radius 2 m is placed in the center of the garden.</div>
+      <div class="hint">Find the trapezoid area using A = ½(b₁+b₂)h, then subtract the circular fountain area A = πr². The planted area is the difference.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Composite Area</div>
+      <div class="q-text">What is the area of the garden <strong>excluding</strong> the fountain? (Use π ≈ 3.14)</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>approximately 115.4 m²</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>approximately 128 m²</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>approximately 132 m²</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>approximately 143.4 m²</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! ≈ 115.4 m²</strong><div class="fb-work">Trapezoid: A = ½(12+20)×8 = ½(32)(8) = 128 m²<br>Fountain: A = π(2)² = 4π ≈ 12.57 m²<br>Garden area = 128 − 12.57 ≈ 115.4 m² ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Trapezoid area = ½(b₁+b₂)h = ½(12+20)(8) = 128 m². Fountain area = π(2)² ≈ 12.57 m². Subtract.<div class="fb-work">128 − 12.57 ≈ 115.4 m²</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.4</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.5 of 24</span>
+  <button class="btn-nav primary">Next → 4.6 Triangles & Pythagorean Theorem</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

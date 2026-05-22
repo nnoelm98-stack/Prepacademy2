@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.24 — Mixed Problem Solving (Final)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px;background:#fff;color:#111}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:1rem;border-bottom:1px solid #e5e7eb;margin-bottom:1.25rem}
+  .bc{font-size:13px;color:#6b7280}.bc span{color:#111;font-weight:500}
+  .score-row{display:flex;gap:8px}
+  .pip{width:10px;height:10px;border-radius:50%;background:#f3f4f6;border:1px solid #d1d5db;transition:all .2s}
+  .pip.correct{background:#3B6D11;border-color:#3B6D11}.pip.wrong{background:#A32D2D;border-color:#A32D2D}
+  .prog-wrap{margin-bottom:1.5rem}
+  .prog-meta{display:flex;justify-content:space-between;font-size:12px;color:#6b7280;margin-bottom:5px}
+  .prog-track{height:4px;background:#f3f4f6;border-radius:99px}
+  .prog-fill{height:4px;width:100%;background:#3B6D11;border-radius:99px}
+  .tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:.5rem;background:#FEF3C7;color:#92400E}
+  .lesson-title{font-size:22px;font-weight:500;margin-bottom:.25rem}
+  .lesson-sub{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:.5rem}
+  .dur-row{display:flex;gap:1.25rem;font-size:13px;color:#6b7280;margin-bottom:1.5rem}
+  .dur-row b{color:#111;font-weight:500}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem}
+  .sec-title{font-size:15px;font-weight:500;margin-bottom:.75rem}
+  .body-text{font-size:14px;color:#6b7280;line-height:1.75}.body-text strong{color:#111}
+  .strategy-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+  .strat-card{background:#f9fafb;border-radius:8px;padding:.9rem 1rem;border-left:3px solid #D97706}
+  .strat-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .strat-body{font-size:12px;color:#6b7280;line-height:1.55}
+  .tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tip{background:#f9fafb;border-radius:8px;padding:.9rem 1rem}
+  .tip-title{font-size:13px;font-weight:500;margin-bottom:4px}
+  .tip-body{font-size:12px;color:#6b7280;line-height:1.5}
+  .calc-badge{display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:4px 10px;font-size:12px;color:#92400E;font-weight:500;margin-bottom:1rem}
+  .q-tabs{display:flex;gap:4px;margin-bottom:1rem;background:#f9fafb;border-radius:9px;padding:3px;width:fit-content}
+  .q-tab{padding:5px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#6b7280;border:none;background:transparent;transition:all .15s}
+  .q-tab.active{background:#fff;color:#111;border:1px solid #e5e7eb}
+  .q-panel{display:none}.q-panel.active{display:block}
+  .math-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .problem-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem}
+  .panel-label{font-size:11px;font-weight:500;color:#6b7280;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .problem-text{font-size:13px;color:#374151;line-height:1.8}
+  .math-eq{font-size:15px;font-weight:500;color:#92400E;font-family:Georgia,serif;margin:.6rem 0;padding:.5rem .75rem;background:#FEF3C7;border-radius:6px;display:block;text-align:center}
+  .hint{background:#f9fafb;border-radius:8px;padding:.6rem .9rem;margin-top:.75rem;font-size:12px;color:#6b7280;line-height:1.5}
+  .q-panel-inner{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:1.25rem;display:flex;flex-direction:column}
+  .q-label{font-size:11px;font-weight:500;color:#D97706;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+  .q-text{font-size:14px;line-height:1.65;margin-bottom:1rem}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;line-height:1.5;transition:all .15s;background:#fff}
+  .opt:hover:not(.locked){border-color:#d1d5db;background:#f9fafb}
+  .opt.selected{border-color:#D97706;background:#FEF3C7;color:#92400E}
+  .opt.correct{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+  .opt.wrong{border-color:#A32D2D;background:#FCEBEB;color:#501313}
+  .opt-l{width:20px;height:20px;border-radius:50%;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px;font-family:system-ui}
+  .opt.selected .opt-l{background:#D97706;color:#fff}
+  .opt.correct .opt-l{background:#3B6D11;color:#fff}
+  .opt.wrong .opt-l{background:#A32D2D;color:#fff}
+  .q-actions{margin-top:1rem;display:flex;flex-direction:column;gap:8px}
+  .btn-check{background:#D97706;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+  .btn-check:disabled{background:#f3f4f6;color:#9ca3af;cursor:default}
+  .feedback{display:none;font-size:13px;line-height:1.65;padding:.85rem 1rem;border-radius:8px}
+  .feedback.show{display:block}
+  .feedback.ok{background:#EAF3DE;color:#27500A}
+  .feedback.fail{background:#FCEBEB;color:#501313}
+  .complete-banner{background:#EAF3DE;border:1px solid #3B6D11;border-radius:12px;padding:1.25rem 1.5rem;margin-top:1.5rem;display:flex;align-items:flex-start;gap:14px}
+  .complete-icon{width:44px;height:44px;border-radius:50%;background:#3B6D11;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .complete-title{font-size:17px;font-weight:500;color:#27500A;margin-bottom:4px}
+  .complete-sub{font-size:13px;color:#3B6D11;line-height:1.6}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #e5e7eb}
+  .btn-nav{background:transparent;border:1px solid #d1d5db;color:#111;padding:9px 18px;border-radius:8px;font-size:13px;cursor:pointer}
+  .btn-nav.primary{background:#3B6D11;color:#fff;border-color:#3B6D11}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.24 — Final</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 24 of 24 · Final lesson</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.24</div>
+<div class="lesson-title">Mixed Problem Solving</div>
+<div class="lesson-sub">The final lesson brings together all four modules — reading, writing, algebra, and data — in mixed, multi-concept problems that mirror the pace and variety of the real digital SAT.</div>
+<div class="dur-row"><span><b>15 min</b> read</span><span><b>3</b> practice questions</span><span><b>+25 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">How the SAT mixes concepts</div>
+  <div class="body-text">On the real SAT, the hardest questions require you to recognize which concept applies, translate a word problem into the right mathematical structure, and execute cleanly. Here are the most important cross-topic combinations tested.</div>
+  <div class="strategy-grid">
+    <div class="strat-card">
+      <div class="strat-title">Algebra + Geometry</div>
+      <div class="strat-body">Set up an equation from a geometric constraint (perimeter, area, angle sum), then solve the algebra. Or use coordinate geometry to find geometric properties.</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-title">Exponential + Statistics</div>
+      <div class="strat-body">Fit an exponential model to real data, then interpret the model's parameters in context. Or identify whether a table shows linear or exponential growth before modeling.</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-title">Proportions + Percent change</div>
+      <div class="strat-body">Multi-step problems that combine ratio setup with percentage calculations — markups, conversions, and rate comparisons all in one problem.</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-title">Systems + Inequalities</div>
+      <div class="strat-body">Real-world constraints written as a mixed system (some equations, some inequalities) requiring substitution or test-a-point strategies to find the valid region.</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-title">Functions + Transformations</div>
+      <div class="strat-body">Given a graph of f(x), identify what transformation produces g(x), or find specific values of a transformed function using points from the original.</div>
+    </div>
+    <div class="strat-card">
+      <div class="strat-title">Statistics + Inference</div>
+      <div class="strat-body">Calculate a statistic from a sample, then evaluate whether the conclusion drawn (generalization, causation, margin of error) is valid.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Final exam strategy</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Read the question before the problem</div><div class="tip-body">On multi-step problems, reading the question first tells you what you're solving for. This focuses your attention and prevents you from calculating things you don't need.</div></div>
+    <div class="tip"><div class="tip-title">Label variables, write equations, then calculate</div><div class="tip-body">Every word problem requires three steps: (1) define variables, (2) write equations or inequalities, (3) solve. Students who skip to calculation make avoidable errors. The calculator helps with step 3 only.</div></div>
+    <div class="tip"><div class="tip-title">Verify your answer makes sense</div><div class="tip-body">After solving, ask: is the answer reasonable? A negative length, a probability over 1, or a population that shrank when it was supposed to grow — all signal an error. Budget 5 seconds to sanity-check every answer.</div></div>
+    <div class="tip"><div class="tip-title">Don't get stuck — use process of elimination</div><div class="tip-body">If a question is taking too long, eliminate obviously wrong answers and make an educated guess. Then mark it and move on. On the digital SAT, every question has equal weight — don't spend 5 minutes on one question at the expense of three others.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Final practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Multi-concept problem</div>
+      <div class="problem-text">A square has side length s. The side is increased by 20%, creating a larger square.</div>
+      <div class="hint">New side = 1.2s. New area = (1.2s)² = 1.44s². Original area = s². Percent increase = (1.44s² − s²)/s² × 100 = 44%.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Geometry + Percentages</div>
+      <div class="q-text">By what percent does the <strong>area</strong> of the square increase?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>20%</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>40%</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>44%</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>24%</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 44%</strong><div class="fb-work">New side = 1.2s<br>New area = (1.2s)² = 1.44s²<br>Original area = s²<br>% increase = (1.44s² − s²)/s² × 100<br>= 0.44 × 100 = 44% ✓<br><br>Key insight: a 20% increase in length → 1.2² = 1.44 → 44% increase in area. Linear and area scales are different!</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Area scales as the square of the linear dimension. New side = 1.2s → new area = (1.2s)² = 1.44s². The area increases by 44%, not 20% × 2 = 40%.<div class="fb-work">(1.2)² = 1.44 → 44% area increase</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Multi-concept problem</div>
+      <div class="problem-text">A researcher randomly surveyed 500 visitors to a national park. 35% said they visited the park more than 3 times per year. The park receives approximately 180,000 visitors per year.</div>
+      <div class="problem-text" style="margin-top:.5rem;">The researcher concluded: "Visiting the park more than 3 times per year causes visitors to develop stronger environmental values."</div>
+      <div class="hint">This question combines inference (was the sample valid?) with study design (can an observational survey establish causation?). Identify both potential flaws.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Statistics + Inference</div>
+      <div class="q-text">Which best identifies a flaw in the researcher's conclusion?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>The sample size of 500 is too small to draw any conclusions.</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>A survey cannot establish causation — frequent visitors may already hold stronger environmental values before visiting more.</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>The estimate of 35% cannot be applied to the full 180,000 visitors.</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>The survey should have been conducted online for more responses.</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> The fundamental flaw is that an observational survey cannot establish causation. The researcher observed an association between visit frequency and environmental values — but this doesn't mean visiting more caused the values. People who already have strong environmental values may choose to visit more. This is the classic correlation ≠ causation error. A (sample size) is wrong — 500 is a reasonable sample. C is wrong — a random sample can be used to estimate population proportions. D is irrelevant and would make the sample worse (voluntary response bias).</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> The researcher used the word "causes" — but from an observational survey, can you establish causation? What alternative explanation might exist for the association?<div class="fb-work">Survey shows association, not causation. Confounding possible.</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Multi-concept problem</div>
+      <div class="problem-text">A company's profit P (in thousands of dollars) after t years is modeled by:</div>
+      <span class="math-eq">P(t) = −2t² + 16t − 24</span>
+      <div class="hint">Maximum profit: find vertex at t = −16/(2×−2) = 4 years. Profit becomes positive when P(t) > 0: factor −2t²+16t−24 > 0 → −2(t²−8t+12) > 0 → −2(t−2)(t−6) > 0. Positive when 2 &lt; t &lt; 6.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Algebra + Interpretation</div>
+      <div class="q-text">During which time interval is the company <strong>profitable</strong> (P &gt; 0)?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>t &lt; 2 and t &gt; 6</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>2 &lt; t &lt; 6</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>0 &lt; t &lt; 8</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>t &gt; 4</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 2 &lt; t &lt; 6</strong><div class="fb-work">P(t) > 0: −2t²+16t−24 > 0<br>Divide by −2 (flip inequality): t²−8t+12 &lt; 0<br>Factor: (t−2)(t−6) &lt; 0<br>Negative between roots → 2 &lt; t &lt; 6 ✓<br><br>Verify: P(4) = −32+64−24 = 8 &gt; 0 ✓<br>P(1) = −2+16−24 = −10 &lt; 0 ✓<br>P(7) = −98+112−24 = −10 &lt; 0 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Find the zeros of P(t) = 0 first: −2t²+16t−24 = 0 → t²−8t+12 = 0 → (t−2)(t−6) = 0 → t=2 or t=6. Since the parabola opens downward (−2t²), P is positive BETWEEN the roots.<div class="fb-work">Positive between roots: 2 &lt; t &lt; 6</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="complete-banner">
+  <div class="complete-icon">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l6 6 10-10"/></svg>
+  </div>
+  <div>
+    <div class="complete-title">🎉 Module 4 complete — all 24 lessons done!</div>
+    <div class="complete-sub">You've completed the entire PrepAcademy SAT curriculum: Modules 1, 2, 3, and 4 — 74 lessons total. You're now ready to tackle the full digital SAT with confidence. Time to take a full practice test!</div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.23</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.24 of 24 ✓</span>
+  <button class="btn-nav primary">Take a Full Practice Test →</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

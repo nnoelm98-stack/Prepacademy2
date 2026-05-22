@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4.3 — Quadratic Functions</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 12%; background: #D97706; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #FEF3C7; color: #92400E; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .forms-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+  .form-card { border-radius: 10px; padding: 1rem; }
+  .form-title { font-size: 12px; font-weight: 500; margin-bottom: 5px; }
+  .form-eq { font-family: Georgia, serif; font-size: 14px; color: #92400E; font-weight: 500; margin-bottom: 6px; }
+  .form-body { font-size: 11px; color: #6b7280; line-height: 1.5; }
+  .example-box { background: #FEF3C7; border-left: 3px solid #D97706; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #D97706; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #92400E; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .calc-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; border: 1px solid #FDE68A; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: #92400E; font-weight: 500; margin-bottom: 1rem; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #92400E; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #FEF3C7; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #D97706; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #D97706; background: #FEF3C7; color: #92400E; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; font-family: system-ui; }
+  .opt.selected .opt-l { background: #D97706; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #D97706; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #D97706; color: #fff; border-color: #D97706; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 4 › <span>Lesson 4.3</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 4 — Math: Calculator</span><span>Lesson 3 of 24</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="calc-badge">🖩 Calculator allowed</div>
+<div class="tag">SAT Math · Module 4 · Lesson 4.3</div>
+<div class="lesson-title">Quadratic Functions</div>
+<div class="lesson-sub">Apply quadratic skills from Module 3 to complex real-world contexts — projectile motion, revenue models, and area problems — where the calculator handles messy arithmetic so you can focus on setup and interpretation.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Three forms — quick reference</div>
+  <div class="forms-grid">
+    <div class="form-card" style="background:#FEF3C7;">
+      <div class="form-title" style="color:#92400E;">Standard form</div>
+      <div class="form-eq">ax² + bx + c</div>
+      <div class="form-body">y-intercept = c directly. Use quadratic formula to find roots. Axis of symmetry: x = −b/(2a).</div>
+    </div>
+    <div class="form-card" style="background:#f9fafb;">
+      <div class="form-title">Vertex form</div>
+      <div class="form-eq">a(x − h)² + k</div>
+      <div class="form-body">Vertex = (h, k) directly. Min/max value = k. Axis = x = h. Best for max/min questions.</div>
+    </div>
+    <div class="form-card" style="background:#EAF3DE;">
+      <div class="form-title" style="color:#27500A;">Factored form</div>
+      <div class="form-eq">a(x − r₁)(x − r₂)</div>
+      <div class="form-body">Roots = r₁ and r₂ directly. Best for x-intercept questions. Axis of symmetry: x = (r₁ + r₂)/2.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — projectile motion</div>
+    <div class="example-text">
+      A ball is launched from a platform. Its height (feet) after t seconds is h(t) = −16t² + 48t + 64.<br><br>
+      <strong>Maximum height:</strong><br>
+      <span class="fb-work">t at vertex = −48/(2×−16) = −48/−32 = 1.5 seconds</span><br>
+      <span class="fb-work">h(1.5) = −16(2.25) + 48(1.5) + 64 = −36 + 72 + 64 = 100 feet</span><br><br>
+      <strong>When does it hit the ground?</strong> Set h = 0:<br>
+      <span class="fb-work">−16t² + 48t + 64 = 0 → t² − 3t − 4 = 0 → (t−4)(t+1) = 0</span><br>
+      <span class="fb-work">t = 4 seconds (reject t = −1)</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Choose the form that answers the question</div><div class="tip-body">Max/min questions → convert to vertex form. Root/x-intercept questions → factor or use quadratic formula. y-intercept questions → read c from standard form. Don't convert unless you need to.</div></div>
+    <div class="tip"><div class="tip-title">Revenue models: R = price × quantity</div><div class="tip-body">Many calculator-section quadratics are revenue models: R(x) = (base price − decrease·x)(base quantity + increase·x). Expand and maximize. These always produce a parabola opening downward.</div></div>
+    <div class="tip"><div class="tip-title">Use the calculator for the quadratic formula</div><div class="tip-body">With a calculator, plug a, b, c directly into x = (−b ± √(b²−4ac))/(2a). Compute the discriminant first (b²−4ac), then the two roots. No need to factor if the numbers are messy.</div></div>
+    <div class="tip"><div class="tip-title">Check: does the answer make physical sense?</div><div class="tip-body">In projectile problems, time must be positive and height must be between launch height and maximum. If your answer gives a negative time or height above maximum, recheck the setup.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">The height of a rocket (in meters) t seconds after launch is:</div>
+      <span class="math-eq">h(t) = −5t² + 40t + 15</span>
+      <div class="hint">Maximum height occurs at the vertex. Find t at vertex: t = −40/(2×−5) = 4 seconds. Then compute h(4).</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Maximum Height</div>
+      <div class="q-text">What is the <strong>maximum height</strong> the rocket reaches?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>75 meters</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>95 meters</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>100 meters</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>115 meters</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 95 meters</strong><div class="fb-work">t_vertex = −40/(2×−5) = 4 seconds<br>h(4) = −5(16) + 40(4) + 15<br>= −80 + 160 + 15<br>= 95 meters ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Maximum height is at the vertex. Find t: −b/(2a) = −40/(2×−5) = 4. Then evaluate h(4).<div class="fb-work">h(4) = −80+160+15 = 95 meters</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A company sells widgets. If they charge p dollars per widget, their weekly revenue (in dollars) is:</div>
+      <span class="math-eq">R(p) = −20p² + 800p</span>
+      <div class="hint">Revenue is maximized at the vertex. Since this is in the form ap² + bp, use p = −b/(2a) = −800/(2×−20) = 20 to find the optimal price.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Revenue Optimization</div>
+      <div class="q-text">What price per widget <strong>maximizes revenue</strong>, and what is that maximum revenue?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>$20 per widget; maximum revenue $8,000</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>$40 per widget; maximum revenue $16,000</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>$20 per widget; maximum revenue $16,000</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>$10 per widget; maximum revenue $7,000</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong><div class="fb-work">Vertex at p = −800/(2×−20) = 20<br>R(20) = −20(400) + 800(20)<br>= −8,000 + 16,000 = $8,000<br>Price: $20 · Max revenue: $8,000 → Answer A ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Find the vertex: p = −800/(2×−20) = 20. That's the optimal price. Then compute R(20) for the maximum revenue.<div class="fb-work">R(20) = −20(400)+800(20) = $8,000</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A quadratic function has roots at x = −2 and x = 5, and passes through the point (0, −20).</div>
+      <div class="hint">Use factored form: f(x) = a(x+2)(x−5). Substitute the point (0, −20) to find a: −20 = a(2)(−5) = −10a → a = 2.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Factored Form</div>
+      <div class="q-text">What is the equation of the quadratic function?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>f(x) = (x + 2)(x − 5)</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>f(x) = 2(x + 2)(x − 5)</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>f(x) = −2(x + 2)(x − 5)</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>f(x) = 2(x − 2)(x + 5)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! f(x) = 2(x+2)(x−5)</strong><div class="fb-work">Roots −2 and 5 → f(x) = a(x+2)(x−5)<br>Substitute (0, −20): −20 = a(0+2)(0−5) = a(2)(−5) = −10a<br>a = 2<br>f(x) = 2(x+2)(x−5) ✓<br>Check: f(0) = 2(2)(−5) = −20 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Start with factored form: f(x) = a(x+2)(x−5). Use (0, −20) to find a: −20 = a(2)(−5) → a = 2.<div class="fb-work">f(x) = 2(x+2)(x−5)</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 4.2</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 4.3 of 24</span>
+  <button class="btn-nav primary">Next → 4.4 Exponential Growth & Decay</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>
