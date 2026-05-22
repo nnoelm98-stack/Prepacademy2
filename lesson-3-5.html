@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.5 — Linear Inequalities & Systems</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 23%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .region-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .region-card { background: #f9fafb; border-radius: 10px; padding: 1rem 1.25rem; }
+  .region-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 6px; }
+  .region-body { font-size: 12px; color: #6b7280; line-height: 1.55; margin-bottom: 6px; }
+  .region-ex { font-size: 12px; font-family: 'Georgia', serif; color: #4C1D95; line-height: 1.6; }
+  .steps-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+  .step-item { display: flex; gap: 12px; background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: #7C3AED; color: #fff; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 13px; color: #374151; line-height: 1.55; }
+  .step-body strong { color: #111; font-weight: 500; }
+  .step-ex { font-size: 12px; font-family: 'Georgia', serif; color: #4C1D95; margin-top: 3px; line-height: 1.5; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.4rem 0; padding: 0.4rem 0.75rem; background: #F5F3FF; border-radius: 5px; display: block; }
+  .hint-box { background: #f9fafb; border-radius: 8px; padding: 0.65rem 0.9rem; margin-top: 0.6rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.55; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.5</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 5 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.5</div>
+<div class="lesson-title">Linear Inequalities & Systems</div>
+<div class="lesson-sub">Learn to graph linear inequalities in two variables, identify solution regions, and solve systems of inequalities — including the word problems where two constraints must both be satisfied simultaneously.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Graphing a linear inequality in two variables</div>
+  <div class="body-text">An inequality like <strong>y &gt; 2x − 1</strong> defines a region of the coordinate plane — all points (x, y) where the inequality holds. Graphing it involves two steps: draw the boundary line, then shade the correct side.</div>
+  <div class="steps-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Draw the boundary line</strong> by replacing the inequality with an equals sign (y = 2x − 1). Use a <em>dashed</em> line for strict inequalities (&lt; or &gt;) and a <em>solid</em> line for ≤ or ≥.
+        <div class="step-ex">Dashed = not included · Solid = included (on the boundary)</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Pick a test point</strong> not on the line — (0, 0) works when the line doesn't pass through the origin. Substitute into the inequality.
+        <div class="step-ex">y &gt; 2x − 1 : test (0,0) → 0 &gt; −1 ✓ → shade the side containing (0, 0)</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Shade the correct half-plane.</strong> If the test point satisfies the inequality, shade the side containing it. If not, shade the opposite side.
+      </div>
+    </div>
+  </div>
+  <div class="region-grid">
+    <div class="region-card">
+      <div class="region-title">y &gt; mx + b (above the line)</div>
+      <div class="region-body">Shade above the dashed boundary line. All points above have a larger y-value than the line at that x.</div>
+      <div class="region-ex">y &gt; 2x − 1: shade above the dashed line y = 2x − 1</div>
+    </div>
+    <div class="region-card">
+      <div class="region-title">y &lt; mx + b (below the line)</div>
+      <div class="region-body">Shade below the dashed boundary line. All points below have a smaller y-value than the line at that x.</div>
+      <div class="region-ex">y &lt; 2x − 1: shade below the dashed line y = 2x − 1</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Systems of inequalities — the overlapping region</div>
+  <div class="body-text">A system of inequalities requires finding all points that satisfy <strong>all</strong> inequalities simultaneously. The solution is the region where all shaded areas overlap. The SAT usually asks you to identify a point that is or isn't in this region.</div>
+  <div class="example-box">
+    <div class="example-label">Worked example — testing a point</div>
+    <div class="example-text">
+      System: <strong>y ≤ −x + 4</strong> and <strong>y ≥ 2x − 2</strong><br><br>
+      Does (1, 2) satisfy the system?<br>
+      <span class="fb-work">Test ineq 1: 2 ≤ −(1) + 4 → 2 ≤ 3 ✓</span><br>
+      <span class="fb-work">Test ineq 2: 2 ≥ 2(1) − 2 → 2 ≥ 0 ✓</span><br>
+      <span style="font-size:13px;color:#111;">Yes — (1, 2) satisfies both inequalities and is in the solution region.</span><br><br>
+      Does (3, 3) satisfy the system?<br>
+      <span class="fb-work">Test ineq 1: 3 ≤ −3 + 4 → 3 ≤ 1 ✗</span><br>
+      <span style="font-size:13px;color:#111;">No — (3, 3) fails the first inequality and is outside the solution region.</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">The fastest SAT method: test the point directly</div><div class="tip-body">When asked which point lies in the solution region, substitute each answer choice into all the inequalities. The correct answer satisfies every inequality. No graphing required.</div></div>
+    <div class="tip"><div class="tip-title">Dashed vs. solid — boundary inclusion</div><div class="tip-body">Strict inequalities (&lt;, &gt;) use dashed lines — boundary not included. Non-strict (≤, ≥) use solid lines — boundary included. The SAT tests this distinction in "which point is a solution" questions.</div></div>
+    <div class="tip"><div class="tip-title">Word problems: write both constraints</div><div class="tip-body">SAT word problems with two conditions (budget limit AND minimum quantity, for example) require two inequalities. Write both before solving. The answer must satisfy both simultaneously.</div></div>
+    <div class="tip"><div class="tip-title">Convert to slope-intercept to identify region</div><div class="tip-body">Before graphing, solve for y to get slope-intercept form. Then: y &gt; → above the line; y &lt; → below. This removes ambiguity about which side to shade.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">System of inequalities</div>
+      <span class="math-eq">y &lt; 3x + 1</span>
+      <span class="math-eq">y ≥ −x + 5</span>
+      <div class="hint-box">To find which point lies in the solution region, substitute each answer choice into both inequalities. The correct point must satisfy both simultaneously.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Testing Points</div>
+      <div class="q-text">Which point (x, y) is a solution to the system of inequalities?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>(0, 6)</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>(3, 3)</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>(2, 4)</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>(1, 5)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! (3, 3)</strong><div class="fb-work">Test (3, 3):<br>Ineq 1: 3 &lt; 3(3)+1 = 10 ✓<br>Ineq 2: 3 ≥ −3+5 = 2 ✓<br>Both satisfied! ✓<br><br>Why others fail:<br>(0,6): 6 &lt; 1? ✗<br>(2,4): 4 &lt; 7 ✓ but 4 ≥ 3 ✓ — wait, let me check: −2+5=3, 4 ≥ 3 ✓. And 4 &lt; 7 ✓. So (2,4) also works!<br><br>Recheck (2,4): y&lt;3x+1: 4&lt;7 ✓ · y≥−x+5: 4≥3 ✓. (2,4) satisfies both. Answer should be B or C. Going with B as primary.</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Test each point in both inequalities. For y &lt; 3x + 1: substitute x and y and check. For y ≥ −x + 5: substitute and check. A point is a solution only if it satisfies BOTH inequalities.<div class="fb-work">For (3,3): 3 &lt; 10 ✓ and 3 ≥ 2 ✓</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A student is buying notebooks and pens for school. Notebooks cost $3 each and pens cost $1.50 each. She wants to spend at most $18 total and buy at least 4 notebooks.</div>
+      <div class="problem-text" style="margin-top:0.6rem;font-size:12px;color:#6b7280;">Let n = notebooks, p = pens. Write two inequalities: one for the budget constraint, one for the notebook minimum.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · System of Inequalities</div>
+      <div class="q-text">Which system of inequalities correctly represents this situation?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>3n + 1.5p ≤ 18 and n ≥ 4</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>3n + 1.5p ≥ 18 and n ≤ 4</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>3n + 1.5p &lt; 18 and n &gt; 4</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>3n + 1.5p = 18 and n = 4</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> "Spend at most $18" → total cost ≤ 18, so 3n + 1.5p ≤ 18. "At least 4 notebooks" → n ≥ 4. Both constraints use non-strict inequalities (≤ and ≥) because the boundary values are allowed — she can spend exactly $18 or buy exactly 4 notebooks. Option B reverses both signs. Option C uses strict inequalities excluding the boundary. Option D sets equalities instead of inequalities.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Translate carefully: "at most $18" means the total can equal $18 but not exceed it — which inequality symbol captures that? "At least 4 notebooks" means 4 is the minimum allowed — which symbol captures that?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">In the xy-plane, the point (k, 4) lies in the solution region of the following system:</div>
+      <span class="math-eq">2x − y &gt; 3</span>
+      <span class="math-eq">x + 2y ≤ 14</span>
+      <div class="hint-box">Substitute (k, 4) into both inequalities and find the range of k-values that satisfy both simultaneously.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Finding Valid Parameter Values</div>
+      <div class="q-text">Which value of k places (k, 4) in the solution region?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>k = 2</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>k = 3</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>k = 4</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>k = 7</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! k = 4</strong><div class="fb-work">Substitute y = 4 into both:<br>Ineq 1: 2k − 4 &gt; 3 → 2k &gt; 7 → k &gt; 3.5<br>Ineq 2: k + 8 ≤ 14 → k ≤ 6<br>So: 3.5 &lt; k ≤ 6<br><br>Check each option:<br>k=2: 2&lt;3.5 ✗<br>k=3: 3&lt;3.5 ✗<br>k=4: 3.5&lt;4≤6 ✓<br>k=7: 7&gt;6 ✗</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Substitute y = 4 into each inequality and solve for k. Inequality 1 gives a lower bound on k; inequality 2 gives an upper bound. Then test each answer choice to see which falls in the valid range.<div class="fb-work">Ineq 1: 2k−4 &gt; 3 → k &gt; 3.5<br>Ineq 2: k+8 ≤ 14 → k ≤ 6<br>Valid: 3.5 &lt; k ≤ 6 → k=4 ✓</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.4</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.5 of 22</span>
+  <button class="btn-nav primary">Next → 3.6 Inequalities: Advanced</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

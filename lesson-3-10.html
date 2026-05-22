@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.10 — Solving Quadratic Equations</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 45%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .method-card { border-radius: 10px; padding: 1rem 1.25rem; }
+  .method-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .method-when { font-size: 12px; line-height: 1.55; margin-bottom: 8px; }
+  .method-steps { font-size: 12px; color: #374151; line-height: 1.7; }
+  .method-ex { font-family: Georgia, serif; font-size: 12px; color: #4C1D95; line-height: 1.9; margin-top: 6px; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 20px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 6px; }
+  .discriminant-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+  .disc-card { border-radius: 8px; padding: 0.85rem 1rem; text-align: center; }
+  .disc-cond { font-family: Georgia, serif; font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .disc-result { font-size: 12px; line-height: 1.4; margin-bottom: 4px; }
+  .disc-ex { font-size: 11px; font-style: italic; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; } .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.10</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 10 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.10</div>
+<div class="lesson-title">Solving Quadratic Equations</div>
+<div class="lesson-sub">Master the three methods for solving quadratic equations — factoring, the quadratic formula, and completing the square — and learn when to use each one for maximum speed on the SAT.</div>
+<div class="dur-row"><span><b>14 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Three methods — choose the fastest one</div>
+  <div class="body-text">Every quadratic equation can be solved by any of these three methods. The SAT rewards students who pick the right method for the problem — the wrong method can waste 2–3 minutes.</div>
+  <div class="method-grid">
+    <div class="method-card" style="background:#F5F3FF;">
+      <div class="method-title" style="color:#4C1D95;">Method 1 — Factoring</div>
+      <div class="method-when" style="color:#6b7280;"><strong>Use when:</strong> the equation looks factorable (integer coefficients, small numbers). Always try this first — it's fastest.</div>
+      <div class="method-steps">
+        1. Set equation = 0<br>
+        2. Factor into (x + p)(x + q) = 0<br>
+        3. Set each factor = 0 and solve
+      </div>
+      <div class="method-ex">x² + 5x + 6 = 0<br>(x + 2)(x + 3) = 0<br>x = −2 or x = −3</div>
+    </div>
+    <div class="method-card" style="background:#EDE9FE;">
+      <div class="method-title" style="color:#4C1D95;">Method 2 — Quadratic Formula</div>
+      <div class="method-when" style="color:#6b7280;"><strong>Use when:</strong> the equation doesn't factor easily, or you need exact answers with radicals.</div>
+      <div class="method-steps">
+        Set ax² + bx + c = 0<br>
+        Then apply the formula →
+      </div>
+      <div class="method-ex">Always works. Never fails.</div>
+    </div>
+    <div class="method-card" style="background:#f9fafb;">
+      <div class="method-title">Method 3 — Square Root Method</div>
+      <div class="method-when" style="color:#6b7280;"><strong>Use when:</strong> there's no linear term (no x, only x²). Isolate x² and take the square root of both sides.</div>
+      <div class="method-steps">
+        x² = k → x = ±√k
+      </div>
+      <div class="method-ex">4x² − 36 = 0<br>4x² = 36<br>x² = 9<br>x = ±3</div>
+    </div>
+    <div class="method-card" style="background:#EAF3DE;">
+      <div class="method-title" style="color:#27500A;">SAT speed rule</div>
+      <div class="method-when" style="color:#6b7280;">Try factoring first (5 sec). If it doesn't factor in 10 seconds, use the quadratic formula. Don't waste time trying to force a factorization.</div>
+      <div class="method-steps" style="color:#374151;">Factoring → fastest when it works<br>Quadratic formula → always reliable<br>Square root → for x² = k only</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">The Quadratic Formula — and the discriminant</div>
+  <div class="formula-box">
+    <div class="formula">x = (−b ± √(b² − 4ac)) / 2a</div>
+    <div class="formula-sub">for ax² + bx + c = 0, where a ≠ 0</div>
+  </div>
+  <div class="body-text">The expression under the square root, <strong>b² − 4ac</strong>, is called the <strong>discriminant</strong>. It tells you how many real solutions the equation has — without fully solving it.</div>
+  <div class="discriminant-grid">
+    <div class="disc-card" style="background:#EAF3DE;">
+      <div class="disc-cond" style="color:#27500A;">b² − 4ac &gt; 0</div>
+      <div class="disc-result" style="color:#3B6D11;"><strong>Two distinct real solutions</strong><br>Parabola crosses x-axis twice</div>
+      <div class="disc-ex">x² − 5x + 4 = 0 → D = 9 &gt; 0 → x = 1 or x = 4</div>
+    </div>
+    <div class="disc-card" style="background:#EDE9FE;">
+      <div class="disc-cond" style="color:#4C1D95;">b² − 4ac = 0</div>
+      <div class="disc-result" style="color:#7C3AED;"><strong>One repeated real solution</strong><br>Parabola touches x-axis at vertex</div>
+      <div class="disc-ex">x² − 6x + 9 = 0 → D = 0 → x = 3 only</div>
+    </div>
+    <div class="disc-card" style="background:#FCEBEB;">
+      <div class="disc-cond" style="color:#A32D2D;">b² − 4ac &lt; 0</div>
+      <div class="disc-result" style="color:#A32D2D;"><strong>No real solutions</strong><br>Parabola doesn't cross x-axis</div>
+      <div class="disc-ex">x² + x + 1 = 0 → D = −3 &lt; 0 → no real solutions</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — quadratic formula</div>
+    <div class="example-text">
+      Solve: <strong>2x² − 3x − 5 = 0</strong><br><br>
+      <span class="fb-work">a = 2, b = −3, c = −5</span><br>
+      <span class="fb-work">Discriminant: (−3)² − 4(2)(−5) = 9 + 40 = 49</span><br>
+      <span class="fb-work">x = (3 ± √49) / 4 = (3 ± 7) / 4</span><br>
+      <span class="fb-work">x = (3 + 7)/4 = 10/4 = 5/2 &nbsp;OR&nbsp; x = (3 − 7)/4 = −4/4 = −1</span><br>
+      Check: 2(25/4) − 3(5/2) − 5 = 25/2 − 15/2 − 10/2 = 0 ✓
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Always set equation to zero first</div><div class="tip-body">Before factoring or using the formula, make sure the equation is in the form ax² + bx + c = 0. If the equation has terms on both sides, move everything to one side before doing anything else.</div></div>
+    <div class="tip"><div class="tip-title">Use the discriminant for "how many solutions" questions</div><div class="tip-body">If the SAT asks how many real solutions an equation has — compute b² − 4ac. You don't need to fully solve it. Positive → 2 solutions. Zero → 1 solution. Negative → 0 solutions.</div></div>
+    <div class="tip"><div class="tip-title">Factoring: find two numbers that multiply to c and add to b</div><div class="tip-body">For x² + bx + c = 0: find p and q such that p × q = c and p + q = b. Then factor as (x + p)(x + q) = 0. This is faster to execute than the formula for clean integer roots.</div></div>
+    <div class="tip"><div class="tip-title">Sum and product of roots</div><div class="tip-body">For ax² + bx + c = 0 with roots r₁ and r₂: sum of roots = −b/a and product of roots = c/a. The SAT occasionally asks for the sum or product of roots without asking you to find each root.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Solve by factoring:</div>
+      <span class="math-eq">x² − 7x + 12 = 0</span>
+      <div class="hint">Find two numbers that multiply to 12 and add to −7. Both numbers must be negative since their sum is negative and product is positive. Then write as (x + p)(x + q) = 0.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Factoring</div>
+      <div class="q-text">What are the solutions to the equation?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>x = 3 and x = 4</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>x = −3 and x = −4</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>x = 3 and x = −4</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>x = 1 and x = 12</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! x = 3 and x = 4</strong><div class="fb-work">Need p × q = 12 and p + q = −7<br>Try: −3 × −4 = 12 ✓ and −3 + (−4) = −7 ✓<br>(x − 3)(x − 4) = 0<br>x = 3 or x = 4<br>Check: 9 − 21 + 12 = 0 ✓ and 16 − 28 + 12 = 0 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Find two numbers that multiply to +12 and add to −7. Since the sum is negative and product is positive, both numbers must be negative.<div class="fb-work">−3 × −4 = 12 and −3 + (−4) = −7<br>(x−3)(x−4) = 0 → x = 3 or x = 4</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Use the quadratic formula to solve:</div>
+      <span class="math-eq">3x² + 4x − 2 = 0</span>
+      <div class="hint">Identify a = 3, b = 4, c = −2. Compute the discriminant: b² − 4ac = 16 + 24 = 40. Then x = (−4 ± √40) / 6. Simplify √40 = 2√10.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Quadratic Formula</div>
+      <div class="q-text">What are the solutions to 3x² + 4x − 2 = 0?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>x = (−4 ± √40) / 3</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>x = (4 ± √40) / 6</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>x = (−4 ± √40) / 6</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>x = (−4 ± √56) / 6</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong><div class="fb-work">a=3, b=4, c=−2<br>x = (−4 ± √(16+24)) / (2·3)<br>= (−4 ± √40) / 6<br>= (−4 ± 2√10) / 6<br>= (−2 ± √10) / 3<br><br>Option A divides by 3 (should be 2a=6).<br>Option B uses +4 instead of −b=−4.<br>Option D uses wrong discriminant: 16−4(3)(−2)=16+24=40 not 56.</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Apply x = (−b ± √(b²−4ac)) / (2a) carefully. With a=3, b=4, c=−2: the denominator is 2a = 6, not 3. And −b = −4.<div class="fb-work">x = (−4 ± √(16+24)) / 6 = (−4 ± √40) / 6</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">The equation x² + kx + 16 = 0 has exactly one real solution.</div>
+      <div class="hint">Exactly one real solution means the discriminant = 0. Set b² − 4ac = 0 and solve for k. Remember k can be positive or negative.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Discriminant</div>
+      <div class="q-text">What are the possible values of <strong>k</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>k = 4 only</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>k = 8 only</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>k = 8 or k = −8</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>k = 4 or k = −4</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! k = 8 or k = −8</strong><div class="fb-work">Exactly one solution → discriminant = 0<br>b² − 4ac = 0<br>k² − 4(1)(16) = 0<br>k² − 64 = 0<br>k² = 64<br>k = ±8<br><br>Check k=8: x²+8x+16=(x+4)²=0 → x=−4 ✓ (one solution)<br>Check k=−8: x²−8x+16=(x−4)²=0 → x=4 ✓ (one solution)</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> One real solution means discriminant = 0. Set k² − 4(1)(16) = 0 and solve for k. Don't forget k can be positive or negative — both give exactly one solution.<div class="fb-work">k² = 64 → k = ±8</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.9</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.10 of 22</span>
+  <button class="btn-nav primary">Next → 3.11 Parabolas & Vertex Form</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.11 — Parabolas & Vertex Form</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 50%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .forms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .form-card { border-radius: 10px; padding: 1rem 1.25rem; }
+  .form-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .form-eq { font-family: Georgia, serif; font-size: 15px; color: #4C1D95; font-weight: 500; margin-bottom: 8px; }
+  .form-body { font-size: 12px; color: #6b7280; line-height: 1.55; }
+  .form-reads { font-size: 12px; color: #374151; margin-top: 5px; line-height: 1.6; }
+  .features-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  .features-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-weight: 500; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .features-table td { padding: 8px 12px; color: #6b7280; border-bottom: 1px solid #e5e7eb; vertical-align: top; line-height: 1.5; }
+  .features-table tr:last-child td { border-bottom: none; }
+  .features-table td:first-child { font-weight: 500; color: #111; }
+  .features-table td em { font-family: Georgia, serif; font-style: normal; color: #4C1D95; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; } .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.11</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 11 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.11</div>
+<div class="lesson-title">Parabolas & Vertex Form</div>
+<div class="lesson-sub">Learn to read the vertex, axis of symmetry, direction, and intercepts of a parabola from its equation — in both standard and vertex form — without graphing.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Two forms of a quadratic — what each reveals</div>
+  <div class="body-text">The same parabola can be written in different forms. Each form makes certain features immediately visible. The SAT will switch between forms and ask you to identify key features — know what each form tells you at a glance.</div>
+  <div class="forms-grid">
+    <div class="form-card" style="background:#F5F3FF;">
+      <div class="form-title" style="color:#4C1D95;">Standard Form</div>
+      <div class="form-eq">f(x) = ax² + bx + c</div>
+      <div class="form-body">Best for reading the y-intercept (c) and the direction (sign of a).</div>
+      <div class="form-reads">
+        <strong>y-intercept:</strong> x = 0 → y = c<br>
+        <strong>Axis of symmetry:</strong> x = −b/(2a)<br>
+        <strong>Vertex x:</strong> −b/(2a), then substitute for y<br>
+        <strong>Opens up:</strong> a &gt; 0 · <strong>Opens down:</strong> a &lt; 0
+      </div>
+    </div>
+    <div class="form-card" style="background:#EDE9FE;">
+      <div class="form-title" style="color:#4C1D95;">Vertex Form</div>
+      <div class="form-eq">f(x) = a(x − h)² + k</div>
+      <div class="form-body">Best for reading the vertex and axis of symmetry directly.</div>
+      <div class="form-reads">
+        <strong>Vertex:</strong> (h, k) — read directly<br>
+        <strong>Axis of symmetry:</strong> x = h<br>
+        <strong>Min/Max value:</strong> k (minimum if a&gt;0, maximum if a&lt;0)<br>
+        <strong>Opens up:</strong> a &gt; 0 · <strong>Opens down:</strong> a &lt; 0
+      </div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Critical trap — vertex form sign</div>
+    <div class="example-text">
+      In f(x) = a(x − <strong>h</strong>)² + k, the vertex is at x = <strong>h</strong> — NOT x = −h.<br><br>
+      f(x) = 2(x − <strong>3</strong>)² + 5 → vertex at (<strong>3</strong>, 5) ✓<br>
+      f(x) = 2(x + <strong>3</strong>)² + 5 = 2(x − (<strong>−3</strong>))² + 5 → vertex at (<strong>−3</strong>, 5) ✓<br><br>
+      When you see (x + h), rewrite as (x − (−h)) to identify the vertex correctly.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Key features at a glance</div>
+  <table class="features-table">
+    <tr><th>Feature</th><th>From standard form ax²+bx+c</th><th>From vertex form a(x−h)²+k</th></tr>
+    <tr><td>Vertex</td><td>x = <em>−b/(2a)</em>, then find y by substituting</td><td>Directly: <em>(h, k)</em></td></tr>
+    <tr><td>Axis of symmetry</td><td><em>x = −b/(2a)</em></td><td><em>x = h</em></td></tr>
+    <tr><td>y-intercept</td><td>Directly: <em>(0, c)</em></td><td>Substitute x = 0: <em>a(−h)² + k = ah² + k</em></td></tr>
+    <tr><td>x-intercepts (roots)</td><td>Solve <em>ax²+bx+c=0</em></td><td>Set <em>a(x−h)²+k=0</em> → <em>x = h ± √(−k/a)</em></td></tr>
+    <tr><td>Minimum/Maximum</td><td>Minimum if <em>a&gt;0</em>, maximum if <em>a&lt;0</em>. Value: substitute x=−b/(2a)</td><td>Directly: <em>k</em> is the min/max value</td></tr>
+    <tr><td>Direction</td><td><em>a&gt;0</em> → opens up · <em>a&lt;0</em> → opens down</td><td>Same: sign of <em>a</em></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="sec-title">Converting between forms</div>
+  <div class="body-text">The SAT may give an equation in one form and ask about a feature best read from the other. Knowing how to convert quickly is essential.</div>
+  <div class="example-box">
+    <div class="example-label">Worked example — standard to vertex form</div>
+    <div class="example-text">
+      Convert f(x) = x² − 6x + 5 to vertex form.<br><br>
+      <span class="fb-work">Step 1: Find vertex x — axis of symmetry: x = −(−6)/(2·1) = 3</span><br>
+      <span class="fb-work">Step 2: Find vertex y — f(3) = 9 − 18 + 5 = −4</span><br>
+      <span class="fb-work">Step 3: Vertex form: f(x) = (x − 3)² − 4</span><br>
+      <span class="fb-work">Verify: (x−3)² − 4 = x² − 6x + 9 − 4 = x² − 6x + 5 ✓</span><br><br>
+      Vertex: (3, −4) · Axis of symmetry: x = 3 · Minimum value: −4
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Vertex form → read vertex instantly</div><div class="tip-body">If the SAT gives vertex form f(x) = a(x−h)²+k, the vertex is (h, k). Don't calculate — just read it. Watch the sign: (x−3)² gives h = 3, but (x+3)² gives h = −3.</div></div>
+    <div class="tip"><div class="tip-title">Minimum value ≠ vertex x-coordinate</div><div class="tip-body">The minimum (or maximum) value of the function is k — the y-coordinate of the vertex. The SAT frequently asks "what is the minimum value of f?" — the answer is k, not h.</div></div>
+    <div class="tip"><div class="tip-title">Axis of symmetry from standard form</div><div class="tip-body">x = −b/(2a) is fast and always works. For f(x) = 2x²−12x+7: axis = −(−12)/(2·2) = 12/4 = 3. The vertex is at x = 3, and the minimum value is f(3).</div></div>
+    <div class="tip"><div class="tip-title">Number of x-intercepts from the vertex</div><div class="tip-body">If the parabola opens up (a&gt;0) and vertex is above x-axis (k&gt;0) → no x-intercepts. If vertex is on x-axis (k=0) → one. If below (k&lt;0) → two. Flip logic for a&lt;0.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A parabola is defined by:</div>
+      <span class="math-eq">f(x) = −2(x + 3)² + 8</span>
+      <div class="hint">Rewrite (x + 3) as (x − (−3)) to identify h = −3. The vertex is (h, k) = (−3, 8). Since a = −2 &lt; 0, the parabola opens down — so k = 8 is a maximum.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Vertex Form</div>
+      <div class="q-text">What is the <strong>maximum value</strong> of f(x) and at what x does it occur?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>Maximum of 8 at x = 3</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>Maximum of 8 at x = −3</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>Maximum of −3 at x = 8</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>Minimum of 8 at x = −3</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> Maximum of 8 at x = −3.<div class="fb-work">f(x) = −2(x+3)² + 8<br>Vertex form: a=−2, h=−3, k=8<br>Vertex: (−3, 8)<br>a = −2 &lt; 0 → parabola opens DOWN → vertex is a MAXIMUM<br>Maximum value = k = 8, occurring at x = h = −3 ✓<br><br>Option A has the wrong sign for x (h = −3, not +3).<br>Option C confuses h and k.<br>Option D says minimum but a&lt;0 means it's a maximum.</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> In f(x) = a(x−h)²+k: vertex = (h, k). Here (x+3) = (x−(−3)), so h = −3. Since a = −2 &lt; 0, the parabola opens down — vertex is a maximum, not minimum. What is k?<div class="fb-work">h = −3, k = 8 → maximum of 8 at x = −3</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A parabola in standard form:</div>
+      <span class="math-eq">f(x) = x² − 8x + 7</span>
+      <div class="hint">Find the axis of symmetry using x = −b/(2a) = −(−8)/(2·1) = 4. Then substitute x = 4 to find the vertex y-value. The vertex is the minimum since a = 1 &gt; 0.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Standard to Vertex</div>
+      <div class="q-text">Which is the correct <strong>vertex form</strong> of f(x) = x² − 8x + 7?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>(x − 4)² − 9</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>(x − 4)² + 9</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>(x + 4)² − 9</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>(x − 8)² + 7</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! (x − 4)² − 9</strong><div class="fb-work">Axis: x = −(−8)/(2·1) = 4<br>f(4) = 16 − 32 + 7 = −9<br>Vertex: (4, −9)<br>Vertex form: (x − 4)² − 9<br>Verify: x²−8x+16−9 = x²−8x+7 ✓<br><br>Option B has wrong sign for k (+9 vs −9).<br>Option C has wrong sign for h (+4 gives h=−4).<br>Option D doesn't follow the vertex form pattern.</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Find axis: x = −b/(2a) = 4. Then f(4) = 16 − 32 + 7 = −9. Vertex is (4, −9) so vertex form is (x − 4)² + (−9).<div class="fb-work">f(x) = (x − 4)² − 9</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A ball is thrown upward. Its height h in feet after t seconds is modeled by:</div>
+      <span class="math-eq">h(t) = −16t² + 64t + 5</span>
+      <div class="hint">The maximum height occurs at the vertex. Find t at the vertex using t = −b/(2a) = −64/(2·(−16)). Then substitute to find the maximum height h.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Real-World Parabola</div>
+      <div class="q-text">What is the <strong>maximum height</strong> the ball reaches?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>64 feet</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>69 feet</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>5 feet</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>128 feet</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 69 feet</strong><div class="fb-work">Vertex at t = −64/(2·(−16)) = −64/(−32) = 2 seconds<br>h(2) = −16(4) + 64(2) + 5<br>= −64 + 128 + 5<br>= 69 feet ✓<br><br>Option C (5 feet) is the initial height h(0) — not the maximum.<br>Option A (64) is just the coefficient of t — not a height.<br>Option D overcounts.</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Maximum height is the y-coordinate of the vertex. Find t at vertex: t = −b/(2a) = −64/(2×(−16)) = 2. Then compute h(2).<div class="fb-work">h(2) = −16(4)+64(2)+5 = −64+128+5 = 69 feet</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.10</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.11 of 22</span>
+  <button class="btn-nav primary">Next → 3.12 Polynomials</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

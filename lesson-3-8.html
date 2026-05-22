@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.8 — Linear Functions & Slope</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 36%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 17px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; line-height: 2; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .concept-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 13px; }
+  .concept-table th { background: #f9fafb; padding: 8px 12px; text-align: left; font-weight: 500; border-bottom: 1px solid #e5e7eb; font-size: 12px; }
+  .concept-table td { padding: 8px 12px; color: #6b7280; border-bottom: 1px solid #e5e7eb; vertical-align: top; line-height: 1.55; }
+  .concept-table tr:last-child td { border-bottom: none; }
+  .concept-table td:first-child { font-weight: 500; color: #111; font-family: 'Georgia', serif; }
+  .concept-table td em { font-family: 'Georgia', serif; font-style: normal; color: #4C1D95; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .mini-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .mini-title { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .mini-body { font-size: 12px; color: #6b7280; line-height: 1.55; }
+  .mini-ex { font-family: 'Georgia', serif; font-size: 12px; color: #4C1D95; margin-top: 4px; line-height: 1.7; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .data-table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 13px; }
+  .data-table th { background: #EDE9FE; padding: 7px 14px; text-align: center; font-weight: 500; color: #4C1D95; border: 1px solid #DDD6FE; }
+  .data-table td { padding: 7px 14px; text-align: center; border: 1px solid #e5e7eb; font-family: 'Georgia', serif; color: #374151; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; } .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: 'Georgia', serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.8</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 8 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.8</div>
+<div class="lesson-title">Linear Functions & Slope</div>
+<div class="lesson-sub">Connect linear equations to function notation, master average rate of change from tables and graphs, and learn to recognize when the SAT is really asking about slope in disguise.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Functions vs. equations — what changes</div>
+  <div class="body-text">A <strong>linear function</strong> is a linear equation written using function notation: f(x) instead of y. The notation f(x) emphasizes that the output depends on the input x — and allows the SAT to ask questions like "find f(3)" or "for what value of x does f(x) = 7?"</div>
+  <div class="formula-box">
+    <div class="formula">
+      f(x) = mx + b<br>
+      <span style="font-size:13px;font-weight:400;color:#6b7280;">f(x) is read "f of x" — the output when input is x</span>
+    </div>
+    <div class="formula-sub">m = slope (rate of change) · b = f(0) = y-intercept (initial value)</div>
+  </div>
+  <table class="concept-table">
+    <tr><th>Concept</th><th>What it means</th><th>How to calculate</th></tr>
+    <tr><td>f(a)</td><td>The output of the function when x = a</td><td>Substitute x = a into the equation and simplify</td></tr>
+    <tr><td>f(a) = b</td><td>Find the input x that gives output b</td><td>Set mx + c = b and solve for x</td></tr>
+    <tr><td>Slope m</td><td>Change in output per unit change in input</td><td><em>m = (f(x₂) − f(x₁)) / (x₂ − x₁)</em></td></tr>
+    <tr><td>Average rate of change</td><td>The slope between two specific points</td><td>Same formula as slope — applied to any two points</td></tr>
+    <tr><td>f(0)</td><td>The y-intercept — value when x = 0</td><td>Substitute x = 0, or read b directly from f(x) = mx + b</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="sec-title">Rate of change from a table</div>
+  <div class="body-text">The SAT frequently gives a table of (x, y) or (x, f(x)) values and asks for the rate of change (slope) or a missing value. For a <strong>linear</strong> function, the rate of change is constant — so any two rows give the same slope.</div>
+  <div class="two-col">
+    <div class="mini-card">
+      <div class="mini-title">Check linearity first</div>
+      <div class="mini-body">For a table to represent a linear function, equal changes in x must produce equal changes in y. If Δx is constant and Δy is constant, the function is linear.</div>
+      <div class="mini-ex">x: 0, 2, 4, 6<br>y: 3, 7, 11, 15<br>Δx = 2, Δy = 4 → slope = 4/2 = 2 ✓</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title">Find a missing value</div>
+      <div class="mini-body">Once you have the slope, use point-slope or substitute into y = mx + b to find any missing value in the table.</div>
+      <div class="mini-ex">slope = 2, passes through (0,3)<br>f(x) = 2x + 3<br>f(5) = 2(5) + 3 = 13</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — average rate of change</div>
+    <div class="example-text">
+      f(x) = 3x² − 2x + 1. Find the average rate of change from x = 1 to x = 4.<br><br>
+      <span class="fb-work">f(1) = 3(1) − 2(1) + 1 = 2</span><br>
+      <span class="fb-work">f(4) = 3(16) − 2(4) + 1 = 48 − 8 + 1 = 41</span><br>
+      <span class="fb-work">Average rate of change = (41 − 2)/(4 − 1) = 39/3 = 13</span><br><br>
+      Note: For a linear function, the average rate of change equals the slope everywhere. For non-linear functions, it varies by interval.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">f(x) = k means solve for x</div><div class="tip-body">When the SAT asks "for what value of x does f(x) = 7?", that's just asking you to solve an equation. Set the function equal to 7 and solve — it's not asking for a function value.</div></div>
+    <div class="tip"><div class="tip-title">Average rate of change = slope formula</div><div class="tip-body">The phrase "average rate of change" always means (f(b)−f(a))/(b−a). For a linear function this equals the slope. For any function, it's the slope of the secant line between two points.</div></div>
+    <div class="tip"><div class="tip-title">Slope from a table: pick any two rows</div><div class="tip-body">For linear functions, every pair of rows gives the same slope. Pick the two rows with the cleanest numbers to minimize arithmetic errors.</div></div>
+    <div class="tip"><div class="tip-title">"Rate" in word problems = slope</div><div class="tip-body">Any word problem mentioning a constant rate — miles per hour, dollars per item, degrees per minute — is describing slope. Identify the unit rate and that's your m in f(x) = mx + b.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A linear function f is defined by:</div>
+      <span class="math-eq">f(x) = −3x + 11</span>
+      <div class="hint">To find f(a), substitute a for x. To find where f(x) = k, set −3x + 11 = k and solve for x.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Function Notation</div>
+      <div class="q-text">For what value of <strong>x</strong> does f(x) = −4?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>x = 3</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>x = 5</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>x = −5</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>x = 7</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! x = 5</strong><div class="fb-work">f(x) = −4<br>−3x + 11 = −4<br>−3x = −15<br>x = 5<br>Check: f(5) = −3(5) + 11 = −15 + 11 = −4 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> "f(x) = −4" means set the function equal to −4 and solve for x. Replace f(x) with −4: −3x + 11 = −4, then solve.<div class="fb-work">−3x = −15 → x = 5</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">The table shows values of a linear function g.</div>
+      <table class="data-table">
+        <tr><th>x</th><th>g(x)</th></tr>
+        <tr><td>1</td><td>5</td></tr>
+        <tr><td>3</td><td>11</td></tr>
+        <tr><td>5</td><td>17</td></tr>
+        <tr><td>7</td><td>?</td></tr>
+      </table>
+      <div class="hint">Find the slope using any two rows. Then extend the pattern to find g(7). Alternatively, write the equation and substitute x = 7.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Linear Functions from Tables</div>
+      <div class="q-text">What is <strong>g(7)</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>20</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>21</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>23</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>25</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! g(7) = 23</strong><div class="fb-work">Slope = (11 − 5)/(3 − 1) = 6/2 = 3<br>Using point (1, 5): g(x) = 3x + 2<br>g(7) = 3(7) + 2 = 21 + 2 = 23<br>Check: pattern adds 6 each time x increases by 2.<br>g(5)=17, g(7)=17+6=23 ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Find the slope from any two rows — each time x increases by 2, g(x) increases by 6. So slope = 6/2 = 3. Write the equation g(x) = 3x + b, find b using any point, then evaluate at x = 7.<div class="fb-work">g(x) = 3x + 2 → g(7) = 23</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A car rental company charges a base fee of $25 plus $0.18 per mile driven. A competitor charges $40 flat with no mileage fee.</div>
+      <div class="problem-text" style="margin-top:0.6rem;">Let C₁(m) = cost at Company 1 and C₂(m) = cost at Company 2, where m = miles driven.</div>
+      <div class="hint">Write both as functions: C₁(m) = 25 + 0.18m and C₂(m) = 40. Find where the two functions are equal — that's the break-even mileage.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Linear Functions — Real World</div>
+      <div class="q-text">At how many miles do both companies charge the <strong>same total cost</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>approximately 56 miles</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>approximately 83 miles</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>approximately 138 miles</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>approximately 222 miles</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! ≈ 83 miles</strong><div class="fb-work">Set C₁(m) = C₂(m):<br>25 + 0.18m = 40<br>0.18m = 15<br>m = 15/0.18 = 83.3̄ miles<br><br>Below 83 miles → Company 2 is cheaper (flat fee)<br>Above 83 miles → Company 1 is cheaper (no flat fee)<br>At ≈ 83 miles → same cost ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Set the two cost functions equal: 25 + 0.18m = 40. Solve for m by subtracting 25 from both sides, then dividing by 0.18.<div class="fb-work">0.18m = 15 → m = 15 ÷ 0.18 ≈ 83.3</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.7</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.8 of 22</span>
+  <button class="btn-nav primary">Next → 3.9 Introduction to Quadratics</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

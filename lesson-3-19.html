@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.19 — Unit Analysis & Conversions</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 86%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .chain-box { background: #f9fafb; border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .chain-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .chain-text { font-family: Georgia, serif; font-size: 14px; color: #4C1D95; line-height: 2.2; text-align: center; }
+  .chain-note { font-size: 12px; color: #6b7280; margin-top: 6px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.19</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 19 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">SAT Math · Module 3 · Lesson 3.19</div>
+<div class="lesson-title">Unit Analysis & Conversions</div>
+<div class="lesson-sub">Master dimensional analysis — the systematic method for converting units and solving multi-step rate problems by tracking units like algebraic variables until only the target unit remains.</div>
+<div class="dur-row"><span><b>11 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Dimensional analysis — treating units as algebra</div>
+  <div class="body-text">Every measurement has a number and a unit. In dimensional analysis, you multiply by conversion factors — fractions equal to 1 — that cancel unwanted units and introduce the target unit. Units cancel exactly like variables in algebra.</div>
+  <div class="chain-box">
+    <div class="chain-title">The conversion chain method</div>
+    <div class="chain-text">
+      [Given value] × [conversion₁] × [conversion₂] × ... = [target value]
+    </div>
+    <div class="chain-note">Set up each conversion factor so the unit you want to eliminate is on the bottom, and the unit you want to introduce is on top. Units cancel diagonally — if the same unit appears in a numerator and denominator, cross it out.</div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — multi-step conversion</div>
+    <div class="example-text">
+      A car travels at 60 miles per hour. Convert this speed to feet per second.<br>
+      (Use: 1 mile = 5,280 feet; 1 hour = 3,600 seconds)<br><br>
+      <span class="fb-work">60 miles/hour × (5,280 feet / 1 mile) × (1 hour / 3,600 seconds)</span><br>
+      <span class="fb-work">= 60 × 5,280 / 3,600 feet/second</span><br>
+      <span class="fb-work">= 316,800 / 3,600 = 88 feet/second</span><br><br>
+      Notice: "miles" cancelled (it appeared in numerator and denominator), "hours" cancelled — only "feet/second" remains.
+    </div>
+  </div>
+  <div class="example-box" style="margin-top:0.75rem;">
+    <div class="example-label">Worked example — rate × rate</div>
+    <div class="example-text">
+      A factory produces 240 widgets per hour. Each widget requires 3 parts. How many parts are used in 5 hours?<br><br>
+      <span class="fb-work">5 hours × (240 widgets/hour) × (3 parts/widget)</span><br>
+      <span class="fb-work">= 5 × 240 × 3 = 3,600 parts</span><br><br>
+      "Hours" and "widgets" both cancel — only "parts" remains. ✓
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Write units in every step</div><div class="tip-body">Never do unit conversion mentally. Write the full fraction with units at every step. Units cancel just like algebraic variables — if the same unit is on top and bottom, cross it out. This prevents the most common conversion errors.</div></div>
+    <div class="tip"><div class="tip-title">The target unit must be the only one left</div><div class="tip-body">After cancelling all units in your chain, only the target unit should remain. If you still have unwanted units, you need another conversion factor. If you're missing the target unit, you set up a fraction upside down.</div></div>
+    <div class="tip"><div class="tip-title">Rate × rate chains are powerful</div><div class="tip-body">For problems with multiple rates (widgets/hour and parts/widget), multiply them as a chain. The middle unit (widgets) cancels, leaving the final unit (parts/hour). This works for any chain of compatible rates.</div></div>
+    <div class="tip"><div class="tip-title">Identify the target unit first</div><div class="tip-body">Before setting up any conversion, write down the unit you need at the end. Then build your chain backwards — each conversion factor introduces what the next step needs, until you have the target.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:.75rem">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A swimming pool holds 45,000 liters of water. A pump drains the pool at a rate of 250 liters per minute.</div>
+      <div class="hint">Set up: 45,000 liters ÷ (250 liters/minute) = minutes. Then convert minutes to hours by dividing by 60.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Rate Conversion</div>
+      <div class="q-text">How many <strong>hours</strong> will it take to drain the pool completely?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>3 hours</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>18 hours</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>180 hours</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>30 hours</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 3 hours</strong><div class="fb-work">Time = 45,000 liters ÷ 250 liters/min = 180 minutes<br>Convert to hours: 180 min × (1 hr / 60 min) = 3 hours ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> First find the time in minutes: 45,000 ÷ 250. Then convert minutes to hours by dividing by 60.<div class="fb-work">45,000 ÷ 250 = 180 min · 180 ÷ 60 = 3 hours</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A printer prints 40 pages per minute. Each page uses 0.5 grams of ink. Ink cartridges hold 120 grams each.</div>
+      <div class="hint">Chain the rates: pages/min × grams/page = grams/min. Then find how many minutes one cartridge lasts: 120 grams ÷ (grams/min).</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Chained Rates</div>
+      <div class="q-text">How many <strong>minutes</strong> does one ink cartridge last?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>3 minutes</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>6 minutes</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>60 minutes</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>240 minutes</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 6 minutes</strong><div class="fb-work">Ink usage rate: 40 pages/min × 0.5 grams/page = 20 grams/min<br>Time per cartridge: 120 grams ÷ 20 grams/min = 6 minutes ✓<br><br>Unit check: (pages/min)(grams/page) = grams/min · grams ÷ (grams/min) = min ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Chain the rates: 40 pages/min × 0.5 grams/page = 20 grams/min. Then divide the cartridge capacity by the rate.<div class="fb-work">120 grams ÷ 20 grams/min = 6 minutes</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A scientist measures a concentration of 4.5 milligrams per deciliter (mg/dL). She needs to convert this to micrograms per milliliter (μg/mL).</div>
+      <div class="problem-text" style="margin-top:0.5rem;font-size:12px;color:#6b7280;">Conversions: 1 mg = 1,000 μg · 1 dL = 100 mL</div>
+      <div class="hint">Set up the chain: 4.5 mg/dL × (1,000 μg/mg) × (1 dL/100 mL). Units should cancel to leave μg/mL.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Multi-Unit Conversion</div>
+      <div class="q-text">What is 4.5 mg/dL expressed in <strong>μg/mL</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>0.045 μg/mL</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>45 μg/mL</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>450 μg/mL</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>4,500 μg/mL</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! 45 μg/mL</strong><div class="fb-work">4.5 mg/dL × (1,000 μg/mg) × (1 dL/100 mL)<br>= 4.5 × 1,000/100 μg/mL<br>= 4.5 × 10<br>= 45 μg/mL ✓<br><br>Unit check: (mg/dL)(μg/mg)(dL/mL) → mg cancels, dL cancels → μg/mL ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Chain the conversions: 4.5 mg/dL × (1,000 μg/mg) × (1 dL/100 mL). The mg cancels and the dL cancels — what remains is μg/mL.<div class="fb-work">4.5 × 1,000 ÷ 100 = 45 μg/mL</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.18</button>
+  <span style="font-size:13px;color:#6b7280">Lesson 3.19 of 22</span>
+  <button class="btn-nav primary">Next → 3.20 Statistics & Data</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>

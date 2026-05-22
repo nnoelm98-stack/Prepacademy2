@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.7 — Absolute Value</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 32%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 17px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; line-height: 2; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .prop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .prop-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .prop-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 4px; }
+  .prop-rule { font-size: 12px; color: #6b7280; line-height: 1.5; margin-bottom: 5px; }
+  .prop-ex { font-family: 'Georgia', serif; font-size: 12px; color: #4C1D95; line-height: 1.7; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .trap-box { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .trap-label { font-size: 11px; font-weight: 500; color: #A32D2D; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .trap-text { font-size: 13px; color: #501313; line-height: 1.65; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; } .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: 'Georgia', serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.7</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 7 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.7</div>
+<div class="lesson-title">Absolute Value</div>
+<div class="lesson-sub">Go deeper on absolute value — learn its key algebraic properties, how to evaluate and simplify expressions involving absolute value, and how the SAT uses it in multi-step problems.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Key properties of absolute value</div>
+  <div class="body-text">Absolute value measures distance from zero — it is always non-negative. Beyond the basic definition, knowing these algebraic properties lets you simplify and evaluate expressions quickly.</div>
+  <div class="formula-box">
+    <div class="formula">
+      |a| ≥ 0 &nbsp;&nbsp; for all real a<br>
+      |a| = |−a| &nbsp;&nbsp; (symmetric)<br>
+      |ab| = |a| · |b| &nbsp;&nbsp; (multiplicative)<br>
+      |a + b| ≤ |a| + |b| &nbsp;&nbsp; (triangle inequality)
+    </div>
+    <div class="formula-sub">These hold for all real numbers a and b.</div>
+  </div>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-title">|a²| = a² always</div>
+      <div class="prop-rule">Since a² is always non-negative, the absolute value has no effect. This simplifies many expressions.</div>
+      <div class="prop-ex">|x²| = x² &nbsp; (for any real x)<br>|x² − 4| ≠ x² − 4 &nbsp; (could be negative)</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-title">√(x²) = |x|</div>
+      <div class="prop-rule">The square root of x² is the absolute value of x — not x itself. This matters when x could be negative.</div>
+      <div class="prop-ex">√(9) = 3 ✓<br>√(x²) = |x| ← not just x<br>If x = −4: √(16) = 4 = |−4| ✓</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-title">|a/b| = |a|/|b| (b ≠ 0)</div>
+      <div class="prop-rule">Absolute value distributes over multiplication and division — but NOT over addition or subtraction.</div>
+      <div class="prop-ex">|−6/2| = |−3| = 3 ✓<br>|6|/|2| = 3 ✓ (same result)<br>|3 − 7| ≠ |3| − |7| ✗</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-title">|a − b| = distance between a and b</div>
+      <div class="prop-rule">The absolute value of a difference gives the distance between two points on a number line — regardless of order.</div>
+      <div class="prop-ex">|3 − 8| = 5 (distance from 3 to 8)<br>|8 − 3| = 5 (same distance)<br>|x − 5| = 3 means x is 3 away from 5</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — multi-step absolute value</div>
+    <div class="example-text">
+      If |x − 3| = 5, what are the possible values of |x|?<br><br>
+      <span class="fb-work">Step 1 — solve for x:</span><br>
+      <span class="fb-work">x − 3 = 5 → x = 8 &nbsp;OR&nbsp; x − 3 = −5 → x = −2</span><br>
+      <span class="fb-work">Step 2 — evaluate |x| for each:</span><br>
+      <span class="fb-work">|8| = 8 &nbsp;OR&nbsp; |−2| = 2</span><br>
+      <span class="fb-work">So |x| = 8 or |x| = 2</span><br><br>
+      Note: The SAT might ask for the sum or product of these values: 8 + 2 = 10, or 8 × 2 = 16.
+    </div>
+  </div>
+  <div class="trap-box">
+    <div class="trap-label">Most common absolute value mistake</div>
+    <div class="trap-text"><strong>Removing absolute value bars incorrectly:</strong> Students often write |x + 3| = x + 3, forgetting that if x + 3 is negative, this is wrong. Never remove absolute value bars unless you know the sign of the expression inside. Always consider both cases.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Evaluate before simplifying</div><div class="tip-body">When given a specific value of x, substitute first, then apply the absolute value. Don't try to simplify the general expression — plug in numbers and evaluate.</div></div>
+    <div class="tip"><div class="tip-title">√(x²) = |x| — always</div><div class="tip-body">If the SAT asks to simplify √(x²) or √((x−3)²), the answer is |x| or |x−3|, not x or x−3. The square root is always non-negative.</div></div>
+    <div class="tip"><div class="tip-title">Distance interpretation saves time</div><div class="tip-body">|x − a| = b means x is exactly b units from a. Instead of algebra, just add and subtract: x = a + b or x = a − b. Faster on simple problems.</div></div>
+    <div class="tip"><div class="tip-title">Check if the expression inside can be negative</div><div class="tip-body">Before removing |bars|, ask: can the expression inside be negative for any valid x? If yes, keep the absolute value. If the expression is always non-negative (like x²), you can simplify.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">If x = −4, evaluate the expression:</div>
+      <span class="math-eq">|3x + 2| − |x − 1|</span>
+      <div class="hint">Substitute x = −4 into each absolute value separately. Calculate what's inside each |bar|, then take the absolute value, then subtract.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Evaluating Expressions</div>
+      <div class="q-text">What is the value of the expression when <strong>x = −4</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>−15</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>5</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>15</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>−5</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 5</strong><div class="fb-work">|3(−4) + 2| − |(−4) − 1|<br>= |−12 + 2| − |−5|<br>= |−10| − |−5|<br>= 10 − 5<br>= 5 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Substitute x = −4 carefully into each part. Calculate inside the bars first: 3(−4)+2 = −10, and (−4)−1 = −5. Then take absolute values of each: |−10| = 10, |−5| = 5. Finally subtract.<div class="fb-work">10 − 5 = 5</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Given that |2x − 6| = 10, find all possible values of x², then determine which value of x² is larger.</div>
+      <span class="math-eq">|2x − 6| = 10</span>
+      <div class="hint">First solve for x (two cases). Then square each solution. The SAT often asks for x² or |x| after solving an absolute value equation — don't stop at x.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Multi-Step Absolute Value</div>
+      <div class="q-text">What is the <strong>sum</strong> of all possible values of x?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>6</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>8</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>−2</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>4</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! Sum = 6</strong><div class="fb-work">|2x − 6| = 10<br>Case 1: 2x − 6 = 10 → 2x = 16 → x = 8<br>Case 2: 2x − 6 = −10 → 2x = −4 → x = −2<br>Sum of solutions: 8 + (−2) = 6 ✓<br><br>Note: For any |ax + b| = c, the sum of solutions always equals −b/a. Here: −(−6)/2 = 3... wait, the midpoint is 3 and solutions are 3±5, so 8 and −2, sum = 6 ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Solve both cases: 2x − 6 = 10 gives one solution, and 2x − 6 = −10 gives the other. Add the two solutions together.<div class="fb-work">x = 8 and x = −2<br>Sum: 8 + (−2) = 6</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">On a number line, point A is at position −3 and point B is at position 7. Point P is at position x.</div>
+      <div class="problem-text" style="margin-top:0.6rem;">The condition that P is closer to A than to B can be written as:</div>
+      <span class="math-eq">|x − (−3)| &lt; |x − 7|</span>
+      <div class="hint">Use the distance interpretation: |x + 3| is P's distance from A, and |x − 7| is P's distance from B. Square both sides to remove the absolute values, then solve the resulting inequality.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Distance & Absolute Value</div>
+      <div class="q-text">For which values of x is point P <strong>closer to A than to B</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>x &lt; 2</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>x &gt; 2</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>x &lt; 5</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>−3 &lt; x &lt; 7</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! x &lt; 2</strong><div class="fb-work">The midpoint between −3 and 7 is (−3+7)/2 = 2.<br>P is closer to A when x is to the left of the midpoint: x &lt; 2.<br><br>Algebraically: |x+3| &lt; |x−7|<br>Square both sides: (x+3)² &lt; (x−7)²<br>x²+6x+9 &lt; x²−14x+49<br>20x &lt; 40 → x &lt; 2 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The midpoint between −3 and 7 is 2. Points to the left of 2 are closer to A (at −3), and points to the right are closer to B (at 7). Which inequality captures "to the left of the midpoint"?<div class="fb-work">Midpoint = (−3+7)/2 = 2<br>Closer to A: x &lt; 2</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.6</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.7 of 22</span>
+  <button class="btn-nav primary">Next → 3.8 Linear Functions & Slope</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>
