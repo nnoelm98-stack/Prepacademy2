@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.14 — Verb Tense, Mood & Voice</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 78%; background: #0f6e56; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #E1F5EE; color: #085041; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 12px; }
+  th { background: #f9fafb; padding: 7px 10px; text-align: left; font-weight: 500; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 7px 10px; color: #6b7280; border-bottom: 1px solid #e5e7eb; vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 500; color: #111; white-space: nowrap; }
+  td em { font-style: italic; color: #111; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .mini-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .mini-title { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .mini-body { font-size: 12px; color: #6b7280; line-height: 1.55; margin-bottom: 4px; }
+  .mini-ex { font-size: 12px; font-style: italic; color: #111; margin-top: 4px; line-height: 1.4; }
+  .trap-box { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .trap-label { font-size: 11px; font-weight: 500; color: #A32D2D; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .trap-text { font-size: 13px; color: #501313; line-height: 1.65; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .sat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .passage-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .passage-source { font-size: 12px; color: #9ca3af; font-style: italic; margin-bottom: 0.75rem; }
+  .passage-text { font-size: 13px; line-height: 1.85; }
+  .ln { font-size: 10px; color: #9ca3af; margin-right: 5px; user-select: none; }
+  .ul { text-decoration: underline; text-decoration-color: #A32D2D; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #0f6e56; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-style: italic; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-style: normal; }
+  .opt.selected .opt-l { background: #1D9E75; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #0f6e56; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 2 › <span>Lesson 2.14</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Standard English Conventions</span><span>Lesson 14 of 18</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.14</div>
+<div class="lesson-title">Verb Tense, Mood & Voice</div>
+<div class="lesson-sub">Learn to keep tense consistent, choose the correct mood for hypothetical statements, and fix voice inconsistencies in parallel structures.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The three verb properties the SAT tests</div>
+  <div class="body-text"><strong>Tense</strong> places an action in time. <strong>Mood</strong> expresses whether a statement is fact, command, or hypothetical. <strong>Voice</strong> determines whether the subject acts or is acted upon.</div>
+  <table>
+    <tr><th>Tense</th><th>When to use</th><th>Example</th></tr>
+    <tr><td>Simple present</td><td>General truths, current states</td><td><em>Scientists study climate data.</em></td></tr>
+    <tr><td>Simple past</td><td>Completed past actions</td><td><em>The team published in 2019.</em></td></tr>
+    <tr><td>Present perfect</td><td>Past with present relevance</td><td><em>Researchers have documented a 40% decline.</em></td></tr>
+    <tr><td>Past perfect</td><td>Earlier of two past events</td><td><em>By launch, the population had already declined.</em></td></tr>
+    <tr><td>Literary present</td><td>Discussing texts, arguments, findings</td><td><em>Darwin argues that selection drives adaptation.</em></td></tr>
+  </table>
+  <div class="two-col">
+    <div class="mini-card">
+      <div class="mini-title">Subjunctive mood</div>
+      <div class="mini-body">Used for hypotheticals, wishes, recommendations. Triggers: if, wish, suggest, recommend, require, insist.</div>
+      <div class="mini-ex">✓ "If the model <strong>were</strong> accurate…" (not "was")<br>✓ "The committee recommended she <strong>be</strong> appointed."<br>✓ "I wish the data <strong>were</strong> complete."</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title">Active vs. passive voice</div>
+      <div class="mini-body">Both are grammatically correct. The SAT only tests passive when it breaks a parallel structure — mixing active and passive verbs in the same construction.</div>
+      <div class="mini-ex">✗ Mixed: "Scientists discovered X and Y was identified by them."<br>✓ Parallel active: "Scientists discovered X and identified Y."</div>
+    </div>
+  </div>
+  <div class="trap-box">
+    <div class="trap-label">Two most common SAT traps</div>
+    <div class="trap-text"><strong>Trap 1 — Unnecessary tense shift:</strong> A past-tense passage suddenly uses present tense. Always match the established timeline.<br><br><strong>Trap 2 — "Was" instead of "were" in subjunctive:</strong> Any contrary-to-fact conditional requires "were": "If the sample <em>were</em> larger…" / "If I <em>were</em> you…"</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Establish the base tense first</div><div class="tip-body">Read surrounding sentences. What tense does the passage use throughout? The answer must match unless there's a clear logical reason to shift.</div></div>
+    <div class="tip"><div class="tip-title">Spot subjunctive triggers</div><div class="tip-body">The moment you see "if," "wish," "suggest," "recommend," or "require" — check: real condition or hypothetical? Real → indicative. Hypothetical → subjunctive ("were," "be").</div></div>
+    <div class="tip"><div class="tip-title">Literary present for texts</div><div class="tip-body">When discussing a book, study, or theory, always use present tense: "Shakespeare depicts ambition as destructive" — even for centuries-old works.</div></div>
+    <div class="tip"><div class="tip-title">Past perfect = "had + verb"</div><div class="tip-body">When two past events are described and one came first, the earlier one needs "had + past participle" to show the sequence clearly.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history article on the space race</div>
+      <div class="passage-text">
+        <span class="ln">1</span>By the time Neil Armstrong set foot on the Moon in July 1969, NASA <span class="ul">spent</span> nearly a decade building the technical infrastructure, training the astronauts, and developing the computational systems that made the mission possible. The Apollo program drew on the work of over 400,000 engineers, scientists, and technicians across the United States.<br><br>
+        <span class="ln">6</span>The mission's success marked a turning point not only in space exploration but in what humanity understood to be technologically achievable — a lesson that continued to shape ambitions for decades afterward.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Verb Tense</div>
+      <div class="q-text">Which choice correctly replaces the underlined <strong>"spent"</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>spent</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>had spent</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>has spent</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>was spending</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok" class="feedback ok"><strong>Correct!</strong> "By the time Armstrong set foot on the Moon" signals that NASA's preparation happened before that past event. When one past action precedes another, the earlier one requires past perfect: "had spent." Simple past "spent" (A) fails to show the prior sequence. Present perfect "has spent" (C) implies ongoing relevance to the present. Past progressive "was spending" (D) implies simultaneous ongoing action, not completed preparation.</div>
+        <div class="feedback" id="fb-0-fail" class="feedback fail"><strong>Not quite.</strong> Look at the time signal: "By the time Armstrong set foot." NASA's preparation happened before that moment. When one past event precedes another past event, which tense shows the earlier action? Think: "had + past participle."</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a philosophy essay on ethical decision-making</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Utilitarian ethics holds that an action is morally right if it produces the greatest good for the greatest number of people. Critics argue that it can justify troubling outcomes — for instance, that sacrificing one person to save five <span class="ul">was</span> morally required, provided the arithmetic of suffering favors it.<br><br>
+        <span class="ln">6</span>This tension between aggregate welfare and individual rights remains one of the central unresolved problems in moral philosophy, with no consensus having emerged across two and a half centuries of debate.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Verb Tense</div>
+      <div class="q-text">Which choice correctly replaces the underlined <strong>"was"</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>was</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>were</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>is</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>would be</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok" class="feedback ok"><strong>Correct!</strong> The passage uses present tense throughout: "holds," "argue," "remains." This clause reports what utilitarianism actually asserts as a current ethical position — it is not a contrary-to-fact hypothetical requiring subjunctive "were." Present tense "is" maintains consistency. "Was" (A) shifts to past without justification. "Were" (B) would be subjunctive — for contrary-to-fact only. "Would be" (D) adds unnecessary conditionality.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Check the surrounding tense: "holds," "argue," "remains" — all present tense. This clause reports what utilitarianism currently claims. Which verb maintains tense consistency? And is this a genuine contrary-to-fact hypothetical requiring subjunctive "were," or a statement of what the theory actually asserts?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on coral reef restoration</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Marine biologists working on coral reef restoration have developed a promising technique: coral gardening. Fragments of healthy coral are attached to underwater structures, where they grow before being transplanted onto degraded reef sections. Early trials showed that survival rates improved when researchers <span class="ul">carefully monitored water temperature and the fragments were given adequate time to establish</span> before transplantation.<br><br>
+        <span class="ln">7</span>The technique is now being scaled up at reef sites across the Caribbean and Indo-Pacific, with results that have exceeded early expectations.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Voice Consistency</div>
+      <div class="q-text">Which choice corrects the underlined portion to maintain <strong>parallel voice</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>carefully monitored water temperature and the fragments were given adequate time to establish</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>carefully monitored water temperature and gave the fragments adequate time to establish</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>the water temperature was carefully monitored and the fragments were given adequate time to establish</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>carefully monitored water temperature and adequate time was given to the fragments to establish</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok" class="feedback ok"><strong>Correct!</strong> The sentence opens: "when researchers carefully monitored water temperature" — active voice, subject = researchers. The second action must maintain parallel active voice: "researchers…gave the fragments adequate time." Option B keeps "researchers" as the active subject of both verbs: "monitored…and gave." Option A mixes active and passive. Option C shifts entirely to passive. Option D mixes active and passive again.</div>
+        <div class="feedback" id="fb-2-fail" class="feedback fail"><strong>Not quite.</strong> The subject is "researchers" performing an action actively. Which option keeps "researchers" as the active subject of both verbs — "monitored AND [did something]" — rather than switching the second action to passive voice?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 2.13</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 2.14 of 18</span>
+  <button class="btn-nav primary">Next → 2.15</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>
