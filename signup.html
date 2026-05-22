@@ -6,121 +6,330 @@
 <title>PrepAcademy — Get Started</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F8F9FA;--white:#fff;--navy:#0F1729;--blue:#2563EB;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;--border:#EAECF0;--text:#0F1729;--text2:#4B5563;--text3:#9CA3AF;--r:10px;--sh:0 1px 3px rgba(0,0,0,.06),0 0 0 1px rgba(0,0,0,.04)}
+:root{
+  --bg:#F8F9FA;--white:#FFFFFF;--navy:#0F1729;
+  --blue:#2563EB;--blue-light:#EFF6FF;--blue-mid:#BFDBFE;--blue-dark:#1D4ED8;
+  --border:#EAECF0;--text:#0F1729;--text2:#4B5563;--text3:#9CA3AF;
+  --r:10px;--sh:0 1px 3px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04)
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;-webkit-font-smoothing:antialiased}
-.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--navy);margin-bottom:2rem;text-decoration:none}
-.logo-mark{width:26px;height:26px;background:var(--navy);border-radius:6px;display:flex;align-items:center;justify-content:center}
-.logo-mark svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
-.progress-wrap{width:100%;max-width:440px;margin-bottom:2rem}
+body{
+  font-family:Inter,system-ui,sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;
+  -webkit-font-smoothing:antialiased
+}
+a{text-decoration:none;color:inherit}
+
+/* ── TOP BAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 7%;height:58px;
+  background:var(--white);border-bottom:1px solid var(--border)
+}
+.logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--navy)}
+.logo-box{width:26px;height:26px;background:var(--navy);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-box svg{width:13px;height:13px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.back-link{font-size:13px;color:var(--text3);display:flex;align-items:center;gap:4px;transition:color .12s}
+.back-link:hover{color:var(--text2)}
+
+/* ── LAYOUT ── */
+.page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1.25rem}
+
+/* ── PROGRESS ── */
+.progress-wrap{width:100%;max-width:460px;margin-bottom:2.25rem}
+.step-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:.625rem}
+.step-text{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:.01em}
 .progress-track{height:3px;background:var(--border);border-radius:99px;overflow:hidden}
-.progress-fill{height:3px;background:var(--blue);border-radius:99px;transition:width .35s}
-.step-label{font-size:11px;color:var(--text3);text-align:right;margin-top:6px;font-weight:500}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:2rem;width:100%;max-width:440px;box-shadow:var(--sh)}
-.card-title{font-size:20px;font-weight:600;letter-spacing:-.03em;color:var(--navy);margin-bottom:.375rem}
-.card-sub{font-size:13px;color:var(--text2);margin-bottom:1.75rem;line-height:1.5}
-.field{margin-bottom:1rem}
-.field label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
-.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .1s,box-shadow .1s;-webkit-appearance:none}
-.field input:focus,.field select:focus{border-color:#93C5FD;background:var(--white);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
-.field input::placeholder{color:var(--text3)}
-.btn-main{width:100%;background:var(--blue);color:#fff;border:none;padding:10px;border-radius:var(--r);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:.25rem;transition:background .1s}
-.btn-main:hover{background:#1D4ED8}
-.divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--text3);font-size:12px;font-weight:500}
+.progress-fill{height:3px;background:var(--blue);border-radius:99px;transition:width .35s ease}
+
+/* ── CARD ── */
+.card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;
+  padding:2rem 2.25rem;width:100%;max-width:460px;
+  box-shadow:var(--sh);
+}
+.card-title{font-size:20px;font-weight:600;letter-spacing:-.03em;color:var(--navy);margin-bottom:.375rem;line-height:1.2}
+.card-sub{font-size:13px;color:var(--text2);margin-bottom:1.75rem;line-height:1.55}
+
+/* ── FORM ELEMENTS ── */
+.field{margin-bottom:.875rem}
+.field-label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.field-hint{font-size:11px;color:var(--text3);font-weight:400;margin-left:4px}
+input[type=text],input[type=email],input[type=date],input[type=number]{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r);padding:9px 12px;color:var(--text);
+  font-size:14px;font-family:inherit;outline:none;
+  transition:border-color .12s,box-shadow .12s
+}
+input:focus{border-color:#93C5FD;background:var(--white);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+input::placeholder{color:var(--text3)}
+
+/* ── BUTTONS ── */
+.btn-main{
+  width:100%;background:var(--navy);color:#fff;border:none;
+  padding:10px;border-radius:var(--r);font-size:14px;font-weight:500;
+  cursor:pointer;font-family:inherit;margin-top:.375rem;
+  transition:background .12s;display:flex;align-items:center;justify-content:center;gap:7px
+}
+.btn-main:hover{background:#1A2540}
+.btn-back{
+  background:none;border:none;font-size:13px;color:var(--text3);
+  cursor:pointer;font-family:inherit;padding:0;
+  display:inline-flex;align-items:center;gap:4px;margin-top:1.25rem;
+  transition:color .12s
+}
+.btn-back:hover{color:var(--text2)}
+
+/* ── DIVIDER ── */
+.divider{display:flex;align-items:center;gap:.875rem;margin:1.25rem 0;color:var(--text3);font-size:12px;font-weight:500}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.btn-google{width:100%;background:var(--white);border:1px solid var(--border);padding:9px;border-radius:var(--r);font-size:13px;color:var(--text2);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .1s}
+
+/* ── GOOGLE BTN ── */
+.btn-google{
+  width:100%;background:var(--white);border:1px solid var(--border);
+  padding:9px;border-radius:var(--r);font-size:13px;color:var(--text2);
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .12s
+}
 .btn-google:hover{border-color:#D1D5DB;color:var(--text)}
-.link-row{text-align:center;font-size:13px;color:var(--text3);margin-top:1.25rem}
-.link-row a{color:var(--blue);font-weight:500}
-/* Option buttons */
-.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
-.opt-btn{padding:10px 12px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;font-weight:400;color:var(--text2);cursor:pointer;text-align:left;background:var(--white);transition:all .1s;font-family:inherit}
-.opt-btn:hover,.opt-btn.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500}
-.opt-btn .ob-icon{font-size:18px;display:block;margin-bottom:4px}
-.hidden{display:none}
-/* Score targets */
-.score-target{display:flex;gap:8px;flex-wrap:wrap}
-.score-chip{padding:7px 14px;border:1px solid var(--border);border-radius:999px;font-size:13px;color:var(--text2);cursor:pointer;background:var(--white);transition:all .1s;font-family:inherit}
-.score-chip:hover,.score-chip.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500}
+
+/* ── LOGIN LINK ── */
+.login-row{text-align:center;font-size:13px;color:var(--text3);margin-top:1.25rem}
+.login-row a{color:var(--blue);font-weight:500}
+
+/* ── CHIP OPTIONS ── */
+.chip-grid{display:flex;gap:7px;flex-wrap:wrap;margin-top:.375rem}
+.chip{
+  padding:7px 14px;border:1px solid var(--border);border-radius:999px;
+  font-size:13px;color:var(--text2);cursor:pointer;background:var(--white);
+  font-family:inherit;transition:all .12s;font-weight:400
+}
+.chip:hover{border-color:var(--blue-mid);color:var(--blue)}
+.chip.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:500}
+
+/* ── OPTION CARDS ── */
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.375rem}
+.opt-card{
+  border:1px solid var(--border);border-radius:var(--r);padding:.875rem 1rem;
+  cursor:pointer;background:var(--white);font-family:inherit;text-align:left;
+  transition:all .12s
+}
+.opt-card:hover{border-color:var(--blue-mid)}
+.opt-card.selected{border-color:var(--blue);background:var(--blue-light)}
+.opt-card .oc-icon{font-size:18px;display:block;margin-bottom:.375rem}
+.opt-card .oc-label{font-size:13px;font-weight:500;color:var(--navy);display:block}
+.opt-card .oc-sub{font-size:11px;color:var(--text3);margin-top:2px;display:block}
+.opt-card.selected .oc-label{color:var(--blue)}
+
+/* ── SCORE SLIDER ── */
+.score-display{
+  background:var(--blue-light);border:1px solid var(--blue-mid);
+  border-radius:var(--r);padding:.875rem 1.25rem;
+  display:flex;align-items:baseline;gap:8px;margin-bottom:1rem
+}
+.score-big{font-size:32px;font-weight:700;color:var(--blue);letter-spacing:-.04em;line-height:1}
+.score-label{font-size:13px;color:var(--blue);font-weight:500}
+input[type=range]{
+  width:100%;margin:0;cursor:pointer;
+  -webkit-appearance:none;background:transparent
+}
+input[type=range]::-webkit-slider-track{height:4px;background:var(--border);border-radius:99px}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;background:var(--blue);margin-top:-7px;
+  border:2px solid #fff;box-shadow:0 0 0 1px var(--blue-mid)
+}
+input[type=range]::-moz-range-track{height:4px;background:var(--border);border-radius:99px}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--blue);border:2px solid #fff}
+
+/* ── HIDDEN ── */
+.step{display:none}.step.active{display:block}
 </style>
 </head>
 <body>
 
-<a class="logo" href="index.html">
-  <div class="logo-mark"><svg viewBox="0 0 14 14"><path d="M2 7h10M7 2l5 5-5 5"/></svg></div>
-  PrepAcademy
-</a>
-
-<div class="progress-wrap">
-  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
-  <div class="step-label" id="stepLabel">Step 1 of 3</div>
+<div class="topbar">
+  <a class="logo" href="index.html">
+    <div class="logo-box"><svg viewBox="0 0 14 14"><path d="M2 7h10"/><path d="M7 2l5 5-5 5"/></svg></div>
+    PrepAcademy
+  </a>
+  <a class="back-link" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg>
+    Back to home
+  </a>
 </div>
 
-<!-- STEP 1: Name -->
-<div class="card" id="step1">
-  <div class="card-title">Welcome to PrepAcademy</div>
-  <div class="card-sub">Let's personalize your SAT prep. What's your name?</div>
-  <div class="field"><label>Your name</label><input type="text" id="inputName" placeholder="First name" autocomplete="given-name"></div>
-  <div class="field"><label>Email <span style="color:var(--text3);font-weight:400">(optional — for saving progress later)</span></label><input type="email" id="inputEmail" placeholder="you@email.com" autocomplete="email"></div>
-  <button class="btn-main" onclick="toStep(2)">Continue →</button>
-  <div class="divider">or</div>
-  <button class="btn-google" onclick="toStep(2)">
-    <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-    Continue with Google
-  </button>
-  <div class="link-row">Already have an account? <a href="dashboard.html">Go to dashboard</a></div>
-</div>
+<div class="page">
 
-<!-- STEP 2: Exam info -->
-<div class="card hidden" id="step2">
-  <div class="card-title">When is your exam?</div>
-  <div class="card-sub">We'll build a study schedule around your timeline.</div>
-  <div class="field"><label>SAT exam date</label><input type="date" id="inputDate"></div>
-  <div class="field"><label>Current SAT score estimate <span style="color:var(--text3);font-weight:400">(skip if first time)</span></label>
-    <div class="score-target" id="currentScores">
-      <button class="score-chip" onclick="selectChip(this,'current')">Haven't taken it</button>
-      <button class="score-chip" onclick="selectChip(this,'current')">800–1000</button>
-      <button class="score-chip" onclick="selectChip(this,'current')">1000–1200</button>
-      <button class="score-chip" onclick="selectChip(this,'current')">1200–1400</button>
-      <button class="score-chip" onclick="selectChip(this,'current')">1400+</button>
+  <div class="progress-wrap">
+    <div class="step-meta">
+      <span class="step-text" id="stepText">Step 1 of 3</span>
+      <span class="step-text" id="stepTitle">Your profile</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:16%"></div>
     </div>
   </div>
-  <button class="btn-main" onclick="toStep(3)">Continue →</button>
-  <div class="link-row"><a href="#" onclick="toStep(1);return false">← Back</a></div>
-</div>
 
-<!-- STEP 3: Target + start -->
-<div class="card hidden" id="step3">
-  <div class="card-title">What's your target score?</div>
-  <div class="card-sub">We'll track your progress against this goal.</div>
-  <div class="field">
-    <div class="score-target" id="targetScores">
-      <button class="score-chip" onclick="selectChip(this,'target')">1200</button>
-      <button class="score-chip" onclick="selectChip(this,'target')">1300</button>
-      <button class="score-chip" onclick="selectChip(this,'target')">1400</button>
-      <button class="score-chip" onclick="selectChip(this,'target')">1500</button>
-      <button class="score-chip" onclick="selectChip(this,'target')">1550+</button>
+  <!-- ── STEP 1: Name & Email ── -->
+  <div class="card step active" id="step1">
+    <div class="card-title">Create your account</div>
+    <div class="card-sub">Your progress will be saved locally on this device. Add an email to sync across devices later.</div>
+
+    <div class="field">
+      <label class="field-label">Your name</label>
+      <input type="text" id="inputName" placeholder="First name" autocomplete="given-name">
     </div>
+    <div class="field">
+      <label class="field-label">Email <span class="field-hint">optional</span></label>
+      <input type="email" id="inputEmail" placeholder="you@email.com" autocomplete="email">
+    </div>
+
+    <button class="btn-main" onclick="goStep(2)">
+      Continue
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </button>
+
+    <div class="divider">or</div>
+    <button class="btn-google" onclick="goStep(2)">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="login-row">Already have an account? <a href="dashboard.html">Go to dashboard</a></div>
   </div>
-  <button class="btn-main" onclick="finish()" style="margin-top:.75rem">Start learning →</button>
-  <div class="link-row"><a href="#" onclick="toStep(2);return false">← Back</a></div>
+
+  <!-- ── STEP 2: Exam date + current score ── -->
+  <div class="card step" id="step2">
+    <div class="card-title">When are you taking the SAT?</div>
+    <div class="card-sub">This helps us show how many days you have left and keep you on track.</div>
+
+    <div class="field">
+      <label class="field-label">Exam date <span class="field-hint">optional</span></label>
+      <input type="date" id="inputDate">
+    </div>
+
+    <div class="field" style="margin-bottom:1.5rem">
+      <label class="field-label" style="margin-bottom:.75rem">Current score range</label>
+      <div class="chip-grid" id="currentChips">
+        <button class="chip" onclick="selectChip(this,'current')">First time</button>
+        <button class="chip" onclick="selectChip(this,'current')">800–1000</button>
+        <button class="chip" onclick="selectChip(this,'current')">1000–1200</button>
+        <button class="chip" onclick="selectChip(this,'current')">1200–1400</button>
+        <button class="chip" onclick="selectChip(this,'current')">1400+</button>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="goStep(3)">
+      Continue
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </button>
+    <div style="text-align:center"><button class="btn-back" onclick="goStep(1)">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg>
+      Back
+    </button></div>
+  </div>
+
+  <!-- ── STEP 3: Target score ── -->
+  <div class="card step" id="step3">
+    <div class="card-title">What's your target score?</div>
+    <div class="card-sub">Set a goal to track your progress. You can change this any time in your profile.</div>
+
+    <div class="score-display">
+      <div class="score-big" id="scoreDisplay">1400</div>
+      <div class="score-label">target score</div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <input type="range" id="scoreSlider" min="800" max="1600" step="50" value="1400" oninput="updateScore(this.value)">
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="font-size:11px;color:var(--text3);font-weight:500">800</span>
+        <span style="font-size:11px;color:var(--text3);font-weight:500">1200</span>
+        <span style="font-size:11px;color:var(--text3);font-weight:500">1600</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" style="margin-bottom:.75rem">Which modules do you need most?</label>
+      <div class="opt-grid" id="modOpts">
+        <button class="opt-card selected" onclick="toggleMod(this)">
+          <span class="oc-icon">📖</span>
+          <span class="oc-label">Reading & Writing</span>
+          <span class="oc-sub">Modules 1 & 2</span>
+        </button>
+        <button class="opt-card selected" onclick="toggleMod(this)">
+          <span class="oc-icon">🔢</span>
+          <span class="oc-label">Math</span>
+          <span class="oc-sub">Modules 3 & 4</span>
+        </button>
+        <button class="opt-card" onclick="toggleMod(this)">
+          <span class="oc-icon">⚡</span>
+          <span class="oc-label">Full prep</span>
+          <span class="oc-sub">All 4 modules</span>
+        </button>
+        <button class="opt-card" onclick="toggleMod(this)">
+          <span class="oc-icon">🎯</span>
+          <span class="oc-label">Weak spots only</span>
+          <span class="oc-sub">Custom focus</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="finish()" style="margin-top:.875rem">
+      Start learning
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </button>
+    <div style="text-align:center"><button class="btn-back" onclick="goStep(2)">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 4L6 8l4 4"/></svg>
+      Back
+    </button></div>
+  </div>
+
 </div>
 
 <script>
-const steps=[null,document.getElementById('step1'),document.getElementById('step2'),document.getElementById('step3')];
-const fills=['20%','60%','100%'];
-let cur=1;
-function toStep(n){
-  if(n===2){const name=document.getElementById('inputName').value.trim();if(name)localStorage.setItem('pa_name',name);}
-  if(n===3){const d=document.getElementById('inputDate').value;if(d)localStorage.setItem('pa_exam_date',d);}
-  steps[cur].classList.add('hidden');cur=n;steps[cur].classList.remove('hidden');
-  document.getElementById('progressFill').style.width=fills[n-1];
-  document.getElementById('stepLabel').textContent='Step '+n+' of 3';
+const STEPS={
+  1:{fill:'16%',text:'Step 1 of 3',title:'Your profile'},
+  2:{fill:'55%',text:'Step 2 of 3',title:'Exam details'},
+  3:{fill:'100%',text:'Step 3 of 3',title:'Your goal'}
+};
+
+function goStep(n){
+  if(n===2){
+    const name=document.getElementById('inputName').value.trim();
+    if(name) localStorage.setItem('pa_name',name);
+  }
+  if(n===3){
+    const d=document.getElementById('inputDate').value;
+    if(d) localStorage.setItem('pa_exam_date',d);
+  }
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  const cfg=STEPS[n];
+  document.getElementById('progressFill').style.width=cfg.fill;
+  document.getElementById('stepText').textContent=cfg.text;
+  document.getElementById('stepTitle').textContent=cfg.title;
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function selectChip(el,group){document.querySelectorAll('[onclick*="\''+group+'\'"]').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+
+function selectChip(el,group){
+  el.closest('.chip-grid').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleMod(el){
+  el.classList.toggle('selected');
+}
+
+function updateScore(val){
+  document.getElementById('scoreDisplay').textContent=val;
+}
+
 function finish(){
-  const target=document.querySelector('#targetScores .selected');
-  if(target)localStorage.setItem('pa_target_score',target.textContent.replace('+',''));
+  const score=document.getElementById('scoreSlider').value;
+  localStorage.setItem('pa_target_score',score);
   window.location.href='dashboard.html';
 }
 </script>
