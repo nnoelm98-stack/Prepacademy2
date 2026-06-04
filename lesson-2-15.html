@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2.15 — Parallel Structure</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 83%; background: #0f6e56; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #E1F5EE; color: #085041; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; font-weight: 500; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .pattern-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .pattern-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 5px; }
+  .pattern-body { font-size: 12px; color: #6b7280; line-height: 1.5; margin-bottom: 5px; }
+  .pattern-ex { font-size: 12px; font-style: italic; color: #111; line-height: 1.5; }
+  .wrong-ex { color: #A32D2D; }
+  .right-ex { color: #3B6D11; }
+  .context-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+  .context-item { background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; display: flex; gap: 12px; }
+  .context-num { width: 22px; height: 22px; border-radius: 50%; background: #0f6e56; color: #fff; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .context-body { flex: 1; font-size: 13px; color: #6b7280; line-height: 1.55; }
+  .context-body strong { color: #111; font-weight: 500; }
+  .context-ex { font-size: 12px; font-style: italic; margin-top: 3px; line-height: 1.4; }
+  .green-box { background: #E1F5EE; border-left: 3px solid #0f6e56; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .green-label { font-size: 11px; font-weight: 500; color: #0f6e56; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .green-text { font-size: 13px; color: #085041; line-height: 1.7; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .sat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .passage-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .passage-source { font-size: 12px; color: #9ca3af; font-style: italic; margin-bottom: 0.75rem; }
+  .passage-text { font-size: 13px; line-height: 1.85; color: #111; }
+  .ln { font-size: 10px; color: #9ca3af; margin-right: 5px; user-select: none; }
+  .ul { text-decoration: underline; text-decoration-color: #A32D2D; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #0f6e56; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .q-text strong { font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #1D9E75; background: #E1F5EE; color: #085041; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .opt.selected .opt-l { background: #1D9E75; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #0f6e56; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #0f6e56; color: #fff; border-color: #0f6e56; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT R&W › Module 2 › <span>Lesson 2.15</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 2 — Standard English Conventions</span><span>Lesson 15 of 18</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">Reading & Writing · Module 2 · Lesson 2.15</div>
+<div class="lesson-title">Parallel Structure</div>
+<div class="lesson-sub">Learn to keep every element in a list, comparison, or paired construction in the same grammatical form — the principle that makes sentences feel balanced, clear, and correct.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">What parallel structure means</div>
+  <div class="body-text">Parallel structure requires that items joined by coordinating conjunctions (and, but, or) or paired conjunctions (not only…but also, either…or, both…and) must be in the <strong>same grammatical form</strong>. If the first item is a noun, all items must be nouns. If it's an infinitive, all must be infinitives. If it's a gerund (-ing), all must be gerunds.</div>
+  <div class="pattern-grid">
+    <div class="pattern-card">
+      <div class="pattern-title">List parallelism</div>
+      <div class="pattern-body">All items in a series must share the same grammatical form.</div>
+      <div class="pattern-ex wrong-ex">✗ "The program focuses on reading, writing, and to develop critical thinking."</div>
+      <div class="pattern-ex right-ex">✓ "The program focuses on reading, writing, and developing critical thinking."</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-title">Comparison parallelism</div>
+      <div class="pattern-body">Both sides of a comparison must have matching grammatical structure.</div>
+      <div class="pattern-ex wrong-ex">✗ "She prefers hiking to when she swims."</div>
+      <div class="pattern-ex right-ex">✓ "She prefers hiking to swimming."</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-title">Paired conjunction parallelism</div>
+      <div class="pattern-body">With not only…but also / either…or / both…and / neither…nor — the element after each conjunction must match.</div>
+      <div class="pattern-ex wrong-ex">✗ "The study was not only large but also it was rigorous."</div>
+      <div class="pattern-ex right-ex">✓ "The study was not only large but also rigorous."</div>
+    </div>
+    <div class="pattern-card">
+      <div class="pattern-title">Verb phrase parallelism</div>
+      <div class="pattern-body">When two or more verb phrases are joined, each must have the same form — all infinitives, all gerunds, or all finite verbs.</div>
+      <div class="pattern-ex wrong-ex">✗ "The goal is to reduce costs, improving efficiency, and the elimination of waste."</div>
+      <div class="pattern-ex right-ex">✓ "The goal is to reduce costs, improve efficiency, and eliminate waste."</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">The four contexts where parallelism is tested</div>
+  <div class="context-list">
+    <div class="context-item">
+      <div class="context-num">1</div>
+      <div class="context-body">
+        <strong>Lists of three or more items</strong> — the most common SAT pattern. The last item in a list is almost always where the error hides, since the first two items establish the pattern and the third breaks it.
+        <div class="context-ex">✗ "The report evaluated costs, timelines, and what the staffing requirements were."<br>✓ "The report evaluated costs, timelines, and staffing requirements."</div>
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-num">2</div>
+      <div class="context-body">
+        <strong>Paired conjunctions</strong> — whatever grammatical form follows the first conjunction must be repeated after the second. The SAT often places the error on the second element.
+        <div class="context-ex">✗ "Either the committee will approve the plan or rejecting it outright."<br>✓ "Either the committee will approve the plan or reject it outright."</div>
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-num">3</div>
+      <div class="context-body">
+        <strong>Comparisons with "than" or "as…as"</strong> — both sides of the comparison must be grammatically equivalent. A common error is comparing a noun to a clause or a gerund to an infinitive.
+        <div class="context-ex">✗ "Composting is more effective than when you use chemical fertilizers."<br>✓ "Composting is more effective than using chemical fertilizers."</div>
+      </div>
+    </div>
+    <div class="context-item">
+      <div class="context-num">4</div>
+      <div class="context-body">
+        <strong>Clauses after "that"</strong> — when multiple clauses follow the same verb + "that," each clause must have the same structure. Dropping "that" before the second clause while keeping it before the first creates imbalance.
+        <div class="context-ex">✗ "Researchers found that sleep deprivation reduces focus and productivity was impaired."<br>✓ "Researchers found that sleep deprivation reduces focus and that productivity was impaired."</div>
+      </div>
+    </div>
+  </div>
+  <div class="green-box">
+    <div class="green-label">The quick parallelism test</div>
+    <div class="green-text">When you spot a list or paired construction, identify the grammatical form of the first item — noun, infinitive, gerund, adjective, clause — then check every other item against it. If any item breaks the pattern, it's wrong. Ask: could I list all items together with "and" between each pair and have them all sound natural? If not, the structure is broken.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Find the first item first</div><div class="tip-body">The first item in any list or paired construction sets the pattern. Never change it — only fix the items that deviate from its form.</div></div>
+    <div class="tip"><div class="tip-title">Label each item's form</div><div class="tip-body">Mentally tag each item: noun? infinitive? gerund? adjective? clause? If any tag differs from the others, that item needs to be rewritten to match.</div></div>
+    <div class="tip"><div class="tip-title">Watch for "to" in infinitive lists</div><div class="tip-body">Once "to" is established before the first infinitive, subsequent infinitives can drop "to" (share the first one). But you cannot switch from infinitive to gerund mid-list.</div></div>
+    <div class="tip"><div class="tip-title">Paired conjunctions demand exact symmetry</div><div class="tip-body">"Not only X but also Y" — X and Y must be the same form. Read what immediately follows each conjunction and compare them directly.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a student essay on urban planning</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Successful urban transit systems share several characteristics: they are financially sustainable, politically supported, and <span class="ul">the infrastructure is designed to be accessible to all riders regardless of income or ability</span>. Cities that ignore any one of these factors tend to build systems that serve commuters in wealthy neighborhoods while leaving lower-income residents underserved.<br><br>
+        <span class="ln">6</span>The most effective transit investments, researchers argue, treat mobility as a public good rather than a commercial service — a distinction that shapes every decision from route planning to fare structure.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Parallel Structure</div>
+      <div class="q-text">Which choice most effectively corrects the underlined portion to maintain <strong>parallel structure</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>the infrastructure is designed to be accessible to all riders regardless of income or ability</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>they are accessible to all riders regardless of income or ability</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>accessibility for all riders regardless of income or ability</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>designing the infrastructure to be accessible to all riders regardless of income or ability</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct!</strong> The list establishes a clear pattern: "they are financially sustainable, [they are] politically supported, and [they are] ___." Each item is an adjective predicate following "they are." The third item must also be an adjective predicate: "they are accessible to all riders." Option B correctly completes the parallel: "financially sustainable, politically supported, and accessible." Option A introduces a new subject ("the infrastructure") breaking the "they are" structure. Option C shifts to a noun phrase. Option D uses a gerund phrase that doesn't fit the predicate adjective pattern.</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Identify the pattern: "they are financially sustainable, [they are] politically supported, and [they are] ___." The first two items are adjective predicates following "they are." Which option completes the third item with another adjective predicate in the same form?</div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a scientific article on ocean plastic pollution</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Marine biologists studying the effects of plastic pollution have found that microplastics not only accumulate in the tissues of fish and marine mammals <span class="ul">but they also are entering the human food chain through seafood consumption</span>. The implications for public health are still being studied, but preliminary data suggest a correlation between high seafood consumption and elevated levels of microplastic particles in blood and tissue samples.<br><br>
+        <span class="ln">7</span>Researchers call for improved waste management systems, stricter regulations on single-use plastics, and expanded monitoring of microplastic levels in food supplies.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Parallel Structure</div>
+      <div class="q-text">Which choice corrects the underlined portion to maintain <strong>parallel structure</strong> with the paired conjunction?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>but they also are entering the human food chain through seafood consumption</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>but also enter the human food chain through seafood consumption</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>but also the human food chain is being entered through seafood consumption</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>but also entering the human food chain through seafood consumption</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> The paired conjunction is "not only…but also." What follows "not only": "accumulate in the tissues." The verb form is the bare infinitive (base form) — "accumulate." The element after "but also" must match: "enter the human food chain." Option B correctly uses the parallel bare infinitive "enter." Option A introduces a new subject and auxiliary ("they also are entering") — broken parallel. Option C shifts to passive with a new subject. Option D uses the gerund "entering" — which doesn't match the base-form "accumulate."</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> With "not only…but also," the grammatical form must match on both sides. What follows "not only"? "accumulate" — a bare infinitive (base form verb). What must follow "but also"? A bare infinitive in the same form. Which option uses a bare infinitive to match "accumulate"?</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="sat-layout">
+    <div class="passage-panel">
+      <div class="panel-label">Passage</div>
+      <div class="passage-source">Adapted from a history essay on the printing press</div>
+      <div class="passage-text">
+        <span class="ln">1</span>Gutenberg's printing press, introduced in the 1440s, fundamentally changed European society by making books cheaper to produce, <span class="ul">distributing knowledge more widely, and the literacy rate across the continent was dramatically increased</span>. Within decades of its introduction, the press had enabled the Reformation, accelerated the Renaissance, and contributed to the Scientific Revolution — all by making ideas reproducible and portable at a scale previously unimaginable.<br><br>
+        <span class="ln">7</span>Few inventions in human history have matched its capacity to reshape the relationship between information and power.
+      </div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Parallel Structure</div>
+      <div class="q-text">Which choice corrects the underlined portion to maintain <strong>parallel structure</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>distributing knowledge more widely, and the literacy rate across the continent was dramatically increased</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>distributing knowledge more widely, and dramatically increasing literacy rates across the continent</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>distributing knowledge more widely, and to dramatically increase literacy rates across the continent</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>to distribute knowledge more widely, and dramatically increasing literacy rates across the continent</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct!</strong> The sentence lists three results of the printing press introduced with "by": "by making books cheaper, [by] distributing knowledge more widely, and [by] ___." The pattern is gerund (-ing form). All three must be gerunds. "Making" and "distributing" are already correct. The third item must also be a gerund: "dramatically increasing literacy rates." Option B correctly completes the parallel with "increasing." Option A uses a passive clause — broken parallel. Option C uses an infinitive "to increase." Option D breaks the first item from gerund to infinitive while inconsistently keeping "increasing" for the third.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> The sentence structure is "by [gerund 1], [gerund 2], and [gerund 3]." The preposition "by" establishes the pattern. "Making" and "distributing" are both gerunds (-ing form). Which option gives the third item the same -ing gerund form to complete the parallel?</div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 2.14</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 2.15 of 18</span>
+  <button class="btn-nav primary">Next → 2.16</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>
