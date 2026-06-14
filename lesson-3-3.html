@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.3 — Systems of Linear Equations</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 14%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .method-card { border-radius: 10px; padding: 1rem 1.25rem; }
+  .method-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .method-steps { font-size: 12px; color: #374151; line-height: 1.7; }
+  .method-steps em { font-style: normal; font-family: 'Georgia', serif; color: #4C1D95; font-weight: 500; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .solutions-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+  .sol-card { border-radius: 8px; padding: 0.85rem 1rem; text-align: center; }
+  .sol-title { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .sol-cond { font-size: 11px; line-height: 1.4; margin-bottom: 5px; }
+  .sol-ex { font-size: 11px; font-family: 'Georgia', serif; font-style: italic; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.4rem 0; padding: 0.4rem 0.75rem; background: #F5F3FF; border-radius: 5px; display: block; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-family: 'Georgia', serif; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.3</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 3 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.3</div>
+<div class="lesson-title">Systems of Linear Equations</div>
+<div class="lesson-sub">Master two methods for solving systems of two equations — substitution and elimination — and learn to identify when a system has one solution, no solution, or infinitely many solutions.</div>
+<div class="dur-row"><span><b>14 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">Two methods — choose the faster one</div>
+  <div class="body-text">A system of two linear equations has two unknowns. To solve it, you must find the values of both variables that satisfy both equations simultaneously. The SAT rewards you for choosing the most efficient method.</div>
+  <div class="method-grid">
+    <div class="method-card" style="background:#F5F3FF;">
+      <div class="method-title" style="color:#4C1D95;">Substitution — best when one variable is already isolated</div>
+      <div class="method-steps">
+        1. Solve one equation for one variable<br>
+        2. Substitute that expression into the other equation<br>
+        3. Solve for the remaining variable<br>
+        4. Back-substitute to find the first variable<br><br>
+        <em>Best for: y = ... or x = ... equations</em>
+      </div>
+    </div>
+    <div class="method-card" style="background:#EDE9FE;">
+      <div class="method-title" style="color:#4C1D95;">Elimination — best when coefficients are easy to match</div>
+      <div class="method-steps">
+        1. Multiply one or both equations so a variable has equal (or opposite) coefficients<br>
+        2. Add or subtract the equations to eliminate that variable<br>
+        3. Solve for the remaining variable<br>
+        4. Substitute back to find the other variable<br><br>
+        <em>Best for: Ax + By = C form</em>
+      </div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — elimination</div>
+    <div class="example-text">
+      Solve: <strong>3x + 2y = 16</strong> and <strong>x − 2y = 0</strong><br><br>
+      <span class="fb-work">Add equations: (3x + 2y) + (x − 2y) = 16 + 0</span><br>
+      <span class="fb-work">4x = 16 → x = 4</span><br>
+      <span class="fb-work">Substitute: 4 − 2y = 0 → y = 2</span><br>
+      <span class="fb-work">Solution: (4, 2)</span><br>
+      Check in eq 1: 3(4) + 2(2) = 16 ✓ &nbsp; Check in eq 2: 4 − 2(2) = 0 ✓
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Three possible outcomes — what they mean geometrically</div>
+  <div class="solutions-grid">
+    <div class="sol-card" style="background:#EAF3DE;">
+      <div class="sol-title" style="color:#27500A;">One solution</div>
+      <div class="sol-cond" style="color:#3B6D11;">Lines intersect at exactly one point. Different slopes.</div>
+      <div class="sol-ex">y = 2x + 1<br>y = −x + 4<br>→ solve: (1, 3)</div>
+    </div>
+    <div class="sol-card" style="background:#FCEBEB;">
+      <div class="sol-title" style="color:#501313;">No solution</div>
+      <div class="sol-cond" style="color:#A32D2D;">Lines are parallel. Same slope, different y-intercepts. Variables cancel leaving a false statement.</div>
+      <div class="sol-ex">y = 2x + 1<br>y = 2x + 5<br>→ 0 = 4 (false)</div>
+    </div>
+    <div class="sol-card" style="background:#EDE9FE;">
+      <div class="sol-title" style="color:#4C1D95;">Infinite solutions</div>
+      <div class="sol-cond" style="color:#7C3AED;">Lines are identical. Same slope and same y-intercept. Variables cancel leaving a true statement.</div>
+      <div class="sol-ex">y = 2x + 1<br>2y = 4x + 2<br>→ 0 = 0 (always true)</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Look for the easier variable to eliminate first</div><div class="tip-body">If the coefficients of one variable are already equal or opposite in the two equations, use elimination immediately — no multiplication needed. This saves 30–60 seconds per problem.</div></div>
+    <div class="tip"><div class="tip-title">The SAT often asks for x + y, not x or y alone</div><div class="tip-body">Many SAT systems questions ask for a combination like x + y or 2x − y. After eliminating one variable, check if you can get the answer directly without finding both variables separately.</div></div>
+    <div class="tip"><div class="tip-title">No solution: same slope, different intercept</div><div class="tip-body">For "no solution" questions, set the equations in slope-intercept form. If slopes are equal but y-intercepts differ, the system has no solution. The SAT frequently tests this condition.</div></div>
+    <div class="tip"><div class="tip-title">Always check both equations</div><div class="tip-body">After solving, substitute your (x, y) values into both original equations. If both are satisfied, you're done. If not, you made an arithmetic error somewhere — find and fix it.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">System of equations</div>
+      <span class="math-eq">2x + 3y = 12</span>
+      <span class="math-eq">4x − 3y = 6</span>
+      <div class="problem-text" style="margin-top:0.75rem; font-size:12px; color:#6b7280;">The y-coefficients are already opposites (+3 and −3). Use elimination — add the equations directly to eliminate y, then solve for x.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Elimination Method</div>
+      <div class="q-text">What is the solution (x, y) to this system?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>(3, 2)</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>(2, 3)</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>(1, 10/3)</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>(4, 4/3)</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! (3, 2)</strong><div class="fb-work">Add: (2x + 3y) + (4x − 3y) = 12 + 6<br>6x = 18 → x = 3<br>Sub into eq 1: 2(3) + 3y = 12<br>6 + 3y = 12 → y = 2<br>Check eq 2: 4(3) − 3(2) = 12 − 6 = 6 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Notice the y-terms are +3y and −3y — they're already set up for elimination! Add the two equations directly. The y's cancel, giving you 6x = 18. Solve for x, then substitute back to find y.<div class="fb-work">Add equations → 6x = 18 → x = 3<br>2(3) + 3y = 12 → y = 2 → (3, 2)</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">At a school event, adult tickets cost $8 each and student tickets cost $5 each. A total of 200 tickets were sold for $1,150 in revenue.</div>
+      <span class="math-eq">a + s = 200</span>
+      <span class="math-eq">8a + 5s = 1150</span>
+      <div class="problem-text" style="margin-top:0.6rem; font-size:12px; color:#6b7280;">Let a = adult tickets, s = student tickets. Solve this system to find each quantity.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Real-World System</div>
+      <div class="q-text">How many adult tickets were sold?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>50</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>100</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>150</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>75</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 50 adult tickets.</strong><div class="fb-work">From eq 1: s = 200 − a<br>Sub into eq 2: 8a + 5(200 − a) = 1150<br>8a + 1000 − 5a = 1150<br>3a = 150 → a = 50<br>Check: s = 150 · 8(50)+5(150)=400+750=1150 ✓</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Use substitution: from equation 1, write s = 200 − a. Substitute into equation 2 and solve for a.<div class="fb-work">8a + 5(200 − a) = 1150<br>3a = 150 → a = 50</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">System with parameter</div>
+      <span class="math-eq">6x − 2y = 10</span>
+      <span class="math-eq">kx − y = 5</span>
+      <div class="problem-text" style="margin-top:0.75rem; font-size:12px; color:#6b7280;">Find the value of k that makes this system have infinitely many solutions. Hint: for infinite solutions, the two equations must be identical — one must be a scalar multiple of the other.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Infinite Solutions Condition</div>
+      <div class="q-text">For what value of <strong>k</strong> does this system have infinitely many solutions?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>k = 6</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>k = 2</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>k = 3</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>k = 1</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! k = 3</strong><div class="fb-work">For infinite solutions, eq 2 must be a multiple of eq 1.<br>Divide eq 1 by 2: 3x − y = 5<br>This matches eq 2 exactly when k = 3.<br>Check: 3x − y = 5 is identical to eq 1 ÷ 2 → infinite solutions ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> For infinite solutions, both equations must describe the same line — one must be a multiple of the other. Try dividing equation 1 by 2 and see what you get. That result should match equation 2 exactly.<div class="fb-work">Eq 1 ÷ 2: 3x − y = 5<br>This equals eq 2 when k = 3 ✓</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.2</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.3 of 22</span>
+  <button class="btn-nav primary">Next → 3.4 Inequalities</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

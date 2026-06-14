@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.2 — Linear Equations: Two Variables</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 9%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 17px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; letter-spacing: 0.03em; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 6px; }
+  .forms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .form-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .form-title { font-size: 13px; font-weight: 500; color: #111; margin-bottom: 5px; }
+  .form-eq { font-size: 14px; font-family: 'Georgia', serif; color: #4C1D95; font-weight: 500; margin-bottom: 5px; }
+  .form-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .mini-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .mini-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .mini-body { font-size: 12px; color: #6b7280; line-height: 1.55; }
+  .mini-ex { font-size: 12px; font-family: 'Georgia', serif; color: #4C1D95; margin-top: 4px; line-height: 1.6; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 15px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-family: 'Georgia', serif; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.7; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .fb-work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2; margin-top: 6px; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.2</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 2 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.2</div>
+<div class="lesson-title">Linear Equations — Two Variables</div>
+<div class="lesson-sub">Master the slope-intercept and standard forms of linear equations, learn what slope and y-intercept mean in context, and practice reading and writing linear equations from graphs and tables.</div>
+<div class="dur-row"><span><b>14 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">The two key forms of a linear equation</div>
+  <div class="body-text">A linear equation in two variables describes a straight line — every point (x, y) that satisfies the equation lies on that line. The SAT uses two main forms.</div>
+  <div class="forms-grid">
+    <div class="form-card">
+      <div class="form-title">Slope-intercept form</div>
+      <div class="form-eq">y = mx + b</div>
+      <div class="form-body"><strong>m</strong> = slope (rate of change) · <strong>b</strong> = y-intercept (value of y when x = 0). Best for reading slope and intercept directly, graphing, and word problems involving rates.</div>
+    </div>
+    <div class="form-card">
+      <div class="form-title">Standard form</div>
+      <div class="form-eq">Ax + By = C</div>
+      <div class="form-body"><strong>A, B, C</strong> are integers. Best for systems of equations and finding intercepts: set x = 0 for y-intercept, set y = 0 for x-intercept.</div>
+    </div>
+  </div>
+  <div class="formula-box">
+    <div class="formula">slope m = (y₂ − y₁) / (x₂ − x₁) = rise / run</div>
+    <div class="formula-sub">Positive slope → line rises left to right · Negative slope → line falls left to right · Zero slope → horizontal line · Undefined slope → vertical line</div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example — writing an equation from two points</div>
+    <div class="example-text">
+      Find the equation of the line through (2, 5) and (6, 13).<br><br>
+      <span class="work">Step 1: slope = (13 − 5) / (6 − 2) = 8 / 4 = 2</span><br>
+      <span class="work">Step 2: use y = mx + b → 5 = 2(2) + b → b = 1</span><br>
+      <span class="work">Equation: y = 2x + 1</span><br><br>
+      Check with (6, 13): y = 2(6) + 1 = 13 ✓
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">What slope and intercept mean in real-world contexts</div>
+  <div class="body-text">The SAT frequently asks you to interpret the slope and y-intercept of a linear model — not just calculate them. The key is connecting the math to the story.</div>
+  <div class="two-col">
+    <div class="mini-card">
+      <div class="mini-title">Slope = rate of change</div>
+      <div class="mini-body">The slope tells you how much y changes for each one-unit increase in x. In a word problem, ask: what are the units of the slope?</div>
+      <div class="mini-ex">y = 0.15x + 20 (cost of phone plan)<br>Slope 0.15 = $0.15 per minute of usage<br>Each extra minute costs $0.15 more.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title">y-intercept = starting value</div>
+      <div class="mini-body">The y-intercept is the value of y when x = 0 — the baseline, initial amount, or fixed cost before any change occurs.</div>
+      <div class="mini-ex">y = 0.15x + 20 (cost of phone plan)<br>y-intercept 20 = $20 flat monthly fee<br>The cost before any minutes are used.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Convert to slope-intercept for reading</div><div class="tip-body">If an equation is given in standard form (Ax + By = C), solve for y to get slope-intercept form. This makes slope and y-intercept immediately visible without extra calculation.</div></div>
+    <div class="tip"><div class="tip-title">Use two points to find slope first</div><div class="tip-body">When given a table or graph, always find slope first using two clear points. Then substitute one point into y = mx + b to find b. Never try to find b without finding m first.</div></div>
+    <div class="tip"><div class="tip-title">Parallel lines have equal slopes</div><div class="tip-body">Two lines are parallel if and only if their slopes are equal (and they have different y-intercepts). Perpendicular lines have slopes that are negative reciprocals of each other: m₁ × m₂ = −1.</div></div>
+    <div class="tip"><div class="tip-title">x-intercept: set y = 0</div><div class="tip-body">The x-intercept is where the line crosses the x-axis — set y = 0 and solve for x. The y-intercept is where it crosses the y-axis — set x = 0 and solve for y.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A line passes through the points (−1, 3) and (3, 11).</div>
+      <div class="problem-text" style="margin-top:0.75rem;font-size:12px;color:#6b7280;">Find the slope first using the two points, then substitute one point into y = mx + b to find the y-intercept.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Slope-Intercept Form</div>
+      <div class="q-text">Which equation correctly describes the line through (−1, 3) and (3, 11)?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>y = 2x + 5</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>y = 3x + 6</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>y = 2x − 5</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>y = 4x + 7</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! y = 2x + 5</strong><div class="fb-work">m = (11 − 3) / (3 − (−1)) = 8 / 4 = 2<br>Using (−1, 3): 3 = 2(−1) + b → b = 5<br>y = 2x + 5<br>Check (3, 11): 2(3) + 5 = 11 ✓</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Start by finding slope: m = (y₂ − y₁)/(x₂ − x₁) = (11 − 3)/(3 − (−1)). Then substitute one point into y = mx + b to solve for b.<div class="fb-work">m = 8/4 = 2 · Then: 3 = 2(−1) + b → b = 5<br>Answer: y = 2x + 5</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A water tank initially holds 400 gallons. Water drains out at a constant rate of 25 gallons per hour.</div>
+      <div class="math-eq">V = 400 − 25t</div>
+      <div class="problem-text" style="margin-top:0.6rem;font-size:12px;color:#6b7280;">where V = volume (gallons) and t = time (hours). Answer the question about this linear model.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Interpreting Linear Models</div>
+      <div class="q-text">In the equation V = 400 − 25t, what does the value <strong>400</strong> represent?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>The rate at which water drains per hour</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>The number of hours until the tank is empty</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>The initial volume of water in the tank when t = 0</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>The total volume of water drained after 400 hours</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct!</strong> In V = 400 − 25t, this is slope-intercept form with the y-intercept equal to 400. The y-intercept represents the value of V when t = 0 — the starting volume before any time has passed. When t = 0: V = 400 − 25(0) = 400 gallons. The slope −25 represents the drain rate (gallons per hour), not 400.</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Write this as V = −25t + 400 — now it clearly matches y = mx + b. What does the b term (the constant, not multiplied by t) represent in a linear model? It's the value of the output when the input (t) equals zero.</div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Line ℓ has equation 4x − 2y = 10. Line k is parallel to line ℓ and passes through the point (0, 3).</div>
+      <div class="problem-text" style="margin-top:0.6rem;font-size:12px;color:#6b7280;">Step 1: Convert line ℓ to slope-intercept form to find its slope. Step 2: Use the same slope for line k. Step 3: Use the given point to write line k's equation.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Parallel Lines</div>
+      <div class="q-text">What is the equation of line k?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>y = −2x + 3</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>y = 2x − 5</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>y = 2x + 3</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>y = 4x + 3</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! y = 2x + 3</strong><div class="fb-work">Line ℓ: 4x − 2y = 10<br>−2y = −4x + 10 → y = 2x − 5<br>Slope of ℓ = 2<br>Line k has same slope (parallel): m = 2<br>Passes through (0, 3) → b = 3<br>Line k: y = 2x + 3 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> First, solve 4x − 2y = 10 for y to find the slope of line ℓ. Parallel lines share the same slope. Then, since line k passes through (0, 3), that point is the y-intercept (x = 0), so b = 3.<div class="fb-work">4x − 2y = 10 → y = 2x − 5 · slope = 2<br>Line k: y = 2x + 3</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.1</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.2 of 22</span>
+  <button class="btn-nav primary">Next → 3.3 Systems of Equations</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

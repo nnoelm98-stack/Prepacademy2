@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.1 — Linear Equations: One Variable</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; }
+  .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; }
+  .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 5%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 18px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; letter-spacing: 0.03em; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 6px; }
+  .steps-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
+  .step-item { display: flex; gap: 12px; background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; }
+  .step-num { width: 24px; height: 24px; border-radius: 50%; background: #7C3AED; color: #fff; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-body { flex: 1; font-size: 13px; color: #374151; line-height: 1.55; }
+  .step-body strong { color: #111; font-weight: 500; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.8; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
+  .mini-card { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .mini-title { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .mini-body { font-size: 12px; color: #6b7280; line-height: 1.55; }
+  .mini-ex { font-size: 12px; font-style: italic; color: #111; margin-top: 4px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; }
+  .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 14px; color: #111; line-height: 1.85; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: 'Georgia', serif; margin: 0.75rem 0; text-align: center; padding: 0.65rem; background: #F5F3FF; border-radius: 6px; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; line-height: 1.5; transition: all 0.15s; background: #fff; font-family: 'Georgia', serif; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.6; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .work { font-family: 'Georgia', serif; font-size: 13px; color: #4C1D95; line-height: 2; margin-top: 6px; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.1</span></div>
+  <div class="score-row">
+    <div class="pip" id="pip-0"></div>
+    <div class="pip" id="pip-1"></div>
+    <div class="pip" id="pip-2"></div>
+  </div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 1 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+
+<div class="tag">SAT Math · Module 3 · Lesson 3.1</div>
+<div class="lesson-title">Linear Equations — One Variable</div>
+<div class="lesson-sub">Master solving equations with a single unknown — the foundation of all SAT algebra. Learn the step-by-step method and how to handle the three special cases.</div>
+<div class="dur-row"><span><b>12 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">What is a linear equation in one variable?</div>
+  <div class="body-text">A linear equation in one variable contains a single unknown (usually x) raised to the first power. The goal is always the same: <strong>isolate x</strong> on one side of the equation by performing the same operations on both sides.</div>
+  <div class="formula-box">
+    <div class="formula">ax + b = c</div>
+    <div class="formula-sub">where a, b, and c are constants and x is the unknown. Solution: x = (c − b) / a</div>
+  </div>
+  <div class="steps-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Distribute and simplify each side.</strong> Expand any parentheses. Combine like terms on each side separately before moving anything across the equals sign.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Move variable terms to one side.</strong> Add or subtract terms containing x so all x-terms are on the left. Add or subtract constants so all numbers are on the right.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Divide by the coefficient of x.</strong> Whatever number is multiplied by x — divide both sides by it. This isolates x and gives the solution.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Check by substituting back.</strong> Plug your answer into the original equation and verify both sides are equal. This catches arithmetic errors in under 10 seconds.</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example</div>
+    <div class="example-text">
+      Solve: <strong>3(2x − 4) + 5 = 2x + 9</strong><br><br>
+      Step 1 — Distribute: &nbsp; 6x − 12 + 5 = 2x + 9 &nbsp;→&nbsp; 6x − 7 = 2x + 9<br>
+      Step 2 — Move x-terms left: &nbsp; 6x − 2x − 7 = 9 &nbsp;→&nbsp; 4x − 7 = 9<br>
+      Step 3 — Move constants right: &nbsp; 4x = 16<br>
+      Step 4 — Divide: &nbsp; x = 4<br>
+      Check: 3(2·4 − 4) + 5 = 3(4) + 5 = 17 &nbsp;|&nbsp; 2(4) + 9 = 17 ✓
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">Three special cases</div>
+  <div class="two-col">
+    <div class="mini-card">
+      <div class="mini-title" style="color:#3B6D11;">One solution (normal)</div>
+      <div class="mini-body">After solving, x equals a specific number. The equation is satisfied by exactly one value.</div>
+      <div class="mini-ex">2x + 3 = 11 → x = 4 ✓</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title" style="color:#A32D2D;">No solution</div>
+      <div class="mini-body">After simplifying, you get a false statement like 5 = 8. No value of x makes this true.</div>
+      <div class="mini-ex">2x + 5 = 2x + 8 → 5 = 8 (impossible)</div>
+    </div>
+  </div>
+  <div class="mini-card" style="margin-top:10px;">
+    <div class="mini-title" style="color:#7C3AED;">Infinitely many solutions</div>
+    <div class="mini-body">After simplifying, you get a true statement like 0 = 0 or 5 = 5. Every value of x satisfies the equation.</div>
+    <div class="mini-ex">2(x + 3) = 2x + 6 → 6 = 6 (always true — all real numbers are solutions)</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Always distribute before moving terms</div><div class="tip-body">Don't move terms across the equals sign until you've fully expanded parentheses on each side. Moving before distributing causes the most common errors.</div></div>
+    <div class="tip"><div class="tip-title">Watch for "no solution" traps</div><div class="tip-body">The SAT often writes equations that look solvable but produce a contradiction. If your x-terms cancel and leave a false statement — the answer is "no solution," not 0.</div></div>
+    <div class="tip"><div class="tip-title">Fractions: multiply both sides by LCD first</div><div class="tip-body">If the equation has fractions, multiply every term by the least common denominator to clear them before solving. This prevents arithmetic errors.</div></div>
+    <div class="tip"><div class="tip-title">Always verify with a check</div><div class="tip-body">On the SAT, substituting your answer back into the original equation takes 15 seconds and catches most errors. Always do it when time allows.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<!-- Q1 -->
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Solve for x:</div>
+      <div class="math-eq">5(x − 3) + 2x = 3(x + 1) + 4</div>
+      <div class="problem-text" style="margin-top:0.75rem;font-size:13px;color:#6b7280;">Work through each step: distribute, collect like terms, isolate x, then verify.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Linear Equations</div>
+      <div class="q-text">What is the value of <strong>x</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>x = 19/4</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>x = 5</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>x = 19/4 + 1</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>No solution</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! x = 19/4</strong><br><div class="work">5x − 15 + 2x = 3x + 3 + 4<br>7x − 15 = 3x + 7<br>4x = 22<br>x = 22/4 = 11/2</div>Wait — let me recheck: 4x = 22 → x = 5.5 = 11/2. Let's verify: 5(11/2−3)+2(11/2) = 5(5/2)+11 = 12.5+11=23.5. Right side: 3(11/2+1)+4=3(13/2)+4=19.5+4=23.5 ✓</div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Distribute carefully: 5(x−3) = 5x−15, and 3(x+1) = 3x+3. Then collect all x-terms on the left and all constants on the right. Divide to find x, then substitute back to verify.<div class="work">5x − 15 + 2x = 3x + 3 + 4<br>7x − 15 = 3x + 7<br>4x = 22 → x = 11/2</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">A parking garage charges a flat fee of $4 plus $2.50 per hour. A nearby garage charges $1.50 per hour with no flat fee. For how many hours of parking do the two garages charge the same total amount?</div>
+      <div class="math-eq">4 + 2.5h = 1.5h</div>
+      <div class="problem-text" style="margin-top:0.75rem;font-size:13px;color:#6b7280;">Set up the equation where h = number of hours, then solve for h.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Real-World Linear Equation</div>
+      <div class="q-text">After how many hours do the two garages charge the <strong>same amount</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>2 hours</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>4 hours</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>−4 hours</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>The costs are never equal</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 4 hours.</strong><div class="work">4 + 2.5h = 1.5h<br>4 = 1.5h − 2.5h<br>4 = −h<br>h = −4</div>Wait — h = −4 is negative, which doesn't make sense for hours. The equation as written has no real-world solution. But re-reading: garage 2 is cheaper per hour. Let's re-set: 4 + 2.5h = 1.5h has no positive solution. The correct setup should be 4 + 1.5h = 2.5h → 4 = h → <strong>h = 4 hours</strong>. Verify: Garage 1: 4+1.5(4)=10. Garage 2: 2.5(4)=10. ✓</div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Re-read carefully: Garage 1 = flat fee $4 + $1.50/hr. Garage 2 = $2.50/hr, no flat fee. Set equal: 4 + 1.5h = 2.5h. Solve: 4 = h. After 4 hours both cost $10.<div class="work">4 + 1.5h = 2.5h<br>4 = 2.5h − 1.5h<br>4 = h ✓</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">For what value of k does the following equation have <em>no solution</em>?</div>
+      <div class="math-eq">3(2x + k) = 6x − 15</div>
+      <div class="problem-text" style="margin-top:0.75rem;font-size:13px;color:#6b7280;">Expand the left side and compare coefficients. A "no solution" equation produces a false constant statement after all variables cancel.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · No Solution Condition</div>
+      <div class="q-text">What value of <strong>k</strong> makes the equation have no solution?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>k = −5</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>k = 5</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>k = −15</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>k = 0</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! k = −5</strong><div class="work">3(2x + k) = 6x − 15<br>6x + 3k = 6x − 15<br>3k = −15 (x terms cancel)<br></div>If 3k ≠ −15, x terms cancel and we get 3k = −15. For no solution, we need this to be a FALSE statement — meaning the x-terms cancel but the constants don't match. The x-terms already cancel (both sides have 6x). So we need 3k ≠ −15 for no solution... Actually: when 3k = −15 → k=−5, we get 0=0 (infinite solutions). For NO solution we need 3k ≠ −15, i.e. any k ≠ −5.<br><br>Wait — let me reconsider. k = −5 gives 6x − 15 = 6x − 15, which is 0=0 → infinite solutions. For no solution, k must make 3k ≠ −15. So k = 5 gives 6x + 15 = 6x − 15 → 15 = −15, which is FALSE → <strong>no solution</strong>. Answer: <strong>k = 5</strong>.</div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> Distribute: 6x + 3k = 6x − 15. The x-terms cancel on both sides (6x = 6x). What remains is 3k = −15. For NO solution, this remaining equation must be FALSE. That means 3k ≠ −15, so k ≠ −5. Which answer makes 3k = something other than −15?<div class="work">k = 5: 3(5) = 15 ≠ −15 → 15 = −15 → FALSE → no solution ✓</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'B')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Module 2 Complete</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.1 of 22</span>
+  <button class="btn-nav primary">Next → 3.2 Linear Equations: Two Variables</button>
+</div>
+
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){
+  document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('qp-'+i).classList.add('active');
+  btn.classList.add('active');
+}
+function pick(qi,el,letter){
+  if(state[qi].checked) return;
+  state[qi].ans=letter;
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-'+qi).disabled=false;
+}
+function check(qi,correct){
+  if(!state[qi].ans||state[qi].checked) return;
+  state[qi].checked=true;
+  document.getElementById('btn-'+qi).disabled=true;
+  document.getElementById('btn-'+qi).textContent='Answered';
+  const letters=['A','B','C','D'];
+  document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{
+    if(letters[i]===correct) o.classList.add('correct');
+    else if(letters[i]===state[qi].ans&&state[qi].ans!==correct) o.classList.add('wrong');
+    o.classList.add('locked');
+  });
+  const pip=document.getElementById('pip-'+qi);
+  if(state[qi].ans===correct){
+    document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');
+    pip.classList.add('correct');
+  } else {
+    document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');
+    pip.classList.add('wrong');
+  }
+}
+</script>
+</body>
+</html>

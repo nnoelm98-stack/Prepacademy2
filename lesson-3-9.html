@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3.9 — Introduction to Quadratics</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 16px; background: #fff; color: #111; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 1.25rem; }
+  .bc { font-size: 13px; color: #6b7280; } .bc span { color: #111; font-weight: 500; }
+  .score-row { display: flex; gap: 8px; }
+  .pip { width: 10px; height: 10px; border-radius: 50%; background: #f3f4f6; border: 1px solid #d1d5db; transition: all 0.2s; }
+  .pip.correct { background: #3B6D11; border-color: #3B6D11; } .pip.wrong { background: #A32D2D; border-color: #A32D2D; }
+  .prog-wrap { margin-bottom: 1.5rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+  .prog-track { height: 4px; background: #f3f4f6; border-radius: 99px; }
+  .prog-fill { height: 4px; width: 41%; background: #7C3AED; border-radius: 99px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.5rem; background: #EDE9FE; color: #4C1D95; }
+  .lesson-title { font-size: 22px; font-weight: 500; margin-bottom: 0.25rem; }
+  .lesson-sub { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 0.5rem; }
+  .dur-row { display: flex; gap: 1.25rem; font-size: 13px; color: #6b7280; margin-bottom: 1.5rem; }
+  .dur-row b { color: #111; font-weight: 500; }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  .sec-title { font-size: 15px; font-weight: 500; margin-bottom: 0.75rem; }
+  .body-text { font-size: 14px; color: #6b7280; line-height: 1.75; }
+  .body-text strong { color: #111; }
+  .formula-box { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; text-align: center; }
+  .formula { font-size: 17px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; line-height: 2; }
+  .formula-sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
+  .parts-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+  .part-card { background: #f9fafb; border-radius: 8px; padding: 0.85rem 1rem; }
+  .part-label { font-size: 12px; font-weight: 500; color: #111; margin-bottom: 4px; }
+  .part-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .part-ex { font-family: Georgia, serif; font-size: 12px; color: #4C1D95; margin-top: 4px; }
+  .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+  .prod-card { background: #F5F3FF; border-radius: 8px; padding: 0.9rem 1rem; }
+  .prod-title { font-size: 13px; font-weight: 500; color: #4C1D95; margin-bottom: 5px; }
+  .prod-formula { font-family: Georgia, serif; font-size: 14px; color: #4C1D95; font-weight: 500; margin-bottom: 4px; }
+  .prod-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .prod-ex { font-family: Georgia, serif; font-size: 12px; color: #374151; margin-top: 4px; line-height: 1.6; }
+  .example-box { background: #F5F3FF; border-left: 3px solid #7C3AED; border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin-top: 1rem; }
+  .example-label { font-size: 11px; font-weight: 500; color: #7C3AED; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .example-text { font-size: 13px; color: #111; line-height: 1.9; }
+  .fb-work { font-family: Georgia, serif; font-size: 13px; color: #4C1D95; line-height: 2.1; margin-top: 5px; }
+  .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tip { background: #f9fafb; border-radius: 8px; padding: 0.9rem 1rem; }
+  .tip-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .tip-body { font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: #f9fafb; border-radius: 9px; padding: 3px; width: fit-content; }
+  .q-tab { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; color: #6b7280; border: none; background: transparent; transition: all 0.15s; }
+  .q-tab.active { background: #fff; color: #111; border: 1px solid #e5e7eb; }
+  .q-panel { display: none; } .q-panel.active { display: block; }
+  .math-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .problem-panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; }
+  .panel-label { font-size: 11px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+  .problem-text { font-size: 13px; color: #374151; line-height: 1.8; }
+  .math-eq { font-size: 16px; font-weight: 500; color: #4C1D95; font-family: Georgia, serif; margin: 0.6rem 0; padding: 0.5rem 0.75rem; background: #F5F3FF; border-radius: 6px; display: block; text-align: center; }
+  .hint { background: #f9fafb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 12px; color: #6b7280; line-height: 1.5; }
+  .q-panel-inner { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; }
+  .q-label { font-size: 11px; font-weight: 500; color: #7C3AED; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 14px; line-height: 1.65; margin-bottom: 1rem; }
+  .opts { display: flex; flex-direction: column; gap: 7px; }
+  .opt { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; font-size: 13px; font-family: Georgia, serif; line-height: 1.5; transition: all 0.15s; background: #fff; }
+  .opt:hover:not(.locked) { border-color: #d1d5db; background: #f9fafb; }
+  .opt.selected { border-color: #7C3AED; background: #EDE9FE; color: #4C1D95; }
+  .opt.correct { border-color: #3B6D11; background: #EAF3DE; color: #27500A; }
+  .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+  .opt-l { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; font-family: system-ui; }
+  .opt.selected .opt-l { background: #7C3AED; color: #fff; }
+  .opt.correct .opt-l { background: #3B6D11; color: #fff; }
+  .opt.wrong .opt-l { background: #A32D2D; color: #fff; }
+  .q-actions { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+  .btn-check { background: #7C3AED; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; }
+  .btn-check:disabled { background: #f3f4f6; color: #9ca3af; cursor: default; }
+  .feedback { display: none; font-size: 13px; line-height: 1.65; padding: 0.85rem 1rem; border-radius: 8px; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #EAF3DE; color: #27500A; }
+  .feedback.fail { background: #FCEBEB; color: #501313; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e5e7eb; }
+  .btn-nav { background: transparent; border: 1px solid #d1d5db; color: #111; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .btn-nav.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="bc">PrepAcademy › SAT Math › Module 3 › <span>Lesson 3.9</span></div>
+  <div class="score-row"><div class="pip" id="pip-0"></div><div class="pip" id="pip-1"></div><div class="pip" id="pip-2"></div></div>
+</div>
+<div class="prog-wrap">
+  <div class="prog-meta"><span>Module 3 — Algebra: No Calculator</span><span>Lesson 9 of 22</span></div>
+  <div class="prog-track"><div class="prog-fill"></div></div>
+</div>
+<div class="tag">SAT Math · Module 3 · Lesson 3.9</div>
+<div class="lesson-title">Introduction to Quadratics</div>
+<div class="lesson-sub">Learn the standard form of a quadratic expression, master FOIL and the three special product patterns, and practice expanding and identifying quadratic expressions — the foundation for all quadratic solving.</div>
+<div class="dur-row"><span><b>13 min</b> read</span><span><b>3</b> practice questions</span><span><b>+20 pts</b> on completion</span></div>
+
+<div class="card">
+  <div class="sec-title">What is a quadratic?</div>
+  <div class="body-text">A <strong>quadratic expression</strong> contains a variable raised to the second power as its highest degree term, written in standard form. Its graph is always a parabola.</div>
+  <div class="formula-box">
+    <div class="formula">ax² + bx + c</div>
+    <div class="formula-sub">a ≠ 0 · a = leading coefficient · b = linear coefficient · c = constant (y-intercept)</div>
+  </div>
+  <div class="parts-grid">
+    <div class="part-card">
+      <div class="part-label">a — leading coefficient</div>
+      <div class="part-body">Determines parabola direction and width. a &gt; 0 opens up; a &lt; 0 opens down.</div>
+      <div class="part-ex">2x² + 3x + 1 → a = 2</div>
+    </div>
+    <div class="part-card">
+      <div class="part-label">b — linear coefficient</div>
+      <div class="part-body">Affects horizontal position of vertex. Axis of symmetry: x = −b/(2a).</div>
+      <div class="part-ex">2x² + 3x + 1 → b = 3</div>
+    </div>
+    <div class="part-card">
+      <div class="part-label">c — constant term</div>
+      <div class="part-body">Equals the y-intercept — value when x = 0. Read directly from standard form.</div>
+      <div class="part-ex">2x² + 3x + 1 → c = 1</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">The three special products — memorize these</div>
+  <div class="products-grid">
+    <div class="prod-card">
+      <div class="prod-title">Perfect square — sum</div>
+      <div class="prod-formula">(a + b)² = a² + 2ab + b²</div>
+      <div class="prod-body">Middle term is always 2ab — the most frequently missed pattern.</div>
+      <div class="prod-ex">(x + 5)² = x² + 10x + 25<br>(2x + 3)² = 4x² + 12x + 9</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-title">Perfect square — difference</div>
+      <div class="prod-formula">(a − b)² = a² − 2ab + b²</div>
+      <div class="prod-body">Last term always positive. Middle term negative.</div>
+      <div class="prod-ex">(x − 4)² = x² − 8x + 16<br>(3x − 1)² = 9x² − 6x + 1</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-title">Difference of squares</div>
+      <div class="prod-formula">(a + b)(a − b) = a² − b²</div>
+      <div class="prod-body">Middle terms cancel. No linear term in the result.</div>
+      <div class="prod-ex">(x + 7)(x − 7) = x² − 49<br>(2x + 3)(2x − 3) = 4x² − 9</div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-title">General FOIL</div>
+      <div class="prod-formula">(x + p)(x + q) = x² + (p+q)x + pq</div>
+      <div class="prod-body">Linear coefficient = sum of p, q. Constant = product of p, q.</div>
+      <div class="prod-ex">(x + 3)(x + 5) = x² + 8x + 15<br>(x − 2)(x + 6) = x² + 4x − 12</div>
+    </div>
+  </div>
+  <div class="example-box">
+    <div class="example-label">Worked example</div>
+    <div class="example-text">
+      Expand: <strong>(3x − 2)² − (x + 4)(x − 4)</strong><br><br>
+      <span class="fb-work">Part 1: (3x − 2)² = 9x² − 12x + 4</span><br>
+      <span class="fb-work">Part 2: (x + 4)(x − 4) = x² − 16</span><br>
+      <span class="fb-work">Result: (9x² − 12x + 4) − (x² − 16) = 8x² − 12x + 20</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="sec-title">SAT strategy tips</div>
+  <div class="tips-grid">
+    <div class="tip"><div class="tip-title">Memorize the three special products</div><div class="tip-body">The SAT uses these constantly. Expanding (a+b)², (a−b)², and (a+b)(a−b) in 3 seconds without FOIL is a major time advantage on the no-calculator section.</div></div>
+    <div class="tip"><div class="tip-title">(a+b)² ≠ a² + b²</div><div class="tip-body">The most common quadratic mistake: forgetting the middle term. (x+3)² = x² + 6x + 9, NOT x² + 9. The middle term 2ab is always there in a perfect square.</div></div>
+    <div class="tip"><div class="tip-title">c is the y-intercept always</div><div class="tip-body">In ax² + bx + c, the constant c is the y-intercept. The SAT often asks for this — just read it directly without substituting x = 0.</div></div>
+    <div class="tip"><div class="tip-title">Sum and product pattern for factoring</div><div class="tip-body">For x² + bx + c = (x+p)(x+q): p + q = b and p × q = c. Find two numbers that add to b and multiply to c — that's the foundation of factoring in Lesson 3.10.</div></div>
+  </div>
+</div>
+
+<div class="sec-title" style="margin-bottom:0.75rem;">Practice questions</div>
+<div class="q-tabs">
+  <button class="q-tab active" onclick="switchQ(0,this)">Question 1</button>
+  <button class="q-tab" onclick="switchQ(1,this)">Question 2</button>
+  <button class="q-tab" onclick="switchQ(2,this)">Question 3</button>
+</div>
+
+<div class="q-panel active" id="qp-0">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Expand the expression:</div>
+      <span class="math-eq">(2x + 5)²</span>
+      <div class="hint">Use (a + b)² = a² + 2ab + b² with a = 2x, b = 5. Middle term = 2·(2x)·5 = 20x. Don't forget it!</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 1 · Perfect Square</div>
+      <div class="q-text">Which expression is equivalent to <strong>(2x + 5)²</strong>?</div>
+      <div class="opts" id="opts-0">
+        <div class="opt" onclick="pick(0,this,'A')"><span class="opt-l">A</span>4x² + 25</div>
+        <div class="opt" onclick="pick(0,this,'B')"><span class="opt-l">B</span>4x² + 10x + 25</div>
+        <div class="opt" onclick="pick(0,this,'C')"><span class="opt-l">C</span>4x² + 20x + 25</div>
+        <div class="opt" onclick="pick(0,this,'D')"><span class="opt-l">D</span>2x² + 20x + 25</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-0-ok"><strong>Correct! 4x² + 20x + 25</strong><div class="fb-work">(2x)² + 2·(2x)·5 + 5² = 4x² + 20x + 25<br>A forgets the middle term. B uses 2·5=10 instead of 20x. D squares 2x incorrectly as 2x² instead of 4x².</div></div>
+        <div class="feedback" id="fb-0-fail"><strong>Not quite.</strong> Apply (a+b)² = a² + 2ab + b² with a=2x, b=5. (2x)² = 4x². Middle term: 2×(2x)×5 = 20x.<div class="fb-work">4x² + 20x + 25</div></div>
+        <button class="btn-check" id="btn-0" onclick="check(0,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Q2 -->
+<div class="q-panel" id="qp-1">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">Simplify the expression:</div>
+      <span class="math-eq">(x + 6)(x − 6) − (x − 3)²</span>
+      <div class="hint">Use difference of squares for the first part: (x+6)(x−6) = x² − 36. Use perfect square for the second: (x−3)² = x² − 6x + 9. Then subtract carefully — watch the signs.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 2 · Special Products</div>
+      <div class="q-text">Which expression is equivalent to <strong>(x + 6)(x − 6) − (x − 3)²</strong>?</div>
+      <div class="opts" id="opts-1">
+        <div class="opt" onclick="pick(1,this,'A')"><span class="opt-l">A</span>6x − 45</div>
+        <div class="opt" onclick="pick(1,this,'B')"><span class="opt-l">B</span>−27</div>
+        <div class="opt" onclick="pick(1,this,'C')"><span class="opt-l">C</span>6x − 27</div>
+        <div class="opt" onclick="pick(1,this,'D')"><span class="opt-l">D</span>2x² − 6x − 45</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-1-ok"><strong>Correct! 6x − 45</strong><div class="fb-work">(x+6)(x−6) = x² − 36<br>(x−3)² = x² − 6x + 9<br>Result: (x² − 36) − (x² − 6x + 9)<br>= x² − 36 − x² + 6x − 9<br>= 6x − 45 ✓<br>Note: x² terms cancel!</div></div>
+        <div class="feedback" id="fb-1-fail"><strong>Not quite.</strong> Expand each part first: (x+6)(x−6) = x²−36 and (x−3)² = x²−6x+9. Then subtract the entire second expression — distribute the negative sign to every term inside.<div class="fb-work">x²−36 − x²+6x−9 = 6x−45</div></div>
+        <button class="btn-check" id="btn-1" onclick="check(1,'A')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-panel" id="qp-2">
+  <div class="math-layout">
+    <div class="problem-panel">
+      <div class="panel-label">Problem</div>
+      <div class="problem-text">The expression x² + kx + 36 is a perfect square trinomial — it equals (x + n)² for some integer n.</div>
+      <div class="hint">For a perfect square trinomial (x + n)² = x² + 2nx + n². The constant term is n², so n² = 36 → n = 6 or n = −6. The middle coefficient k = 2n.</div>
+    </div>
+    <div class="q-panel-inner">
+      <div class="q-label">Question 3 · Perfect Square Identification</div>
+      <div class="q-text">What are the possible values of <strong>k</strong>?</div>
+      <div class="opts" id="opts-2">
+        <div class="opt" onclick="pick(2,this,'A')"><span class="opt-l">A</span>k = 6 only</div>
+        <div class="opt" onclick="pick(2,this,'B')"><span class="opt-l">B</span>k = 12 only</div>
+        <div class="opt" onclick="pick(2,this,'C')"><span class="opt-l">C</span>k = 12 or k = −12</div>
+        <div class="opt" onclick="pick(2,this,'D')"><span class="opt-l">D</span>k = 6 or k = −6</div>
+      </div>
+      <div class="q-actions">
+        <div class="feedback" id="fb-2-ok"><strong>Correct! k = 12 or k = −12</strong><div class="fb-work">For x² + kx + 36 = (x + n)²:<br>n² = 36 → n = 6 or n = −6<br>k = 2n:<br>If n = 6: k = 12 → (x+6)² = x²+12x+36 ✓<br>If n = −6: k = −12 → (x−6)² = x²−12x+36 ✓</div></div>
+        <div class="feedback" id="fb-2-fail"><strong>Not quite.</strong> In a perfect square (x+n)², the constant is n² and the middle coefficient is 2n. If n² = 36, what are the two possible values of n? Then for each n, what is k = 2n?<div class="fb-work">n = ±6 → k = 2(6)=12 or k = 2(−6)=−12</div></div>
+        <button class="btn-check" id="btn-2" onclick="check(2,'C')" disabled>Check answer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-row">
+  <button class="btn-nav">← Lesson 3.8</button>
+  <span style="font-size:13px;color:#6b7280;">Lesson 3.9 of 22</span>
+  <button class="btn-nav primary">Next → 3.10 Solving Quadratics</button>
+</div>
+<script>
+const state=[{ans:null,checked:false},{ans:null,checked:false},{ans:null,checked:false}];
+function switchQ(i,btn){document.querySelectorAll('.q-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.q-tab').forEach(t=>t.classList.remove('active'));document.getElementById('qp-'+i).classList.add('active');btn.classList.add('active');}
+function pick(qi,el,letter){if(state[qi].checked)return;state[qi].ans=letter;document.querySelectorAll('#opts-'+qi+' .opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('btn-'+qi).disabled=false;}
+function check(qi,correct){if(!state[qi].ans||state[qi].checked)return;state[qi].checked=true;document.getElementById('btn-'+qi).disabled=true;document.getElementById('btn-'+qi).textContent='Answered';const letters=['A','B','C','D'];document.querySelectorAll('#opts-'+qi+' .opt').forEach((o,i)=>{if(letters[i]===correct)o.classList.add('correct');else if(letters[i]===state[qi].ans&&state[qi].ans!==correct)o.classList.add('wrong');o.classList.add('locked');});const pip=document.getElementById('pip-'+qi);if(state[qi].ans===correct){document.getElementById('fb-'+qi+'-ok').classList.add('show','ok');pip.classList.add('correct');}else{document.getElementById('fb-'+qi+'-fail').classList.add('show','fail');pip.classList.add('wrong');}}
+</script>
+</body>
+</html>
